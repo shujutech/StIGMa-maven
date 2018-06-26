@@ -1,0 +1,67 @@
+html {
+	font-size: 14px;
+	line-height: 1.42857143;
+}
+body {
+	font-weight:600;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+label {
+	margin-bottom: 0px !important;
+	font-weight: bold;
+}
+input {
+	width: auto !important;
+}
+select {
+	width: auto !important;
+}
+legend {
+	width: fit-content;
+	font-weight: bold;
+	font-size: larger;
+	padding-right: 10px;
+	padding-left: 10px;");
+}
+fieldset {
+	padding-bottom: 2em;
+	padding-left: 1em;
+	border:1px solid #ced4da;
+}
+fieldset div.eachfield.row {
+	display: inline-block; 
+	margin: 1em 2em 3px 0px;
+}
+.form-control {
+	display: inline-block !important;
+}
+.error-msg {
+	font-size: x-small;
+	color: red;
+	margin-left: 5px;
+}
+.date-picker-num {
+	display: inline-block;
+	text-align: right;
+	position: inherit !important;
+}
+.combo-box {
+	min-width: 70px;
+}
+.array-widget {
+	text-align: right;
+	cursor: pointer;
+	border-style: none;
+	background: none;
+	margin-right: 5px;
+}
+.array-btn {
+	margin-left: 4px;
+}
+.bx-wrapper {
+	margin-bottom: 0px !important;
+}
+.bx-wrapper img {
+	// display: inline-block !important;
+}
