@@ -9,6 +9,8 @@ var CLS_INPUT = "form-control";
 var CLS_DATE_PICKER = "date-picker-num" + " " + CLS_INPUT;
 var CLS_COMBO_BOX = "combo-box" + " " + CLS_INPUT;
 
+$.jMaskGlobals.watchDataMask = true;
+
 $(document).ready(function(){
 	UiUtil.DisplayMsgHide();
 	$(document).ready($('button#ttxcvtyl').click(function(){
@@ -1095,6 +1097,7 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 	var tfDay = UiUtil.CreateTextFieldNoLabel("d_" + rdmId);
 	tfDay.setAttribute("size", 2);
 	tfDay.setAttribute("class", CLS_DATE_PICKER);
+	tfDay.setAttribute("data-mask", "00");
 	spanDay.appendChild(tfDay);
 
 	var slashDay = document.createElement("span");
@@ -1105,6 +1108,7 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 	var tfMth = UiUtil.CreateTextFieldNoLabel("m_" + rdmId);
 	tfMth.setAttribute("size", 2);
 	tfMth.setAttribute("class", CLS_DATE_PICKER);
+	tfMth.setAttribute("data-mask", "00");
 	spanMth.appendChild(tfMth);
 
 	var slashMth = document.createElement("span");
@@ -1115,12 +1119,14 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 	var tfYear = UiUtil.CreateTextFieldNoLabel("y_" + rdmId);
 	tfYear.setAttribute("size", 4);
 	tfYear.setAttribute("class", CLS_DATE_PICKER);
+	tfYear.setAttribute("data-mask", "0000");
 	spanYear.appendChild(tfYear);
 
 	var spanHour = document.createElement("span");
 	var tfHour = UiUtil.CreateTextFieldNoLabel("h_" + rdmId);
 	tfHour.setAttribute("size", 2);
 	tfHour.setAttribute("class", CLS_DATE_PICKER);
+	tfHour.setAttribute("data-mask", "00");
 	spanHour.appendChild(tfHour);
 
 	var slashHour = document.createElement("span");
@@ -1131,6 +1137,7 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 	var tfMin = UiUtil.CreateTextFieldNoLabel("mt_"+ rdmId);
 	tfMin.setAttribute("size", 2);
 	tfMin.setAttribute("class", CLS_DATE_PICKER);
+	tfMin.setAttribute("data-mask", "00");
 	spanMin.appendChild(tfMin);
 
 	var slashMin = document.createElement("span");
@@ -1141,6 +1148,7 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 	var tfSec = UiUtil.CreateTextFieldNoLabel("s_" + rdmId);
 	tfSec.setAttribute("size", 4);
 	tfSec.setAttribute("class", CLS_DATE_PICKER);
+	tfSec.setAttribute("data-mask", "00");
 	spanSec.appendChild(tfSec);
 
 	UiUtil.SetDatePicker(fieldVar.data, tfDay, tfMth, tfYear, tfHour, tfMin, tfSec);
