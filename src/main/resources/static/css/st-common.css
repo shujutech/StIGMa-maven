@@ -8,7 +8,6 @@ body {
 	margin-right: 5px;
 }
 label {
-	margin-bottom: 0px !important;
 	font-weight: bold;
 }
 input {
@@ -25,38 +24,41 @@ legend {
 	padding-left: 10px;");
 }
 fieldset {
-	padding-bottom: 2em;
+	padding-bottom: 2.5em;
 	padding-left: 1em;
 	border:1px solid #ced4da;
 }
-fieldset div.eachfield.row {
-	display: inline-block; 
-	margin: 1em 2em 3px 0px;
+.st-eachfield.st-row {
+	display: inline-flex;
+	align-items: center;
+	margin-top: 1.5em;
+	margin-right: 2.5em;
 }
-.form-control {
-	display: inline-block !important;
+parentwrapper {
+	float: left;
+	display: inline-flex;
 }
-.error-msg {
+.st-error-msg {
 	font-size: x-small;
 	color: red;
 	margin-left: 5px;
 }
-.date-picker-num {
+.st-date-picker-num {
 	display: inline-block;
 	text-align: right;
 	position: inherit !important;
 }
-.combo-box {
+.st-combo-box {
 	min-width: 70px;
 }
-.array-widget {
+.st-array-widget {
 	text-align: right;
 	cursor: pointer;
 	border-style: none;
 	background: none;
 	margin-right: 5px;
 }
-.array-btn {
+.st-array-btn {
 	margin-left: 4px;
 }
 .bx-wrapper {

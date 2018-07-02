@@ -1,0 +1,767 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Adhoc Payslip</title>
+	</head>
+	<body>
+		<section>
+			<link href="/lib/bootstrap-4.1.1/dist/css/bootstrap.min.css" rel="stylesheet">  
+			<link rel='stylesheet' href='js/editablegrid-master/editablegrid.css' type='text/css' media='screen'> 
+			<link href="/css/st-common.css" rel="stylesheet">  
+
+			<style type='text/css'>
+				table.stdGrid {border-collapse:collapse;border:2px solid #c7c7c7;;width:100%} 
+				table.stdGrid td,table.stdGrid th {padding:5px}
+				table.stdGrid th {background:#f9f9f9;text-align:left;border-bottom:1px solid #c7c7c7;}
+				table.stdGrid tr {line-height: 2.00;}
+				table.stdGrid>tbody tr:hover{cursor:pointer;background:#E5E5E5;color:black}
+				table.stdGrid tbody {-webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; }
+				table.stdGrid .rowSelected {color:blue} 
+				tr th:nth-child(5) { text-align: right; }
+				tr td:nth-child(5) { text-align: right; }
+				#divEarning table th:nth-of-type(2) {
+					display: none;
+				}
+				#divEarning table td:nth-of-type(2) {
+					display: none;
+				}
+				#divEarning table th:nth-of-type(3) {
+					display: none;
+				}
+				#divEarning table td:nth-of-type(3) {
+					display: none;
+				}
+				#divDeduction table th:nth-of-type(2) {
+					display: none;
+				}
+				#divDeduction table td:nth-of-type(2) {
+					display: none;
+				}
+				#divDeduction table th:nth-of-type(3) {
+					display: none;
+				}
+				#divDeduction table td:nth-of-type(3) {
+					display: none;
+				}
+				#divOther table th:nth-of-type(2) {
+					display: none;
+				}
+				#divOther table td:nth-of-type(2) {
+					display: none;
+				}
+				#divOther table th:nth-of-type(3) {
+					display: none;
+				}
+				#divOther table td:nth-of-type(3) {
+					display: none;
+				}
+				.crud-menu {
+					margin-bottom: 3px;
+				}
+				.column-text {
+					float: left;
+					width: 48%;
+					position: relative;
+					min-height: 1px;
+					padding-left: 160px;
+				}
+				.column-grid {
+					float: left;
+					width: 50%;
+					position: relative;
+					min-height: 1px;
+					padding-right: 0px;
+					padding-left: 15px;
+				}
+				.column-line {
+					float: left;
+					width: 100%;
+					position: relative;
+					min-height: 1px;
+					padding-right: 35px;
+					padding-left: 35px;
+					margin-top:0px;
+					margin-bottom:0px;
+				}
+				#employeeInfoDiv {
+					border: none;
+					padding: 70px;
+				}
+				@media print {
+					body * {
+						visibility: hidden;
+					}
+					#divPayslip, #divPayslip * {
+						visibility: visible;
+					}
+					table tr th.boolean {
+						display: none;
+					}
+					table tr td.boolean {
+						display: none;
+					}
+					.crud-menu {
+						display: none;
+					}
+					#divPayslip {
+						position: absolute;
+						left: 0;
+						top: 0;
+					}
+				}
+				.print-field {}
+				.st-fs01 {
+					border: none;
+					margin-top: 1em;
+				}
+				span {
+					float: left;
+				}
+			</style>
+		</section>
+	
+		<main>
+			<div>
+				<img id='msgImage' src='img/imgInfo.gif' style='vertical-align:middle; margin-right:0px;' alt="">
+				<span id='msgArea'></span>
+			</div>
+	
+			<div style="float:left;display:block;width:90%;margin-left:5%">
+				<div id="employeeInfoDiv">
+					<fieldset class="st-fs01">
+						<div class="st-eachfield st-row">
+							<div class="st-label-area">
+								<label>Salary</label><img src="img/imgErrorBlank.gif" style="display: none;"><span class="st-error-msg"></span></div>
+								<div class="st-input-area">
+									<parentwrapper>
+										<span class="st-symbol">
+											<select class="custom-select" style="width:90px" id="68464_cy">
+												<option value="MYR">MYR</option>
+											</select>
+										</span>
+										<span><input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" 
+									onkeyup="UiForm.handleDollar(this, event, &quot;68464_ct&quot;)"></span><span class="st-symbol">.</span><span><input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" 
+									onkeyup="UiForm.handleCent(this, event)"></span></parentwrapper>
+								</div>
+						</div>
+						<div class="st-eachfield st-row">
+							<div class="st-label-area">
+								<label>Is Spouse Working</label><img src="img/imgErrorBlank.gif" style="display: none;"><span class="st-error-msg"></span></div>
+							<div class="st-input-area">
+								<input class="" type="checkbox" style="min-height: 15px;min-width:15px">
+							</div>
+						</div>
+						<div class="st-eachfield st-row">
+							<div class="st-label-area">
+								<label>Marital Status</label><img src="img/imgErrorBlank.gif" style="display: none;"><span class="st-error-msg"></span></div>
+							<div class="st-input-area">
+								<select class="custom-select" style="min-width:70px">
+									<option value=""></option>
+									<option value="Single">Single</option>
+									<option value="Married">Married</option>
+								</select>
+							</div>
+						</div>
+						<div class="st-eachfield st-row">
+							<div class="st-label-area">
+								<label>No Of Children</label><img src="img/imgErrorBlank.gif" style="display: none;"><span class="st-error-msg"></span></div>
+							<div class="st-input-area">
+								<input class="form-control" type="text" value="">
+							</div>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+
+			<fieldset style="width:100%;padding-bottom: 0px; border: none; text-align: right; color: black; font-size:12px">
+				<button id="btnCancelTop" onclick="UiUtil.CancelEdit()" style="width: 85px; margin-right: 2px;">Cancel</button>
+				<button id="btnPrintTop" onclick="printSalarySlip();" style="width: 85px;">Print...</button>
+				<button id="btnRecomputeTop" onclick="recomputeSalarySlip();" style="width: 85px;">Recompute</button>
+			</fieldset>
+	
+			<div id="divPayslip" style="display:none;float:left;width:100%">
+				<div style="text-align:center">
+					<div class='' style='display:inline-block;'>
+						<div class="st-eachfield st-row">
+							<div class="st-label-area">
+								<label style="margin-right: 5px">Company</label>
+								<img src="img/imgErrorBlank.gif" alt="">
+								<span class="st-error-msg"></span>
+							</div>
+							<div class="st-input-area">
+								<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd">
+							</div>
+						</div>
+					</div>
+					<br>
+					<div class='' style='display:inline-block;'>
+						<div class="eachfield" style="float:left">
+							<div class="st-label-area">
+								<label style="margin-right: 5px">Period From</label>
+								<img src="img/imgErrorBlank.gif" alt="">
+								<span class="st-error-msg"></span>
+							</div>
+							<div class="st-input-area">
+								<input id="headerPeriodFrom" class="print-field form-control" type="text" value="" placeholder="01-DEC-2018" style="text-align:right">
+							</div>
+						</div>
+						<div class="eachfield" style="float:left">
+							<div class="st-label-area" style='margin-left:50px'>
+								<label style="margin-right: 5px">Period To</label>
+								<img src="img/imgErrorBlank.gif" alt="">
+								<span class="st-error-msg"></span>
+							</div>
+							<div class="st-input-area">
+								<input id="headerPeriodTo" class="print-field form-control" type="text" value="" placeholder="31-DEC-2018" style="text-align:right">
+							</div>
+						</div>
+					</div>
+				</div>
+	
+				<div style="width:100%;float:left">
+					<div id="divEmployeeDetail" style="margin-top:25px;margin-bottom:10px;float:left;width:70%;display:table;margin-left:15%">
+						<div style='display:table-row'>
+							<div style='display:table-cell'>
+								<div class="st-eachfield st-row">
+									<div class="st-label-area">
+										<label style="margin-right: 5px">Employee</label>
+										<img src="img/imgErrorBlank.gif" alt="">
+										<span class="st-error-msg"></span>
+									</div>
+									<div class="st-input-area">
+										<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates">
+									</div>
+								</div>
+							</div>
+							<div style='display:table-cell;float:right'>
+								<div class="st-eachfield st-row">
+									<div class="st-label-area">
+										<label style="margin-right: 5px">Gross Pay</label>
+										<img src="img/imgErrorBlank.gif" alt="">
+										<span class="st-error-msg"></span>
+									</div>
+									<div class="st-input-area">
+										<span class="print-field" id="grossPay">MYR 0.00</span>
+									</div>
+								</div>
+							</div>
+						</div>
+	
+						<div style='display:table-row'>
+							<div style='display:table-cell'>
+								<div class="st-eachfield st-row">
+									<div class="st-label-area">
+										<label style="margin-right: 5px">Designation</label>
+										<img src="img/imgErrorBlank.gif" alt="">
+										<span class="st-error-msg"></span>
+									</div>
+									<div class="st-input-area">
+										<input id="headerDesignation" class="print-field form-control" type="text" value="" placeholder="Programmer">
+									</div>
+								</div>
+							</div>
+							<div style='display:table-cell;float:right'>
+								<div class="st-eachfield st-row">
+									<div class="st-label-area">
+										<label style="margin-right: 5px">Total Deduction</label>
+										<img src="img/imgErrorBlank.gif" alt="">
+										<span class="st-error-msg"></span>
+									</div>
+									<div class="st-input-area">
+										<span class="print-field" id="totalDeduction">MYR 0.00</span>
+										<span style="display:none" id="totalOther">MYR 0.00</span>
+									</div>
+								</div>
+							</div>
+						</div>
+	
+						<div style='display:table-row'>
+							<div style='display:table-cell'>
+								<div class="st-eachfield st-row">
+									<div class="st-label-area">
+										<label style="margin-right: 5px">Net Pay</label>
+										<img src="img/imgErrorBlank.gif" alt="">
+										<span class="st-error-msg"></span>
+									</div>
+									<div class="st-input-area">
+										<span class="print-field" id="netPay">MYR 0.00</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div style="float:left;margin-top:25px;display:block;width:100%"></div>
+	
+				<div style='float:left;width:90%;margin-left:5%;margin-top:10px;'>
+					<div style="float:left;display:table;width:100%;border-spacing:20px">
+						<div style="display:table-row;width:100%">
+							<div id="divMasterEarn" style="display:table-cell;width:50%">
+								<div id='divEarning'></div>
+							</div>
+							<div id="divMasterDeduct" style="display:table-cell">
+								<div id='divDeduction'></div>
+							</div>
+						</div>
+
+						<div style="display:table-row">
+							<div style="display:table-cell">
+							</div>
+							<div style="display:table-cell">
+								<div id="divMasterOther">
+									<div id='divOther'></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+	
+				<div id="dialogSalaryTrx" style="display:none;">
+					<div id="dialogPayslip"></div>
+				</div>
+			</div>
+		</main>
+
+		
+		<script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="lib/popper.min.js"></script>
+		<script type="text/javascript" src="lib/bootstrap-4.1.1/dist/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="lib/bxslider-4-4.2.12/dist/jquery.bxslider.js"></script>
+		<script type="text/javascript" src="lib/datePicker-master/js/datepicker.js"></script>
+		<script type="text/javascript" src="lib/nicEdit/nicEdit.js"></script>
+		<script type="text/javascript" src="lib/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
+
+		<script type='text/javascript' src='js/editablegrid-master/editablegrid.js'></script>
+		<script type='text/javascript' src='js/editablegrid-master/editablegrid_charts.js'></script>
+		<script type='text/javascript' src='js/editablegrid-master/editablegrid_charts_ofc.js'></script>
+		<script type='text/javascript' src='js/editablegrid-master/editablegrid_editors.js'></script>
+		<script type='text/javascript' src='js/editablegrid-master/editablegrid_renderers.js'></script>
+		<script type='text/javascript' src='js/editablegrid-master/editablegrid_utils.js'></script>
+		<script type='text/javascript' src='js/editablegrid-master/editablegrid_validators.js'></script>
+		
+		<script type="text/javascript" src="lib/UiUtil.js"></script>
+		<script type="text/javascript" src="lib/UiForm.js"></script>   
+		<script type="text/javascript" src="lib/UiGrid.js"></script>   
+		<script type='text/javascript'>
+			function startDialogWait(){};
+			function stopDialogWait() {};
+			function drawSalarySlipScreen() {
+					UiUtil.StorePrevObj("salarySlipFormPrevObj", oneSlip);
+					var datasetTrx = UiUtil.GetVarByJsonPath(oneSlip, 'Earnings');
+					dontDisplaySeq(datasetTrx.dataset);
+					datasetTrx = UiUtil.GetVarByJsonPath(oneSlip, 'Deductions');
+					dontDisplaySeq(datasetTrx.dataset);
+					datasetTrx = UiUtil.GetVarByJsonPath(oneSlip, 'Others');
+					dontDisplaySeq(datasetTrx.dataset);
+
+					var strCompany = UiUtil.GetVarByJsonPath(oneSlip, 'Company').data;
+					var strPeriodFrom = removeTime(UiUtil.GetVarByJsonPath(oneSlip, 'Period From').data);
+					var strPeriodTo = removeTime(UiUtil.GetVarByJsonPath(oneSlip, 'Period To').data);
+					var strEmployee = UiUtil.GetVarByJsonPath(oneSlip, 'Employee').data;
+					var strDesignation = UiUtil.GetVarByJsonPath(oneSlip, 'Designation').data;
+					var strTitle = $('title').html() + ' - ' + strEmployee + '';
+
+					$('#headerCompany').text(strCompany);
+					$('#headerPeriodFrom').text(strPeriodFrom);
+					$('#headerPeriodTo').text(strPeriodTo);
+					$('#headerEmployee').text(strEmployee);
+					$('#headerDesignation').text(strDesignation);
+					$('title').html(strTitle);
+
+					var earnings = UiUtil.GetVarByJsonPath(oneSlip, "Earnings");
+					var deductions = UiUtil.GetVarByJsonPath(oneSlip, "Deductions");
+					var others = UiUtil.GetVarByJsonPath(oneSlip, "Others");
+					edtbgEarning = createSalaryTrxGrid('Earnings', earnings, 'divMasterEarn', 'divEarning', 'tableEarning');
+					edtbgDeduction = createSalaryTrxGrid('Deductions', deductions, 'divMasterDeduct', 'divDeduction', 'tableDeduction');
+					edtbgOther = createSalaryTrxGrid('Others', others, 'divMasterOther', 'divOther', 'tableOther');
+					totalUpSalaryTrx(edtbgEarning.inputObj, "Earnings");
+					totalUpSalaryTrx(edtbgDeduction.inputObj, "Deductions");
+					totalUpSalaryTrx(edtbgOther.inputObj, "Others");
+					ComputeNetPay();
+					ComputeEmployerCost();
+					$("#divPayslip").css("display", "");
+					var statusMsg = localStorage.getItem("salarySlipFormMsg");
+					UiUtil.DisplayMsg('info', statusMsg);
+			};
+			var ComputeNetPay = function() {
+				var strTotalEarning = $('#grossPay').html();
+				var strTotalDeduction = $('#totalDeduction').html();
+
+				var numTotalEarning = Str2Num(strTotalEarning);
+				var numTotalDeduction = Str2Num(strTotalDeduction);
+
+				var numNetPay = numTotalEarning - numTotalDeduction;
+				numNetPay = DecimalPlace(numNetPay);
+				var strNetPay = strCurrency + " " + NumberWithComma(numNetPay);
+				$('#netPay').html(strNetPay);
+				UiUtil.SetValByJsonPath(oneSlip, "Net Pay", strNetPay);
+
+				var numRoundNetPay = Math.ceil(numNetPay * 10) / 10;
+				numRoundNetPay = DecimalPlace(numNetPay);
+				var strRoundNetPay = strCurrency + " " + NumberWithComma(numRoundNetPay);
+				$('#roundedNetPay').html(strRoundNetPay);
+			};
+			var ComputeEmployerCost = function() {
+				var strTotalEarning = $('#grossPay').html();
+				var strTotalOther = $('#totalOther').html();
+
+				var numTotalEarning = Str2Num(strTotalEarning);
+				var numTotalOther = Str2Num(strTotalOther);
+
+				var numEmployerCost = numTotalEarning + numTotalOther;
+				numEmployerCost = DecimalPlace(numEmployerCost);
+				var strEmployerCost = strCurrency + " " + NumberWithComma(numEmployerCost);
+				UiUtil.SetValByJsonPath(oneSlip, "Employer Cost", strEmployerCost);
+			};
+			var createSalarySlipScreen = function() {
+				startDialogWait();
+				var requestParam = {};
+				UiUtil.BeAction(requestParam, "employee", "PayslipAdhoc", function(respond) {
+					oneEmployee = respond.dataset[0];
+					requestParam = {};
+					UiUtil.BeAction(requestParam, "payslip", "PayslipAdhoc", function(respond) {
+						oneSlip = respond.dataset[0];
+						//employeeInfoArea.parkObject("employeeInfoDiv", oneEmployee, "Employee Information");
+						drawSalarySlipScreen();
+					}
+					, undefined
+					);
+				}
+				, undefined
+				);
+			};
+			var dontDisplaySeq = function(aryTrx) {
+				for(var cntr in aryTrx) {
+					var eachTrx = aryTrx[cntr];	
+					var eachSeq = UiUtil.GetVarByJsonPath(eachTrx, 'Sequence');
+					eachSeq.dontDisplay = true;
+					var eachSeq = UiUtil.GetVarByJsonPath(eachTrx, 'System Generated');
+					eachSeq.dontDisplay = true;
+				}
+			};
+			var createSalaryTrxGrid = function(aType, aData, aMasterDiv, aDiv, aTableId) {
+				var colDisplay = [];
+				UiGrid.defineGridHeader(colDisplay, 'checkbox', 'Chose', undefined, undefined, undefined);
+				UiGrid.defineGridHeader(colDisplay, 'string', 'objectId', 'objectId', function(jsObj) { return(MakeObjData(jsObj.objectId)); }, undefined);
+				UiGrid.defineGridHeader(colDisplay, 'string', 'clasz', 'clasz', function(jsObj) { return(MakeObjData(jsObj.clasz)); }, undefined);
+				UiGrid.defineGridHeader(colDisplay, 'string', aType, 'Descr', undefined, undefined);
+				UiGrid.defineGridHeader(colDisplay, 'string', 'Amount', 'Amount', undefined, function(aData) { return(FormatMoney(aData));});
+
+				var gridSalaryTrx = new EditableGrid("trId" + aType);
+				gridSalaryTrx.inputObj = aData;
+				gridSalaryTrx.colDisplay = colDisplay;
+				setupSalaryTrxGrid(gridSalaryTrx, colDisplay, aData, aDiv, aTableId);
+				if (aType !== "Others") {
+					setupIconMenu(aMasterDiv, aType);
+				}
+				return(gridSalaryTrx);
+			};
+			var setupSalaryTrxGrid = function(gridSalaryTrx, colDisplay, aData, aDiv, aTableId) {
+				var aryToSort = aData.dataset;
+				aryToSort.sort(function(left, right) {
+					var seqLeft = Number(UiUtil.GetVarByJsonPath(left, 'Sequence').data);
+					var seqRight = Number(UiUtil.GetVarByJsonPath(right, 'Sequence').data);
+					return seqLeft > seqRight;
+				});
+
+				UiGrid.populateGrid(gridSalaryTrx, colDisplay, aDiv, aData, aTableId);
+				$(gridSalaryTrx.table).on("dblclick", "tr", function(event) {
+					if (this.rowIndex === 0) {
+						return;
+					}
+					if ($(event.target).attr('type') === 'checkbox') {
+						return;
+					}
+					if ($(event.target).children('input').attr('type') === 'checkbox') {
+						return;
+					}
+					var clickIdx = $(event.currentTarget.parentElement.parentElement.rows).index(event.currentTarget); // in row array, return the index with value of currentTarget
+					UiGrid.CheckAllRow(gridSalaryTrx, false);
+					UiGrid.CheckAtRow(gridSalaryTrx, clickIdx, true);
+					if (event.currentTarget.parentElement.parentElement.id === 'tableEarning') {
+						editSalaryTrx('Earnings');
+					} else if (event.currentTarget.parentElement.parentElement.id === 'tableDeduction') {
+						editSalaryTrx('Deductions');
+					} else {
+						editSalaryTrx('Others');
+					}
+				});
+				return(gridSalaryTrx);
+			};
+			var okDeleteSalaryTrx = function(paramId, aType, aEdtbg) {
+				return function() {
+					for(var cntrRow = aEdtbg.table.rows.length - 1; cntrRow > 0; cntrRow--) { 
+						var row = aEdtbg.table.rows[cntrRow];
+						var aryInput = row.cells[positionCheckbox].getElementsByTagName('input');
+						if (aryInput.length > 0) {
+							if (aryInput[0].checked) {
+								//aEdtbg.inputObj.dataset.splice(cntrRow - 1, 1);
+								var aryTrx = UiUtil.GetAryByJsonPath(aEdtbg.inputObj);
+								var oneTrx = aryTrx[cntrRow - 1];
+								oneTrx.delete = true;
+							}
+						}
+					};
+					setupSalaryTrxGrid(aEdtbg, aEdtbg.colDisplay, aEdtbg.inputObj, aEdtbg.currentContainerid, aEdtbg.table.id);
+					totalUpSalaryTrx(aEdtbg.inputObj, aType);
+					ComputeNetPay();
+					ComputeEmployerCost();
+				};
+			};
+			var deleteSalaryTrx = function(aType) {
+				var eod = getEarningOrDeduction(aType, "Delete");
+				var okDeleteRq = okDeleteSalaryTrx("dialogSalaryTrx", aType, eod.netEdtbg);
+				var cancelRq = cancelSalaryTrx(eod.netEdtbg);
+				UiGrid.onDelete(eod.netEdtbg, "SalarySlipForm", okDeleteRq, cancelRq);
+			};
+			var moveDown = function(aType) {
+				var eod = getEarningOrDeduction(aType, "");
+				var edtbg = eod.netEdtbg;
+				var objData = edtbg.inputObj;
+				var aryData = objData.dataset;
+				var aryIdx = UiGrid.getAllCheckRow(edtbg);
+				if (aryIdx.length === 0) {
+					startDialogInfo('Error', "There is no record selected, please tick the checkbox at the " + aType + " table first!", UiGrid.doNothing);
+				} else {
+					aryIdx.sort(function(left, right) {
+						return left < right; // sort descending
+					});
+					for(var cntr in aryIdx) {
+						var idxTable = aryIdx[cntr];
+						var idxData = idxTable - 1;
+						var data = UiUtil.GetVarByJsonPath(aryData[idxData], 'Sequence');
+						if (idxData + 1 >= aryData.length) {
+							startDialogInfo('Error', "Transaction is already down, cannot move down anymore");
+							break;
+						} else {
+							var dataDown = UiUtil.GetVarByJsonPath(aryData[idxData + 1], 'Sequence');
+							var tmp = dataDown.data;
+							dataDown.data = data.data;
+							data.data = tmp;
+
+							var temp = aryData[idxData];
+							aryData[idxData] = aryData[idxData + 1];
+							aryData[idxData + 1] = temp;
+						}
+					}
+					setupSalaryTrxGrid(edtbg, edtbg.colDisplay, edtbg.inputObj, edtbg.currentContainerid, edtbg.table.id);
+				}
+			};
+			var moveUp = function(aType) {
+				var eod = getEarningOrDeduction(aType, "");
+				var edtbg = eod.netEdtbg;
+				var objData = edtbg.inputObj;
+				var aryData = objData.dataset;
+				var aryIdx = UiGrid.getAllCheckRow(edtbg);
+				if (aryIdx.length === 0) {
+					startDialogInfo('Error', "There is no record selected, please tick the checkbox at the " + aType + " table first!", UiGrid.doNothing);
+				} else {
+					aryIdx.sort(function(left, right) {
+						return left > right; // sort ascending 
+					});
+					for(var cntr in aryIdx) {
+						var idxTable = aryIdx[cntr];
+						var idxData = idxTable - 1;
+						var data = UiUtil.GetVarByJsonPath(aryData[idxData], 'Sequence');
+						if (idxData - 1 < 0 ) {
+							startDialogInfo('Error', "Transaction is already up, cannot move up anymore");
+							break;
+						} else {
+							var dataUp = UiUtil.GetVarByJsonPath(aryData[idxData - 1], 'Sequence');
+							var tmp = dataUp.data;
+							dataUp.data = data.data;
+							data.data = tmp;
+
+							var temp = aryData[idxData];
+							aryData[idxData] = aryData[idxData - 1];
+							aryData[idxData - 1] = temp;
+						}
+					}
+					setupSalaryTrxGrid(edtbg, edtbg.colDisplay, edtbg.inputObj, edtbg.currentContainerid, edtbg.table.id);
+				}
+			};
+			var okEditSalaryTrx = function(paramId, newObject, aType, aEdtbg) {
+				return function() {
+					setupSalaryTrxGrid(aEdtbg, aEdtbg.colDisplay, aEdtbg.inputObj, aEdtbg.currentContainerid, aEdtbg.table.id);
+					totalUpSalaryTrx(aEdtbg.inputObj, aType);
+					ComputeNetPay();
+					ComputeEmployerCost();
+				};
+			};
+			var editSalaryTrx = function(aType) {
+				var eod = getEarningOrDeduction(aType, "Edit");
+				var idx = UiGrid.getFirstCheckRow(eod.netEdtbg);
+				if (idx === undefined) {
+					startDialogInfo('Error', "There is no record selected, please tick the checkbox at the " + aType + " table first!", UiGrid.doNothing);
+				} else {
+					var toEdit = eod.netEdtbg.inputObj.dataset[idx - 1];
+					var okNewRq = okEditSalaryTrx("dialogSalaryTrx", toEdit, aType, eod.netEdtbg);
+					var cancelRq = cancelSalaryTrx(eod.netEdtbg);
+					processSalaryTrx(toEdit, aType, okNewRq, cancelRq, eod.netTitle);
+				}
+			};
+			var okCreateSalaryTrx = function(newObject, aType, aEdtbg) {
+				return function() {
+					aEdtbg.inputObj.dataset.push(newObject);
+					setupSalaryTrxGrid(aEdtbg, aEdtbg.colDisplay, aEdtbg.inputObj, aEdtbg.currentContainerid, aEdtbg.table.id);
+					totalUpSalaryTrx(aEdtbg.inputObj, aType);
+					ComputeNetPay();
+					ComputeEmployerCost();
+				};
+			};
+			var getNextSeq = function(aTrxEdtbg) {
+				var nextSeq = -1;
+				aTrxEdtbg.inputObj.dataset;
+				for (var cntr = 0; cntr < aTrxEdtbg.inputObj.dataset.length; cntr++) {
+					var trx = aTrxEdtbg.inputObj.dataset[cntr];
+					var seq = UiUtil.GetVarByJsonPath(trx, 'Sequence').data;
+					if (seq > nextSeq) {
+						nextSeq = seq;
+					}
+				}
+				return(parseInt(nextSeq, 10) + 1);
+			};
+			var newSalaryTrx = function(aType) {
+				startDialogWait();
+				var requestParam = { targetClasz: oneSlip.clasz, trxType: aType };
+				UiUtil.BeAction(requestParam, "newField", "SalarySlipForm", function(respond) {
+					var eod = getEarningOrDeduction(aType, "New");
+					var newObject = respond.dataset[0];
+					var seqObject = UiUtil.GetVarByJsonPath(newObject, 'Sequence');
+					seqObject.dontDisplay = true;
+					seqObject.data = getNextSeq(eod.netEdtbg);
+					var seqObject = UiUtil.GetVarByJsonPath(newObject, 'System Generated');
+					seqObject.dontDisplay = true;
+					seqObject.data = false; // this is user generated
+
+					var okNewRq = okCreateSalaryTrx(newObject, aType, eod.netEdtbg);
+					var cancelRq = cancelSalaryTrx(eod.netEdtbg);
+					processSalaryTrx(newObject, aType, okNewRq, cancelRq, eod.netTitle);
+				}
+				, undefined
+				);
+			};
+			var strCurrency = "MYR";
+			var cancelSalaryTrx = function(aEdtbg) {
+				return function() {
+					UiGrid.CheckAllRow(aEdtbg, false);
+				};
+			};
+			var processSalaryTrx = function(newObject, aType, okNewRq, cancelRq, netTitle) {
+				$("#dialogPayslip").empty();
+				dialogArea.displayObject("dialogPayslip", newObject);
+				$($("#dialogPayslip").find('fieldset')[2]).remove();
+				$($("#dialogPayslip").find('fieldset')[0]).remove();
+				$($("#dialogPayslip").find('legend')[0]).remove();
+				$("#dialogPayslip").find("[id$=_dl]").css('width', '150px');
+				$("#dialogPayslip").find(".st-label-area").css('width', '20%');
+				$("#dialogPayslip").find("label:contains('Descr')").text(aType);
+				dlgWidget = $('<div></div>').append($($('#' + "dialogPayslip").find('.st-fs01')[0]).children());
+				showDialogOkCancel(netTitle, dlgWidget, okNewRq, cancelRq);
+			};
+			var getEarningOrDeduction = function(aType, aAction) {
+				var netEdtbg;
+				var netTitle;
+				if (aType === 'Earnings') {
+					netTitle = aAction + ' Earning';
+					netEdtbg = edtbgEarning;
+				} else if (aType === "Deductions") {
+					netTitle = aAction + ' Deduction';
+					netEdtbg = edtbgDeduction;
+				} else {
+					netTitle = aAction + ' Other';
+					netEdtbg = edtbgOther;
+				}
+				var result = {};
+				result.netTitle = netTitle;
+				result.netEdtbg = netEdtbg;
+				return(result);
+			};
+			var setupIconMenu = function(aContent, aType) {
+				var idIconMenu = "iim_" + aContent;
+				if ($('#iim_' + aContent).length === 0) {
+					var elemIconMenu = $('<div/>').html("<div id='" + idIconMenu + "' style='float:right;' class='crud-menu'>").contents()[0];
+					var elemUp = $('<div/>').html("<a class='crud-menu' onclick='moveUp(\"" + aType + "\");'><i class='icons icon-up'></i>Up</a>").contents()[0];
+					var elemDown = $('<div/>').html("<a class='crud-menu' onclick='moveDown(\"" + aType + "\");'><i class='icons icon-down'></i>Down</a>").contents()[0];
+					var elemDelete = $('<div/>').html("<a class='crud-menu' style='border-left:none' onclick='deleteSalaryTrx(\"" + aType + "\");'><i class='icons icon-trash'></i>Delete</a>").contents()[0];
+					var elemEdit = $('<div/>').html("<a class='crud-menu' onclick='editSalaryTrx(\"" + aType + "\");'><i class='icons icon-pencil'></i>Edit</a>").contents()[0];
+					var elemCreate = $('<div/>').html("<a class='crud-menu' onclick='newSalaryTrx(\"" + aType + "\");'><i class='icons icon-plus'></i>New</a>").contents()[0];
+					elemIconMenu.appendChild(elemDelete);
+					elemIconMenu.appendChild(elemEdit);
+					elemIconMenu.appendChild(elemCreate);
+					elemIconMenu.appendChild(elemDown);
+					elemIconMenu.appendChild(elemUp);
+
+					$('#' + aContent).prepend(elemIconMenu);
+				}
+			};
+			var totalUpSalaryTrx = function(aTrxSet, aType) {
+				if (aType === 'Earnings' || aType === 'Deductions' || aType === 'Others') {
+					var result = 0.0;
+					for(var cntr = 0; cntr < aTrxSet.dataset.length; cntr++) {
+						var eachTrx = aTrxSet.dataset[cntr];
+						if (UiUtil.NotUndefineNotNull(eachTrx.delete)) continue;
+						var strAmount = UiUtil.GetVarByJsonPath(eachTrx, 'Amount');
+						var numAmount = Str2Num(strAmount.data);
+						result = result + numAmount;
+					}
+					result = DecimalPlace(result);
+					result = NumberWithComma(result);
+					var totalAmount = strCurrency + " " + result;
+					if (aType === 'Earnings') {
+						$('#grossPay').html(totalAmount);
+					} else if (aType === 'Deductions') {
+						$('#totalDeduction').html(totalAmount);
+					} else if (aType === 'Others') {
+						$('#totalOther').html(totalAmount);
+					}
+				}
+			};
+			var printSalarySlip = function() {
+				window.print();
+			};
+			var recomputeSalarySlip = function() {
+				startDialogWait();
+				var requestParam = {salarySlip: JSON.stringify(oneSlip) };
+				UiUtil.BeAction(requestParam, "recompute", "adhocPayslip", function(jsonObject) {
+					oneSlip = UiUtil.GetAryByJsonPath(jsonObject, "")[0];
+					UiUtil.StoreObj("salarySlipFormSaved", oneSlip);
+					drawSalarySlipScreen();
+				}
+				, undefined
+				);
+			};
+			var APP_TITLE = 'Adhoc Payslip';
+			var LOGIN_ID = localStorage.getItem("loginId");
+			var MODULE_NAME = APP_TITLE;
+			var COMPANY_NAME = localStorage.getItem("company");
+			var APP_LOGO = 'img/employees.png';
+
+			var payslipOid;
+			var payslipClasz;
+			var oneSlip;
+			var oneEmployee;
+
+			var dialogArea;
+			var employeeInfoArea;
+			var edtbgEarning;
+			var edtbgDeduction;
+			window.onload = function() {
+				/*
+				$('title').html(APP_TITLE);
+				$('#loginId').html(LOGIN_ID);
+				$('#moduleName').html(MODULE_NAME);
+				$('#companyName').html(COMPANY_NAME);
+				$('#headerLogo')[0].src = APP_LOGO;
+				*/
+
+				payslipOid = localStorage.getItem('payslipOid');
+				employeeInfoArea = new UiForm('employeeInfoDiv');
+				createSalarySlipScreen(function() {});
+				dialogArea = new UiForm('dialogArea');
+			} ;
+		</script>
+	</body>
+</html>

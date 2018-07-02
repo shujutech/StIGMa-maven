@@ -1,13 +1,15 @@
-var CLS_EACHFIELD = "eachfield";
-var CLS_ROW = "row";
+var CLS_EACHFIELD = "st-eachfield";
+var CLS_ROW = "st-row";
 var CLS_EACHFIELD_ROW = CLS_EACHFIELD + ' ' + CLS_ROW;
-var CLS_LABEL_AREA = "label-area";
-var CLS_INPUT_AREA = "input-area";
-var CLS_ERROR_MSG = "error-msg";
-var CLS_LABEL = "label-txt";
+var CLS_LABEL_AREA = "st-label-area";
+var CLS_INPUT_AREA = "st-input-area";
+var CLS_ERROR_MSG = "st-error-msg";
+var CLS_LABEL = "st-label-txt";
 var CLS_INPUT = "form-control";
-var CLS_ARRAY_WIDGET = "array-widget";
-var CLS_ARRAY_BTN = "array-btn";
+var CLS_CHECKBOX = "";
+var CLS_FIELDSET= "st-fs01";
+var CLS_ARRAY_WIDGET = "st-array-widget";
+var CLS_ARRAY_BTN = "st-array-btn";
 
 UiForm.prototype.rawObj = {};
 UiForm.prototype.obj2Edit = {};
@@ -147,7 +149,7 @@ UiForm.prototype.displayUiForm = function(aLocationId, aObj2Edit, aIdx, aBaseUrl
 	btnSetTop.appendChild(btnSaveTop);
 	masterDiv.appendChild(btnSetTop);
 
-	var setSeqNum = {value: '', prefix: '', startNum: 0, cls: 'fs01'}; // for numbering fieldset, uses object to for pass by ref
+	var setSeqNum = {value: '', prefix: '', startNum: 0, cls: CLS_FIELDSET}; // for numbering fieldset, uses object to for pass by ref
 	var childSet = this.createChildSet(masterDiv, datasetName, false, UiForm.plusOne(setSeqNum));
 	var avoidRecursive = [];
 	avoidRecursive.push({clasz: this.obj2Edit.clasz, Oid: this.obj2Edit.objectId});
@@ -479,7 +481,7 @@ UiForm.prototype.createChildSet = function(masterSet, setName, isArray, seqNum) 
 	if (typeof seqNum !== 'undefined' && seqNum !== null) $(childSet).addClass(seqNum.cls);
 	if (isArray) {
 		var aryCtrl = document.createElement('div');
-		aryCtrl.setAttribute('id', 'aryctrl');
+		aryCtrl.setAttribute('id', 'st-aryctrl');
 		aryCtrl.setAttribute('class', CLS_ARRAY_WIDGET);
 
 		var spNext= document.createElement('span');
@@ -518,9 +520,9 @@ UiForm.prototype.setupAryCtrlButton = function(aTargetField, aFieldsetTitle, aSl
 	var setMaster = UiUtil.GetActiveSlideElement(this.locationId);
 	var setChild = $(setMaster).find('legend').filter(':contains("' + aFieldsetTitle + '")');
 	setChild = $(setChild).parent()[0];
-	var btn1 = $(setChild).children('#aryctrl').children('[id^=newbtn]');
-	var btn2 = $(setChild).children('#aryctrl').children('[id^=deletebtn]');
-	var btn3 = $(setChild).children('#aryctrl').children('[id^=nextbtn]');
+	var btn1 = $(setChild).children('#st-aryctrl').children('[id^=newbtn]');
+	var btn2 = $(setChild).children('#st-aryctrl').children('[id^=deletebtn]');
+	var btn3 = $(setChild).children('#st-aryctrl').children('[id^=nextbtn]');
 	var totalMember = 0;
 	for (var cntr = 0; cntr < aTargetField.dataset.length; cntr++) {
 		if (aTargetField.dataset[cntr].delete === undefined) {
@@ -651,7 +653,7 @@ UiForm.prototype.createButton = function(btnLabel, btnId) {
 };
 UiForm.prototype.createCheckbox = function(displayLabel, aValue) {
 	var inputTxt = document.createElement("input");
-	inputTxt.setAttribute("class", CLS_INPUT);
+	inputTxt.setAttribute("class", CLS_CHECKBOX);
 	inputTxt.setAttribute("type", "checkbox");
 	inputTxt.style.marginLeft = "0px";
 	inputTxt.style.minHeight = "15px";
@@ -697,11 +699,11 @@ UiForm.prototype.createPhone = function(displayLabel, jsonMobile, listNdc, mpBas
 	//listCountry.setAttribute("onblur", "UiForm.changePhone('" + jsonPath + "' , this)");
 
 	var spCountry = document.createElement("span");
-	spCountry.setAttribute("class", "symbol");
+	spCountry.setAttribute("class", "st-symbol");
 	spCountry.appendChild(listCountry);
 
 	var spNdc = document.createElement("span");
-	spNdc.setAttribute("class", "symbol");
+	spNdc.setAttribute("class", "st-symbol");
 	spNdc.appendChild(listNdc);
 	//listNdc.setAttribute("onchange", "UiForm.changePhone('" + jsonPath + "' , this)");
 	//listNdc.setAttribute("onblur", "UiForm.changePhone('" + jsonPath + "' , this)");
@@ -1249,7 +1251,7 @@ UiForm.prototype.sendDeleteFieldObject = function(aThis, fieldsetTitle, basePath
 			var divParent = $(setMaster).find('legend').filter(':contains("' + fieldsetTitle +'")').parent()[0];
 			var divChild = $(setMaster).find('legend').filter(':contains("' + fieldsetTitle +'")').parent().children();
 			for(var cntr = 0; cntr < divChild.length; cntr++) { 
-				if (divChild[cntr].tagName !== 'LEGEND' && divChild[cntr].id !== 'aryctrl') { 
+				if (divChild[cntr].tagName !== 'LEGEND' && divChild[cntr].id !== 'st-aryctrl') { 
 					divParent.removeChild(divChild[cntr]);
 				}
 			}
@@ -1306,7 +1308,7 @@ UiForm.prototype.mouseAtFs = function(fs) {
 };
 UiForm.prototype.boldFsHover = function() {
 	var thisUiForm = this;
-	$('fieldset .fs01').bind('mousemove', function(evt) {
+	$('fieldset .' + CLS_FIELDSET).bind('mousemove', function(evt) {
 		var newMouseAt = thisUiForm.mouseAtFs(evt.target);
 		if (thisUiForm.getLgndStr(newMouseAt) !== thisUiForm.getLgndStr(fsHover)) {
 			if (fsHover !== undefined && fsHover !== null) {
