@@ -1,27 +1,25 @@
 <!DOCTYPE HTML>
 <html>
 <head> 
-    <title>Getting Started: Serving Web Content</title> 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link href="/lib/bootstrap-4.1.1/dist/css/bootstrap.min.css" rel="stylesheet">  
-		<link href="/css/st-common.css" rel="stylesheet">  
-		<link rel="stylesheet" href="/lib/bxslider-4-4.2.12/dist/jquery.bxslider.css">
-		<link rel="stylesheet" href="/lib/datePicker-master/css/datepicker.css">
+		<title>Getting Started: Serving Web Content</title> 
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link href="lib/bootstrap-4.1.1/dist/css/bootstrap.min.css" rel="stylesheet">	
+		<link rel="stylesheet" href="lib/datePicker-master/css/datepicker.css">
+		<link href="css/st-common.css" rel="stylesheet">	
 </head>
 	<body>
-	    <div id="screenDiv"></div>
+			<div id="screenDiv"></div>
 
-			<script src="/lib/jquery-3.3.1.min.js"></script>
-			<script src="/lib/popper.min.js"></script>
-			<script src="/lib/bootstrap-4.1.1/dist/js/bootstrap.min.js"></script>
-			<script src="/lib/bxslider-4-4.2.12/dist/jquery.bxslider.js"></script>
-			<script src="/lib/datePicker-master/js/datepicker.js"></script>
-			<script src="/lib/nicEdit/nicEdit.js"></script>
-			<script src="/lib/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
+			<script src="lib/jquery-3.3.1.min.js"></script>
+			<script src="lib/popper.min.js"></script>
+			<script src="lib/bootstrap-4.1.1/dist/js/bootstrap.min.js"></script>
+			<script src="lib/datePicker-master/js/datepicker.js"></script>
+			<script src="lib/nicEdit/nicEdit.js"></script>
+			<script src="lib/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
 			
-		  <script src="/lib/UiUtil.js"></script>
-		  <script src="/lib/UiForm.js"></script>   
-		  <script src="/lib/Js2StJson.js"></script>
+			<script src="lib/UiUtil.js"></script>
+			<script src="lib/UiForm.js"></script>	 
+			<script src="lib/Js2StJson.js"></script>
 
 			<script>
 				var objRealWorld = {"id":null,"productCode":"TPN01","shortDescription":"Allianz Life Taipan Account","longDescription":"Taipan","productDescription":"Allianz Life Taipan Account","productType":"UL","supplementaryFollowBasic":"1","ageCalculationBasis":"ANEB","priorityForPremiumMatching":"0","manjaCareApplicable":"","masterPolicyNo":"","riskBackdating":"180","rebate":"","advancePremiumAllowable":"","policyYear":"","okuInfoRequired":"","masterPolicyRequired":"","ceiliExamRequired":"0","perLifeGrouping":"","currency":"MYR","guranteedCoupon":"","toleranceAmountAllowable":"","requirementChannelType":"","stampDuty":"SHTI","serviceTaxExempted":"1","policyScheduleCertTemplate":"0"};
@@ -32,7 +30,7 @@
 				objForDisplay = {"objectId":13,"clasz":"biz.shujutech.o2rm.Person","data":{"Name":{"data":"Bill Gates","updateable":"false","size":"64"},"Alias":{"data":"","updateable":"false","size":"32"},"Birth Date":{"data":"12-Jan-1956","type":"date"},"Gender":{"option":{"Female":[],"Male":[]},"data":"Male","lookup":true},"Ethnic":{"option":{"Other":[],"Caucasian":[],"Malay":[],"Indian":[],"Chinese":[]},"data":"Caucasian","lookup":true},"Religion":{"option":{"Other":[],"Christian":[],"Islam":[],"Hindu":[],"Buddhist":[]},"data":"Christian","lookup":true},"Marital Status":{"option":{"Widow":[],"Divorce":[],"Single":[],"Married":[]},"data":"Married","lookup":true},"Identification":{"uimaster":true,"clasz":"biz.shujutech.o2rm.Identity","dataset":[{"clasz":"biz.shujutech.o2rm.MalaysiaIdentityCard","objectId":12,"data":{"Issuing Country":{"data":"Malaysia","changeable":"false","size":"20"},"Identity Name":{"data":"MyKad","changeable":"false","size":"32"},"Old Identity Card No":{"data":"","size":"20"},"New Identity Card No":{"data":"23535353234","updateable":"false","size":"20"}},"slideNo":0}]},"No Of Children":{"data":"1"},"Employment":{"uimaster":true,"clasz":"biz.shujutech.o2rm.Employment","dataset":[{"clasz":"biz.shujutech.o2rm.EmploymentMalaysia","objectId":13,"data":{"Start Date":{"data":"01-Jan-2018","type":"date"},"End Date":{"data":"","type":"date"},"Employment Type":{"option":{"Intern":[],"Contract":[],"Permanent":[]},"data":"Intern","lookup":true},"Designation":{"data":"Programmer","size":"32"},"Salary":{"clasz":"biz.shujutech.o2rm.Salary","objectId":-1,"data":{"Salary":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 8,000.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Salary Period":{"option":{"Hourly":[],"Biweekly":[],"Weekly":[],"Monthly":[]},"data":"Monthly","lookup":true}}},"Epf Calculator":{"option":{"No EPF Contribution":[],"2017: 11% Employee":[],"As per current statutory regulation":[]},"data":"As per current statutory regulation","lookup":true},"Epf No":{"data":"2324294","size":"16"},"Tax No":{"data":"23424332","size":"16"},"Tax Branch":{"data":"23424234","size":"16"},"Socso No":{"data":"242343422","size":"16"},"New Socso Member":{"data":"false","type":"boolean"},"Remark":{"data":"","type":"html"}},"slideNo":0},{"clasz":"biz.shujutech.o2rm.EmploymentMalaysia","objectId":14,"data":{"Start Date":{"data":"13-Jun-2018","type":"date"},"End Date":{"data":"","type":"date"},"Employment Type":{"option":{"Intern":[],"Contract":[],"Permanent":[]},"data":"Contract","lookup":true},"Designation":{"data":"Tester","size":"32"},"Salary":{"clasz":"biz.shujutech.o2rm.Salary","objectId":-1,"data":{"Salary":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 11,800.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Salary Period":{"option":{"Hourly":[],"Biweekly":[],"Weekly":[],"Monthly":[]},"data":"Monthly","lookup":true}}},"Epf Calculator":{"option":{"No EPF Contribution":[],"2017: 11% Employee":[],"As per current statutory regulation":[]},"data":"As per current statutory regulation","lookup":true},"Epf No":{"data":"234242","size":"16"},"Tax No":{"data":"242424","size":"16"},"Tax Branch":{"data":"242424","size":"16"},"Socso No":{"data":"22424","size":"16"},"New Socso Member":{"data":"false","type":"boolean"},"Remark":{"data":"Part time job","type":"html"}},"slideNo":1}]},"Bank Account":{"clasz":"biz.shujutech.o2rm.PersonGotBankAccount","dataset":[]},"Address":{"clasz":"biz.shujutech.o2rm.PersonGotAddr","dataset":[]},"Mobile Phone":{"clasz":"biz.shujutech.o2rm.PersonGotMobile","dataset":[]},"Email":{"clasz":"biz.shujutech.o2rm.PersonGotEmail","dataset":[{"clasz":"biz.shujutech.o2rm.PersonGotEmail","objectId":15,"data":{"Email Type":{"option":{"Work":[],"Personal":[]},"data":"Work","lookup":true},"Email":{"data":"shujutech@gmail.com","size":"40"}},"slideNo":0},{"clasz":"biz.shujutech.o2rm.PersonGotEmail","objectId":16,"data":{"Email Type":{"option":{"Work":[],"Personal":[]},"data":"Personal","lookup":true},"Email":{"data":"bill.gates@mickysoft.com","size":"40"}},"slideNo":1}]},"Telephone":{"clasz":"biz.shujutech.o2rm.PersonGotTelephone","dataset":[]},"Spouse":{"uimaster":true,"clasz":"biz.shujutech.o2rm.Spouse","data":{}},"Children":{"clasz":"biz.shujutech.o2rm.Person","dataset":[]},"Emergency Contact":{"uimaster":true,"clasz":"biz.shujutech.o2rm.PersonGotRelative","data":{}}}};
 				var screenLayout = new UiForm("screenLayout");
 				screenLayout.displayObject("screenDiv", objForDisplay, "Employee");
-			</script>		  
+			</script>			
 
 	</body>
 </html>

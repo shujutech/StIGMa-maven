@@ -6,7 +6,6 @@ var CLS_INPUT_AREA = "st-input-area";
 var CLS_ERROR_MSG = "st-error-msg";
 var CLS_LABEL = "st-label-txt";
 var CLS_INPUT = "form-control";
-var CLS_CHECKBOX = "";
 var CLS_FIELDSET= "st-fs01";
 var CLS_ARRAY_WIDGET = "st-array-widget";
 var CLS_ARRAY_BTN = "st-array-btn";
@@ -341,7 +340,7 @@ UiForm.prototype.useCustomWidget = function(aName, aValue, aSet, aBasePath) {
 				aSet.appendChild(mny);
 			}
 		} else if (aValue.type === 'boolean' ) {
-			var chkbxArea = this.createCheckbox(aName, aValue);
+			var chkbxArea = UiUtil.CreateCheckBox(aName, aValue);
 			var chkbx = chkbxArea.getElementsByTagName("input")[0];
 			chkbx.setAttribute("onchange", this.myName + ".setValueBoolean('" + targetedFqn + "', this)");
 			aSet.appendChild(chkbxArea);
@@ -650,26 +649,6 @@ UiForm.prototype.createButton = function(btnLabel, btnId) {
 	newBtn.style.width = '80px';
 	newBtn.setAttribute('id', btnId);
 	return(newBtn);
-};
-UiForm.prototype.createCheckbox = function(displayLabel, aValue) {
-	var inputTxt = document.createElement("input");
-	inputTxt.setAttribute("class", CLS_CHECKBOX);
-	inputTxt.setAttribute("type", "checkbox");
-	inputTxt.style.marginLeft = "0px";
-	inputTxt.style.minHeight = "15px";
-	inputTxt.UiForm = this;
-	if (aValue.data !== undefined) {
-		if (aValue.data === 'true') {
-			$(inputTxt).prop("checked", true);
-		} else {
-			$(inputTxt).prop("checked", false);
-		}
-	} else {
-		$(inputTxt).prop("checked", false);
-	}
-
-	var result = UiUtil.CreateTextFieldWithLabel(displayLabel, inputTxt);
-	return(result);
 };
 UiForm.prototype.createTelephone = function(displayLabel, jsonTelephone, jsonPath) {
 	var listAreaCode = UiUtil.CreateComboBox(undefined);

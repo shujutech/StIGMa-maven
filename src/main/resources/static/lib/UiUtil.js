@@ -1,13 +1,14 @@
-var CLS_EACHFIELD = "eachfield";
-var CLS_ROW = "row";
+var CLS_EACHFIELD = "st-eachfield";
+var CLS_ROW = "st-row";
 var CLS_EACHFIELD_ROW = CLS_EACHFIELD + ' ' + CLS_ROW;
-var CLS_LABEL_AREA = "label-area";
-var CLS_INPUT_AREA = "input-area";
-var CLS_ERROR_MSG = "error-msg";
-var CLS_LABEL = "label-txt";
+var CLS_LABEL_AREA = "st-label-area";
+var CLS_INPUT_AREA = "st-input-area";
 var CLS_INPUT = "form-control";
-var CLS_DATE_PICKER = "date-picker-num" + " " + CLS_INPUT;
-var CLS_COMBO_BOX = "combo-box" + " " + CLS_INPUT;
+var CLS_ERROR_MSG = "st-error-msg";
+var CLS_LABEL = "st-label-txt";
+var CLS_CHECKBOX = "st-checkbox";
+var CLS_DATE_PICKER = "st-date-picker" + " " + CLS_INPUT;
+var CLS_COMBO_BOX = "custom-select";
 
 $.jMaskGlobals.watchDataMask = true;
 
@@ -400,7 +401,8 @@ function NumberWithComma(aNum) {
   };
 })(jQuery);
 var UiUtil = {};
-UiUtil.ImgErrorBlink = "img/imgErrorBlink.gif";
+//UiUtil.ImgErrorBlink = "img/imgErrorBlink.gif";
+UiUtil.ImgErrorBlink = "img/imgErrorBlink.png";
 UiUtil.Months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 UiUtil.IsNum = function(aDgtMth) {
 	var strDgtMth = aDgtMth;
@@ -1203,6 +1205,23 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 
 	return(result);
 };
+UiUtil.CreateCheckBox = function(displayLabel, aValue) {
+	var inputTxt = document.createElement("input");
+	inputTxt.setAttribute("class", CLS_CHECKBOX);
+	inputTxt.setAttribute("type", "checkbox");
+	if (aValue.data !== undefined) {
+		if (aValue.data === 'true') {
+			$(inputTxt).prop("checked", true);
+		} else {
+			$(inputTxt).prop("checked", false);
+		}
+	} else {
+		$(inputTxt).prop("checked", false);
+	}
+
+	var result = UiUtil.CreateTextFieldWithLabel(displayLabel, inputTxt);
+	return(result);
+};
 UiUtil.IsNumeric = function(num) {
   return !isNaN(num);
 };
@@ -1654,7 +1673,6 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, jsonPath) {
 };
 UiUtil.CreateHtmlField = function(displayLabel, aValue, aFqnName) {
 	var inputTxt = document.createElement("textarea");
-	inputTxt.UiForm = this;
 	if (aFqnName !== undefined && aFqnName !== "") {
 		aFqnName = aFqnName.replace(/ /g,"_");
 		inputTxt.setAttribute("id", aFqnName);
@@ -1692,7 +1710,7 @@ UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 	for(var cntr = 0; cntr < aSliderList.length; cntr++) {
 		var eachSlider = aSliderList[cntr];
 		if ($(eachSlider).outerHeight() > largestHeight) {
-			largestHeight = $(eachSlider).outerHeight();
+			largestHeight = $(eachSlider).outerHeight() + 3;
 		}
 	}
 	
@@ -1713,6 +1731,7 @@ UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 	$(fullHeightDiv).append(aSliderList);
 	$(aMasterDiv).outerHeight(largestHeight + "px");
 	$(aMasterDiv).css("overflow", "hidden");
+	aMasterDiv.setAttribute("class", "st-slider-master");
 	$(aMasterDiv).append(fullHeightDiv);
 
 	var current = 0;
@@ -1789,5 +1808,12 @@ UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 	
 
 	return(newSlider);
+};
+UiUtil.FlipUpDown = function(aElemId) {
+	if ($("#" + aElemId).css("display") !== "none") {
+		$("#" + aElemId).slideUp("slow");
+	} else {
+		$("#" + aElemId).slideDown("slow");
+	}
 };
 UiUtil.doNothing = function() {}; 

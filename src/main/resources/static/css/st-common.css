@@ -1,6 +1,9 @@
 html {
 	font-size: 14px;
 	line-height: 1.42857143;
+	display: block;
+	float: left;
+	width: 100%;
 }
 body {
 	font-weight:600;
@@ -28,42 +31,47 @@ fieldset {
 	padding-left: 1em;
 	border:1px solid #ced4da;
 }
-.st-eachfield.st-row {
+parentwrapper {
 	display: inline-flex;
+}
+.st-slider-master, .st-slider-master>div {
+}
+.st-eachfield.st-row {
+	display: inline-block;
+	//display: inline-flex;
 	align-items: center;
 	margin-top: 1.5em;
 	margin-right: 2.5em;
-}
-parentwrapper {
-	float: left;
-	display: inline-flex;
 }
 .st-error-msg {
 	font-size: x-small;
 	color: red;
 	margin-left: 5px;
 }
-.st-date-picker-num {
-	display: inline-block;
+.st-date-picker {
 	text-align: right;
-	position: inherit !important;
 }
 .st-combo-box {
 	min-width: 70px;
 }
+.st-checkbox {
+	min-height: 15px;
+	min-width:15px;
+}
 .st-array-widget {
 	text-align: right;
-	cursor: pointer;
 	border-style: none;
 	background: none;
 	margin-right: 5px;
+	width: 99%;
 }
 .st-array-btn {
 	margin-left: 4px;
+	cursor: pointer;
 }
-.bx-wrapper {
-	margin-bottom: 0px !important;
+.st-label-area {
 }
-.bx-wrapper img {
-	// display: inline-block !important;
+.st-label-txt {
+}
+.st-input-area {
 }
