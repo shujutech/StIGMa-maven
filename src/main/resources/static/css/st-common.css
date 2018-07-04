@@ -24,7 +24,7 @@ legend {
 	font-weight: bold;
 	font-size: larger;
 	padding-right: 10px;
-	padding-left: 10px;");
+	padding-left: 10px;;
 }
 fieldset {
 	padding-bottom: 2.5em;
@@ -38,7 +38,7 @@ parentwrapper {
 }
 .st-eachfield.st-row {
 	display: inline-block;
-	//display: inline-flex;
+	/* display: inline-flex; */
 	align-items: center;
 	margin-top: 1.5em;
 	margin-right: 2.5em;
@@ -70,8 +70,22 @@ parentwrapper {
 	cursor: pointer;
 }
 .st-label-area {
+	margin-right: 3px;
 }
 .st-label-txt {
 }
 .st-input-area {
+}
+a.st-crud-menu {
+	border-left:thick solid darkgray;
+	border-width:1px;
+	padding-right:10px;
+	padding-left:10px;
+	cursor:pointer;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+}
+.fa {
+	margin-right: 5px !important;
 }

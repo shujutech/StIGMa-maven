@@ -3,349 +3,135 @@
 <html>
 	<head>
 		<title>Adhoc Payslip</title>
-	</head>
-	<body>
-		<section>
-			<link href="/lib/bootstrap-4.1.1/dist/css/bootstrap.min.css" rel="stylesheet">  
-			<link rel='stylesheet' href='js/editablegrid-master/editablegrid.css' type='text/css' media='screen'> 
-			<link href="/css/st-common.css" rel="stylesheet">  
+		<link rel="stylesheet" href="lib/bootstrap-4.1.1/dist/css/bootstrap.min.css">  
+		<link rel="stylesheet" href="js/editablegrid-master/editablegrid.css"> 
+		<link rel="stylesheet" href="lib/fontawesome-free-5.1.0-web/css/all.css">
+		<link rel="stylesheet" href="css/st-common.css">  
 
-			<style type='text/css'>
-				table.stdGrid {border-collapse:collapse;border:2px solid #c7c7c7;;width:100%} 
-				table.stdGrid td,table.stdGrid th {padding:5px}
-				table.stdGrid th {background:#f9f9f9;text-align:left;border-bottom:1px solid #c7c7c7;}
-				table.stdGrid tr {line-height: 2.00;}
-				table.stdGrid>tbody tr:hover{cursor:pointer;background:#E5E5E5;color:black}
-				table.stdGrid tbody {-webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; }
-				table.stdGrid .rowSelected {color:blue} 
-				tr th:nth-child(5) { text-align: right; }
-				tr td:nth-child(5) { text-align: right; }
-				#divEarning table th:nth-of-type(2) {
+		<style type='text/css'>
+			table.stdGrid {border-collapse:collapse;border:2px solid #c7c7c7;;width:100%} 
+			table.stdGrid td,table.stdGrid th {padding:5px}
+			table.stdGrid th {background:#f9f9f9;text-align:left;border-bottom:1px solid #c7c7c7;}
+			table.stdGrid tr {line-height: 2.00;}
+			table.stdGrid>tbody tr:hover{cursor:pointer;background:#E5E5E5;color:black}
+			table.stdGrid tbody {-webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; }
+			table.stdGrid .rowSelected {color:blue} 
+			tr th:nth-child(5) { text-align: right; }
+			tr td:nth-child(5) { text-align: right; }
+			#divEarning table th:nth-of-type(2) {
+				display: none;
+			}
+			#divEarning table td:nth-of-type(2) {
+				display: none;
+			}
+			#divEarning table th:nth-of-type(3) {
+				display: none;
+			}
+			#divEarning table td:nth-of-type(3) {
+				display: none;
+			}
+			#divDeduction table th:nth-of-type(2) {
+				display: none;
+			}
+			#divDeduction table td:nth-of-type(2) {
+				display: none;
+			}
+			#divDeduction table th:nth-of-type(3) {
+				display: none;
+			}
+			#divDeduction table td:nth-of-type(3) {
+				display: none;
+			}
+			#divOther table th:nth-of-type(2) {
+				display: none;
+			}
+			#divOther table td:nth-of-type(2) {
+				display: none;
+			}
+			#divOther table th:nth-of-type(3) {
+				display: none;
+			}
+			#divOther table td:nth-of-type(3) {
+				display: none;
+			}
+			.column-text {
+				float: left;
+				width: 48%;
+				position: relative;
+				min-height: 1px;
+				padding-left: 160px;
+			}
+			.column-grid {
+				float: left;
+				width: 50%;
+				position: relative;
+				min-height: 1px;
+				padding-right: 0px;
+				padding-left: 15px;
+			}
+			.column-line {
+				float: left;
+				width: 100%;
+				position: relative;
+				min-height: 1px;
+				padding-right: 35px;
+				padding-left: 35px;
+				margin-top:0px;
+				margin-bottom:0px;
+			}
+			#divEmpInfo {
+				border: none;
+				padding: 70px;
+			}
+			@media print {
+				body * {
+					visibility: hidden;
+				}
+				#divPayslipInfo, #divPayslipInfo * {
+					visibility: visible;
+				}
+				table tr th.boolean {
 					display: none;
 				}
-				#divEarning table td:nth-of-type(2) {
+				table tr td.boolean {
 					display: none;
 				}
-				#divEarning table th:nth-of-type(3) {
+				.st-crud-menu {
 					display: none;
 				}
-				#divEarning table td:nth-of-type(3) {
-					display: none;
+				#divPayslipInfo {
+					position: absolute;
+					left: 0;
+					top: 0;
 				}
-				#divDeduction table th:nth-of-type(2) {
-					display: none;
-				}
-				#divDeduction table td:nth-of-type(2) {
-					display: none;
-				}
-				#divDeduction table th:nth-of-type(3) {
-					display: none;
-				}
-				#divDeduction table td:nth-of-type(3) {
-					display: none;
-				}
-				#divOther table th:nth-of-type(2) {
-					display: none;
-				}
-				#divOther table td:nth-of-type(2) {
-					display: none;
-				}
-				#divOther table th:nth-of-type(3) {
-					display: none;
-				}
-				#divOther table td:nth-of-type(3) {
-					display: none;
-				}
-				.crud-menu {
-					margin-bottom: 3px;
-				}
-				.column-text {
-					float: left;
-					width: 48%;
-					position: relative;
-					min-height: 1px;
-					padding-left: 160px;
-				}
-				.column-grid {
-					float: left;
-					width: 50%;
-					position: relative;
-					min-height: 1px;
-					padding-right: 0px;
-					padding-left: 15px;
-				}
-				.column-line {
-					float: left;
-					width: 100%;
-					position: relative;
-					min-height: 1px;
-					padding-right: 35px;
-					padding-left: 35px;
-					margin-top:0px;
-					margin-bottom:0px;
-				}
-				#divEmpInfo {
-					border: none;
-					padding: 70px;
-				}
-				@media print {
-					body * {
-						visibility: hidden;
-					}
-					#divPayslipInfo, #divPayslipInfo * {
-						visibility: visible;
-					}
-					table tr th.boolean {
-						display: none;
-					}
-					table tr td.boolean {
-						display: none;
-					}
-					.crud-menu {
-						display: none;
-					}
-					#divPayslipInfo {
-						position: absolute;
-						left: 0;
-						top: 0;
-					}
-				}
-				.print-field {}
-				.st-fs01 {
-					border: none;
-					margin-top: 1em;
-				}
-				.st-eachfield.st-row {
-					display: inline-flex !important;
-				}
-				.each-body {
-					float: left;
-					display: block;
-					width: 90%;
-					margin-left: 5%;
-					margin-top: 10px
-				}
-				#divFlipEmpInfo, #divFlipSlip {
-					padding: 5px;
-					text-align: center;
-					background-color: #e5eecc;
-					border: solid 1px #c3c3c3;
-					display: block;
-					float: left;
-					width: 100%;
-					cursor: pointer;
-				}
-			</style>
-		</section>
-	
-		<main>
-			<div>
-				<img id='msgImage' src='img/imgInfo.png' style='vertical-align:middle; margin-right:0px;' alt="">
-				<span id='msgArea'></span>
-			</div>
-	
-			<div class="each-body">
-				<div id="divFlipEmpInfo" onclick="UiUtil.FlipUpDown('divEmpInfo')">Click to slide down panel</div>
-				<div id="divEmpInfo">
-					<fieldset class="st-fs01">
-						<div class="st-eachfield st-row">
-							<div class="st-label-area">
-								<label>Monthly Salary</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg"></span></div>
-								<div class="st-input-area">
-									<parentwrapper>
-										<span class="st-symbol">
-											<select class="custom-select" style="width:90px" id="68464_cy">
-												<option value="MYR">MYR</option>
-											</select>
-										</span>
-										<span><input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" 
-									onkeyup="UiForm.handleDollar(this, event, &quot;68464_ct&quot;)"></span><span class="st-symbol">.</span><span><input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" 
-									onkeyup="UiForm.handleCent(this, event)"></span></parentwrapper>
-								</div>
-						</div>
-						<div class="st-eachfield st-row">
-							<div class="st-label-area">
-								<label>Is Spouse Working</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg"></span></div>
-							<div class="st-input-area">
-								<input class="" type="checkbox">
-							</div>
-						</div>
-						<div class="st-eachfield st-row">
-							<div class="st-label-area">
-								<label>Marital Status</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg"></span></div>
-							<div class="st-input-area">
-								<select class="custom-select" style="min-width:70px">
-									<option value=""></option>
-									<option value="Single">Single</option>
-									<option value="Married">Married</option>
-								</select>
-							</div>
-						</div>
-						<div class="st-eachfield st-row">
-							<div class="st-label-area">
-								<label>No Of Children</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg"></span></div>
-							<div class="st-input-area">
-								<input class="form-control" type="text" value="" size="2">
-							</div>
-						</div>
-					</fieldset>
-				</div>
-			</div>
+			}
+			.print-field {}
+			.st-fs01 {
+				border: none;
+				margin-top: 1em;
+			}
+			.st-eachfield.st-row {
+				display: inline-flex !important;
+			}
+			.each-body {
+				float: left;
+				display: block;
+				width: 90%;
+				margin-left: 5%;
+				margin-top: 10px
+			}
+			#divFlipEmpInfo, #divFlipSlip {
+				padding: 5px;
+				text-align: center;
+				background-color: #e5eecc;
+				border: solid 1px #c3c3c3;
+				display: block;
+				float: left;
+				width: 100%;
+				cursor: pointer;
+			}
+		</style>
 
-			<div class="each-body">
-				<div id="divFlipSlip" onclick="UiUtil.FlipUpDown('divPayslip')">Click to slide down panel</div>
-				<div id="divPayslip">
-					<fieldset style="width:100%;margin-top:10px; border: none; text-align: right; color: black; font-size:12px;float:left">
-						<button id="btnCancelTop" onclick="UiUtil.CancelEdit()" style="width: 85px; margin-right: 2px;">Cancel</button>
-						<button id="btnPrintTop" onclick="printSalarySlip();" style="width: 85px;">Print...</button>
-						<button id="btnRecomputeTop" onclick="recomputeSalarySlip();" style="width: 85px;">Recompute</button>
-					</fieldset>
-					<div id="divPayslipInfo" style="display:none;float:left;width:100%">
-						<div style="text-align:center">
-							<div class='' style='display:inline-block;'>
-								<div class="st-eachfield st-row">
-									<div class="st-label-area">
-										<label>Company</label>
-										<img src="img/imgErrorBlank.png" style="display: none" alt="">
-										<span class="st-error-msg"></span>
-									</div>
-									<div class="st-input-area">
-										<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd">
-									</div>
-								</div>
-							</div>
-							<br>
-							<div class='' style='display:inline-block;'>
-								<div class="st-eachfield st-row" style="float:left">
-									<div class="st-label-area">
-										<label>Period From</label>
-										<img src="img/imgErrorBlank.png" style="display: none" alt="">
-										<span class="st-error-msg"></span>
-									</div>
-									<div class="st-input-area">
-										<input id="headerPeriodFrom" class="print-field form-control" type="text" value="" placeholder="01-DEC-2018" style="text-align:right">
-									</div>
-								</div>
-								<div class="st-eachfield st-row" style="float:left">
-									<div class="st-label-area" style='margin-left:50px'>
-										<label>Period To</label>
-										<img src="img/imgErrorBlank.png" style="display: none" alt="">
-										<span class="st-error-msg"></span>
-									</div>
-									<div class="st-input-area">
-										<input id="headerPeriodTo" class="print-field form-control" type="text" value="" placeholder="31-DEC-2018" style="text-align:right">
-									</div>
-								</div>
-							</div>
-						</div>
-			
-						<div style="width:100%;float:left">
-							<div id="divEmployeeDetail" style="margin-top:25px;margin-bottom:10px;float:left;width:70%;display:table;margin-left:15%">
-								<div style='display:table-row'>
-									<div style='display:table-cell'>
-										<div class="st-eachfield st-row">
-											<div class="st-label-area">
-												<label>Employee</label>
-												<img src="img/imgErrorBlank.png" style="display: none" alt="">
-												<span class="st-error-msg"></span>
-											</div>
-											<div class="st-input-area">
-												<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates">
-											</div>
-										</div>
-									</div>
-									<div style='display:table-cell;float:right'>
-										<div class="st-eachfield st-row">
-											<div class="st-label-area">
-												<label>Gross Pay</label>
-												<img src="img/imgErrorBlank.png" style="display: none" alt="">
-												<span class="st-error-msg"></span>
-											</div>
-											<div class="st-input-area">
-												<span class="print-field" id="grossPay">MYR 0.00</span>
-											</div>
-										</div>
-									</div>
-								</div>
-			
-								<div style='display:table-row'>
-									<div style='display:table-cell'>
-										<div class="st-eachfield st-row">
-											<div class="st-label-area">
-												<label>Designation</label>
-												<img src="img/imgErrorBlank.png" style="display: none" alt="">
-												<span class="st-error-msg"></span>
-											</div>
-											<div class="st-input-area">
-												<input id="headerDesignation" class="print-field form-control" type="text" value="" placeholder="Programmer">
-											</div>
-										</div>
-									</div>
-									<div style='display:table-cell;float:right'>
-										<div class="st-eachfield st-row">
-											<div class="st-label-area">
-												<label>Total Deduction</label>
-												<img src="img/imgErrorBlank.png" style="display: none" alt="">
-												<span class="st-error-msg"></span>
-											</div>
-											<div class="st-input-area">
-												<span class="print-field" id="totalDeduction">MYR 0.00</span>
-												<span style="display:none" id="totalOther">MYR 0.00</span>
-											</div>
-										</div>
-									</div>
-								</div>
-			
-								<div style='display:table-row'>
-									<div style='display:table-cell'>
-										<div class="st-eachfield st-row">
-											<div class="st-label-area">
-												<label>Net Pay</label>
-												<img src="img/imgErrorBlank.png" style="display: none" alt="">
-												<span class="st-error-msg"></span>
-											</div>
-											<div class="st-input-area">
-												<span class="print-field" id="netPay">MYR 0.00</span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div style="float:left;margin-top:25px;display:block;width:100%"></div>
-	
-					<div style='float:left;width:90%;margin-left:5%;margin-top:10px;'>
-						<div style="float:left;display:table;width:100%;border-spacing:20px">
-							<div style="display:table-row;width:100%">
-								<div id="divMasterEarn" style="display:table-cell;width:50%">
-									<div id='divEarning'></div>
-								</div>
-								<div id="divMasterDeduct" style="display:table-cell">
-									<div id='divDeduction'></div>
-								</div>
-							</div>
-	
-							<div style="display:table-row">
-								<div style="display:table-cell"></div>
-								<div style="display:table-cell">
-									<div id="divMasterOther">
-										<div id='divOther'></div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-	
-			<div id="dialogSalaryTrx" style="display:none;">
-				<div id="dialogPayslip"></div>
-			</div>
-		</main>
-
-		
 		<script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
 		<script type="text/javascript" src="lib/popper.min.js"></script>
 		<script type="text/javascript" src="lib/bootstrap-4.1.1/dist/js/bootstrap.min.js"></script>
@@ -365,6 +151,214 @@
 		<script type="text/javascript" src="lib/UiUtil.js"></script>
 		<script type="text/javascript" src="lib/UiForm.js"></script>   
 		<script type="text/javascript" src="lib/UiGrid.js"></script>   
+	</head>
+	<body>
+			<div>
+			<img id='msgImage' src='img/imgInfo.gif' style='vertical-align:middle; margin-right:0px;' alt="">
+			<span id='msgArea'></span>
+		</div>
+
+		<div class="each-body">
+			<div id="divFlipEmpInfo" onclick="UiUtil.FlipUpDown('divEmpInfo')">Click to slide down panel</div>
+			<div id="divEmpInfo">
+				<fieldset class="st-fs01">
+					<div class="st-eachfield st-row">
+						<div class="st-label-area">
+							<label>Monthly Salary</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg"></span></div>
+							<div class="st-input-area">
+								<parentwrapper>
+									<span class="st-symbol">
+										<select class="custom-select" style="width:90px" id="68464_cy">
+											<option value="MYR">MYR</option>
+										</select>
+									</span>
+									<span><input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" 
+								onkeyup="UiForm.handleDollar(this, event, &quot;68464_ct&quot;)"></span><span class="st-symbol">.</span><span><input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" 
+								onkeyup="UiForm.handleCent(this, event)"></span></parentwrapper>
+							</div>
+					</div>
+					<div class="st-eachfield st-row">
+						<div class="st-label-area">
+							<label>Is Spouse Working</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg"></span></div>
+						<div class="st-input-area">
+							<input class="" type="checkbox">
+						</div>
+					</div>
+					<div class="st-eachfield st-row">
+						<div class="st-label-area">
+							<label>Marital Status</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg"></span></div>
+						<div class="st-input-area">
+							<select class="custom-select" style="min-width:70px">
+								<option value=""></option>
+								<option value="Single">Single</option>
+								<option value="Married">Married</option>
+							</select>
+						</div>
+					</div>
+					<div class="st-eachfield st-row">
+						<div class="st-label-area">
+							<label>No Of Children</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg"></span></div>
+						<div class="st-input-area">
+							<input class="form-control" type="text" value="" size="2">
+						</div>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+
+		<div class="each-body">
+			<div id="divFlipSlip" onclick="UiUtil.FlipUpDown('divPayslip')">Click to slide down panel</div>
+			<div id="divPayslip">
+				<fieldset style="width:100%;margin-top:10px; border: none; text-align: right; color: black; font-size:12px;float:left">
+					<button id="btnCancelTop" onclick="UiUtil.CancelEdit()" style="width: 85px; margin-right: 2px;">Cancel</button>
+					<button id="btnPrintTop" onclick="printSalarySlip();" style="width: 85px;">Print...</button>
+					<button id="btnRecomputeTop" onclick="recomputeSalarySlip();" style="width: 85px;">Recompute</button>
+				</fieldset>
+				<div id="divPayslipInfo" style="display:none;float:left;width:100%">
+					<div style="text-align:center">
+						<div class='' style='display:inline-block;'>
+							<div class="st-eachfield st-row">
+								<div class="st-label-area">
+									<label>Company</label>
+									<img src="img/imgErrorBlank.png" style="display: none" alt="">
+									<span class="st-error-msg" style="display:none"></span>
+								</div>
+								<div class="st-input-area">
+									<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd">
+								</div>
+							</div>
+						</div>
+						<br>
+						<div class='' style='display:inline-block;'>
+							<div class="st-eachfield st-row" style="float:left">
+								<div class="st-label-area">
+									<label>Period From</label>
+									<img src="img/imgErrorBlank.png" style="display: none" alt="">
+									<span class="st-error-msg" style="display:none"></span>
+								</div>
+								<div class="st-input-area">
+									<input id="headerPeriodFrom" class="print-field form-control" type="text" value="" placeholder="01-DEC-2018" style="text-align:right">
+								</div>
+							</div>
+							<div class="st-eachfield st-row" style="float:left">
+								<div class="st-label-area" style='margin-left:50px'>
+									<label>Period To</label>
+									<img src="img/imgErrorBlank.png" style="display: none" alt="">
+									<span class="st-error-msg" style="display:none"></span>
+								</div>
+								<div class="st-input-area">
+									<input id="headerPeriodTo" class="print-field form-control" type="text" value="" placeholder="31-DEC-2018" style="text-align:right">
+								</div>
+							</div>
+						</div>
+					</div>
+		
+					<div style="width:100%;float:left">
+						<div id="divEmployeeDetail" style="margin-top:25px;margin-bottom:10px;float:left;width:70%;display:table;margin-left:15%">
+							<div style='display:table-row'>
+								<div style='display:table-cell'>
+									<div class="st-eachfield st-row">
+										<div class="st-label-area">
+											<label>Employee</label>
+											<img src="img/imgErrorBlank.png" style="display: none" alt="">
+											<span class="st-error-msg" style="display:none"></span>
+										</div>
+										<div class="st-input-area">
+											<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates">
+										</div>
+									</div>
+								</div>
+								<div style='display:table-cell;float:right'>
+									<div class="st-eachfield st-row">
+										<div class="st-label-area">
+											<label>Gross Pay</label>
+											<img src="img/imgErrorBlank.png" style="display: none" alt="">
+											<span class="st-error-msg" style="display:none"></span>
+										</div>
+										<div class="st-input-area">
+											<span class="print-field" id="grossPay">MYR 0.00</span>
+										</div>
+									</div>
+								</div>
+							</div>
+		
+							<div style='display:table-row'>
+								<div style='display:table-cell'>
+									<div class="st-eachfield st-row">
+										<div class="st-label-area">
+											<label>Designation</label>
+											<img src="img/imgErrorBlank.png" style="display: none" alt="">
+											<span class="st-error-msg" style="display:none"></span>
+										</div>
+										<div class="st-input-area">
+											<input id="headerDesignation" class="print-field form-control" type="text" value="" placeholder="Programmer">
+										</div>
+									</div>
+								</div>
+								<div style='display:table-cell;float:right'>
+									<div class="st-eachfield st-row">
+										<div class="st-label-area">
+											<label>Total Deduction</label>
+											<img src="img/imgErrorBlank.png" style="display: none" alt="">
+											<span class="st-error-msg" style="display:none"></span>
+										</div>
+										<div class="st-input-area">
+											<span class="print-field" id="totalDeduction">MYR 0.00</span>
+											<span style="display:none" id="totalOther">MYR 0.00</span>
+										</div>
+									</div>
+								</div>
+							</div>
+		
+							<div style='display:table-row'>
+								<div style='display:table-cell'>
+									<div class="st-eachfield st-row">
+										<div class="st-label-area">
+											<label>Net Pay</label>
+											<img src="img/imgErrorBlank.png" style="display: none" alt="">
+											<span class="st-error-msg" style="display:none"></span>
+										</div>
+										<div class="st-input-area">
+											<span class="print-field" id="netPay">MYR 0.00</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div style="float:left;margin-top:25px;display:block;width:100%"></div>
+
+				<div style='float:left;width:90%;margin-left:5%;margin-top:10px;'>
+					<div style="float:left;display:table;width:100%;border-spacing:20px">
+						<div style="display:table-row;width:100%">
+							<div id="divMasterEarn" style="display:table-cell;width:50%">
+								<div id='divEarning'></div>
+							</div>
+							<div id="divMasterDeduct" style="display:table-cell">
+								<div id='divDeduction'></div>
+							</div>
+						</div>
+
+						<div style="display:table-row">
+							<div style="display:table-cell"></div>
+							<div style="display:table-cell">
+								<div id="divMasterOther">
+									<div id='divOther'></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="dialogSalaryTrx" style="display:none;">
+			<div id="dialogPayslip"></div>
+		</div>
+
+		
 		<script type='text/javascript'>
 			function startDialogWait(){};
 			function stopDialogWait() {};
@@ -710,12 +704,12 @@
 			var setupIconMenu = function(aContent, aType) {
 				var idIconMenu = "iim_" + aContent;
 				if ($('#iim_' + aContent).length === 0) {
-					var elemIconMenu = $('<div/>').html("<div id='" + idIconMenu + "' style='float:right;' class='crud-menu'>").contents()[0];
-					var elemUp = $('<div/>').html("<a class='crud-menu' onclick='moveUp(\"" + aType + "\");'><i class='icons icon-up'></i>Up</a>").contents()[0];
-					var elemDown = $('<div/>').html("<a class='crud-menu' onclick='moveDown(\"" + aType + "\");'><i class='icons icon-down'></i>Down</a>").contents()[0];
-					var elemDelete = $('<div/>').html("<a class='crud-menu' style='border-left:none' onclick='deleteSalaryTrx(\"" + aType + "\");'><i class='icons icon-trash'></i>Delete</a>").contents()[0];
-					var elemEdit = $('<div/>').html("<a class='crud-menu' onclick='editSalaryTrx(\"" + aType + "\");'><i class='icons icon-pencil'></i>Edit</a>").contents()[0];
-					var elemCreate = $('<div/>').html("<a class='crud-menu' onclick='newSalaryTrx(\"" + aType + "\");'><i class='icons icon-plus'></i>New</a>").contents()[0];
+					var elemIconMenu = $('<div/>').html("<div id='" + idIconMenu + "' style='float:right;' class='st-crud-menu'>").contents()[0];
+					var elemUp = $('<div/>').html("<a class='st-crud-menu' onclick='moveUp(\"" + aType + "\");'><i class='fa fa-arrow-up'></i>Up</a>").contents()[0];
+					var elemDown = $('<div/>').html("<a class='st-crud-menu' onclick='moveDown(\"" + aType + "\");'><i class='fa fa-arrow-down'></i>Down</a>").contents()[0];
+					var elemDelete = $('<div/>').html("<a class='st-crud-menu' style='border-left:none' onclick='deleteSalaryTrx(\"" + aType + "\");'><i class='fa fa-trash'></i>Delete</a>").contents()[0];
+					var elemEdit = $('<div/>').html("<a class='st-crud-menu' onclick='editSalaryTrx(\"" + aType + "\");'><i class='fa fa-pencil'></i>Edit</a>").contents()[0];
+					var elemCreate = $('<div/>').html("<a class='st-crud-menu' onclick='newSalaryTrx(\"" + aType + "\");'><i class='fa fa-plus'></i>New</a>").contents()[0];
 					elemIconMenu.appendChild(elemDelete);
 					elemIconMenu.appendChild(elemEdit);
 					elemIconMenu.appendChild(elemCreate);
