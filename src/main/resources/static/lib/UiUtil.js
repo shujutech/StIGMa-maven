@@ -1587,6 +1587,7 @@ UiUtil.CreateTextFieldWithLabel = function(displayLabel, inputField) {
 	$(err).css("margin-bottom", "5px");
 	var msg = document.createElement("span");
 	msg.setAttribute("class", CLS_ERROR_MSG);
+	$(msg).css("display", "none");
 	labelArea.appendChild(label);
 	labelArea.appendChild(err);
 	labelArea.appendChild(msg);

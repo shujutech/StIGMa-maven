@@ -9,6 +9,7 @@
 		<link rel="stylesheet" href="css/st-common.css">  
 
 		<style type='text/css'>
+			html { font-size: 1.1em }
 			table.stdGrid {border-collapse:collapse;border:2px solid #c7c7c7;;width:100%} 
 			table.stdGrid td,table.stdGrid th {padding:5px}
 			table.stdGrid th {background:#f9f9f9;text-align:left;border-bottom:1px solid #c7c7c7;}
@@ -130,6 +131,9 @@
 				width: 100%;
 				cursor: pointer;
 			}
+			.st-label-area {
+				margin-right: 10px;
+			}
 		</style>
 
 		<script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
@@ -159,34 +163,37 @@
 		</div>
 
 		<div class="each-body">
-			<div id="divFlipEmpInfo" onclick="UiUtil.FlipUpDown('divEmpInfo')">Click to slide down panel</div>
+			<div id="divFlipEmpInfo" onclick="UiUtil.FlipUpDown('divEmpInfo')"><h2>Payslip</h2></div>
 			<div id="divEmpInfo">
 				<fieldset class="st-fs01">
 					<div class="st-eachfield st-row">
 						<div class="st-label-area">
-							<label>Monthly Salary</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg"></span></div>
-							<div class="st-input-area">
-								<parentwrapper>
-									<span class="st-symbol">
-										<select class="custom-select" style="width:90px" id="68464_cy">
-											<option value="MYR">MYR</option>
-										</select>
-									</span>
-									<span><input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" 
-								onkeyup="UiForm.handleDollar(this, event, &quot;68464_ct&quot;)"></span><span class="st-symbol">.</span><span><input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" 
-								onkeyup="UiForm.handleCent(this, event)"></span></parentwrapper>
-							</div>
+							<label>Monthly Salary</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
+						</div>
+						<div class="st-input-area">
+							<parentwrapper>
+								<span class="st-symbol">
+									<select class="custom-select" style="width:90px" id="68464_cy">
+										<option value="MYR">MYR</option>
+									</select>
+								</span>
+								<span><input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" 
+							onkeyup="UiForm.handleDollar(this, event, &quot;68464_ct&quot;)"></span><span class="st-symbol">.</span><span><input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" 
+							onkeyup="UiForm.handleCent(this, event)"></span></parentwrapper>
+						</div>
 					</div>
 					<div class="st-eachfield st-row">
 						<div class="st-label-area">
-							<label>Is Spouse Working</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg"></span></div>
+							<label>Is Spouse Working</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
+						</div>
 						<div class="st-input-area">
 							<input class="" type="checkbox">
 						</div>
 					</div>
 					<div class="st-eachfield st-row">
 						<div class="st-label-area">
-							<label>Marital Status</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg"></span></div>
+							<label>Marital Status</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
+						</div>
 						<div class="st-input-area">
 							<select class="custom-select" style="min-width:70px">
 								<option value=""></option>
@@ -197,9 +204,22 @@
 					</div>
 					<div class="st-eachfield st-row">
 						<div class="st-label-area">
-							<label>No Of Children</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg"></span></div>
+							<label>No Of Children</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
+						</div>
 						<div class="st-input-area">
 							<input class="form-control" type="text" value="" size="2">
+						</div>
+					</div>
+					<div class="st-eachfield st-row">
+						<div class="st-label-area">
+							<label>Tax Resident</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
+						</div>
+						<div class="st-input-area">
+							<select class="custom-select" style="min-width:70px">
+								<option value="Citizen">Citizen</option>
+								<option value="Permanent Resident">Permanent Resident</option>
+								<option value="Foreigner">Foreigner</option>
+							</select>
 						</div>
 					</div>
 				</fieldset>
@@ -207,7 +227,7 @@
 		</div>
 
 		<div class="each-body">
-			<div id="divFlipSlip" onclick="UiUtil.FlipUpDown('divPayslip')">Click to slide down panel</div>
+			<div id="divFlipSlip" onclick="UiUtil.FlipUpDown('divPayslip')"><h2>Employee Information</h2></div>
 			<div id="divPayslip">
 				<fieldset style="width:100%;margin-top:10px; border: none; text-align: right; color: black; font-size:12px;float:left">
 					<button id="btnCancelTop" onclick="UiUtil.CancelEdit()" style="width: 85px; margin-right: 2px;">Cancel</button>
@@ -276,7 +296,7 @@
 											<span class="st-error-msg" style="display:none"></span>
 										</div>
 										<div class="st-input-area">
-											<span class="print-field" id="grossPay">MYR 0.00</span>
+											<input class="print-field form-control" id="grossPay" readonly value="MYR 0.00"></input>
 										</div>
 									</div>
 								</div>
@@ -303,8 +323,8 @@
 											<span class="st-error-msg" style="display:none"></span>
 										</div>
 										<div class="st-input-area">
-											<span class="print-field" id="totalDeduction">MYR 0.00</span>
-											<span style="display:none" id="totalOther">MYR 0.00</span>
+											<input class="print-field form-control" id="totalDeduction" readonly value="MYR 0.00"></input>
+											<span style="display:none" id="totalOther" readonly value="MYR 0.00"></span>
 										</div>
 									</div>
 								</div>
@@ -319,7 +339,7 @@
 											<span class="st-error-msg" style="display:none"></span>
 										</div>
 										<div class="st-input-area">
-											<span class="print-field" id="netPay">MYR 0.00</span>
+											<input class="print-field form-control" id="netPay" readonly value="MYR 0.00"></input>
 										</div>
 									</div>
 								</div>
