@@ -3,13 +3,22 @@
 <html>
 	<head>
 		<title>Adhoc Payslip</title>
+		<link rel='shortcut icon' href='img/logo.ico'>
 		<link rel="stylesheet" href="lib/bootstrap-4.1.1/dist/css/bootstrap.min.css">  
 		<link rel="stylesheet" href="js/editablegrid-master/editablegrid.css"> 
 		<link rel='stylesheet' href='js/font-awesome-4.2.0/css/font-awesome.css' type='text/css' media='screen'> 
 		<link rel="stylesheet" href="css/st-common.css">  
+		<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Libre+Barcode+39+Extended" rel="stylesheet">
 
 		<style type='text/css'>
-			html { font-size: 1.1em }
+			html { 
+				font-size: 1em;
+				color: #555555;
+			}
+			body {
+				font-family: Montserrat;
+			}
 			table.stdGrid {border-collapse:collapse;border:2px solid #c7c7c7;;width:100%} 
 			table.stdGrid td,table.stdGrid th {padding:5px}
 			table.stdGrid th {background:#f9f9f9;text-align:left;border-bottom:1px solid #c7c7c7;}
@@ -19,6 +28,9 @@
 			table.stdGrid .rowSelected {color:blue} 
 			tr th:nth-child(5) { text-align: right; }
 			tr td:nth-child(5) { text-align: right; }
+			label {
+				font-weight: 500;
+			}
 			#divEarning table th:nth-of-type(2) {
 				display: none;
 			}
@@ -113,6 +125,7 @@
 			}
 			.st-eachfield.st-row {
 				display: inline-flex !important;
+				margin-top: 7px;
 			}
 			.each-body {
 				float: left;
@@ -122,6 +135,7 @@
 				margin-top: 10px
 			}
 			#divFlipEmpInfo, #divFlipSlip {
+				/*
 				padding: 5px;
 				text-align: center;
 				background-color: #e5eecc;
@@ -129,10 +143,25 @@
 				display: block;
 				float: left;
 				width: 100%;
+				font-family: "Montserrat", sans-serif;
+				*/
+				padding-bottom: 0.4em;
+				border-bottom: solid 2px #e0e0e0;
+				color: #555555;
+				font-weight: 300;
+				letter-spacing: 0.1em;
+				margin: 0 0 0.4em 0;
 				cursor: pointer;
 			}
 			.st-label-area {
 				margin-right: 10px;
+			}
+			#divPayslip input {
+				border: 0;
+				outline: 0;
+				background: transparent;
+				border-bottom: 1px solid lightgray;
+				border-radius: 0;
 			}
 		</style>
 
@@ -162,8 +191,13 @@
 			<span id='msgArea'></span>
 		</div>
 
-		<div class="each-body">
-			<div id="divFlipEmpInfo" onclick="UiUtil.FlipUpDown('divEmpInfo')"><h2>Payslip</h2></div>
+		<div style="width: 100%; float: left; text-align: center">
+			<h1 style="margin-bottom:2px;font-size:2.1rem">Malaysia Payroll, Payslip, PCB, EPF, SOCSO Calculator</h1>
+			<h2 style="margin-bottom:10px;font-size:1.6rem">Monthly Statutory Deduction for Malaysia Payslip</h2>
+		</div>
+
+		<div class="each-body" style="background: #f8f8f8">
+			<div id="divFlipEmpInfo" onclick="UiUtil.FlipUpDown('divEmpInfo')"><h2 style="font-size:1.5rem">Tax Information</h2></div>
 			<div id="divEmpInfo">
 				<fieldset class="st-fs01">
 					<div class="st-eachfield st-row">
@@ -177,9 +211,26 @@
 										<option value="MYR">MYR</option>
 									</select>
 								</span>
-								<span><input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" 
-							onkeyup="UiForm.handleDollar(this, event, &quot;68464_ct&quot;)"></span><span class="st-symbol">.</span><span><input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" 
-							onkeyup="UiForm.handleCent(this, event)"></span></parentwrapper>
+								<span>
+									<input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" onkeyup="UiForm.handleDollar(this, event, &quot;68464_ct&quot;)" autofocus>
+								</span>
+								<span class="st-symbol">.</span>
+								<span>
+									<input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" onkeyup="UiForm.handleCent(this, event)">
+								</span>
+							</parentwrapper>
+						</div>
+					</div>
+					<div class="st-eachfield st-row">
+						<div class="st-label-area">
+							<label>Tax Resident</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
+						</div>
+						<div class="st-input-area">
+							<select class="custom-select" style="min-width:70px">
+								<option value="Citizen">Citizen</option>
+								<option value="Permanent Resident">Permanent Resident</option>
+								<option value="Foreigner">Foreigner</option>
+							</select>
 						</div>
 					</div>
 					<div class="st-eachfield st-row">
@@ -210,24 +261,12 @@
 							<input class="form-control" type="text" value="" size="2">
 						</div>
 					</div>
-					<div class="st-eachfield st-row">
-						<div class="st-label-area">
-							<label>Tax Resident</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
-						</div>
-						<div class="st-input-area">
-							<select class="custom-select" style="min-width:70px">
-								<option value="Citizen">Citizen</option>
-								<option value="Permanent Resident">Permanent Resident</option>
-								<option value="Foreigner">Foreigner</option>
-							</select>
-						</div>
-					</div>
 				</fieldset>
 			</div>
 		</div>
 
 		<div class="each-body">
-			<div id="divFlipSlip" onclick="UiUtil.FlipUpDown('divPayslip')"><h2>Employee Information</h2></div>
+			<div id="divFlipSlip" onclick="UiUtil.FlipUpDown('divPayslip')"><h2 style="font-size:1.5rem">Payslip</h2></div>
 			<div id="divPayslip">
 				<fieldset style="width:100%;margin-top:10px; border: none; text-align: right; color: black; font-size:12px;float:left">
 					<button id="btnCancelTop" onclick="UiUtil.CancelEdit()" style="width: 85px; margin-right: 2px;">Cancel</button>
@@ -244,7 +283,7 @@
 									<span class="st-error-msg" style="display:none"></span>
 								</div>
 								<div class="st-input-area">
-									<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd">
+									<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd" size="50" style="text-align:center">
 								</div>
 							</div>
 						</div>
@@ -257,7 +296,7 @@
 									<span class="st-error-msg" style="display:none"></span>
 								</div>
 								<div class="st-input-area">
-									<input id="headerPeriodFrom" class="print-field form-control" type="text" value="" placeholder="01-DEC-2018" style="text-align:right">
+									<input id="headerPeriodFrom" class="print-field form-control" type="text" value="" placeholder="01-Dec-2018" style="text-align:center">
 								</div>
 							</div>
 							<div class="st-eachfield st-row" style="float:left">
@@ -267,14 +306,14 @@
 									<span class="st-error-msg" style="display:none"></span>
 								</div>
 								<div class="st-input-area">
-									<input id="headerPeriodTo" class="print-field form-control" type="text" value="" placeholder="31-DEC-2018" style="text-align:right">
+									<input id="headerPeriodTo" class="print-field form-control" type="text" value="" placeholder="31-Dec-2018" style="text-align:center">
 								</div>
 							</div>
 						</div>
 					</div>
 		
 					<div style="width:100%;float:left">
-						<div id="divEmployeeDetail" style="margin-top:25px;margin-bottom:10px;float:left;width:70%;display:table;margin-left:15%">
+						<div id="divEmployeeDetail" style="margin-top:25px;margin-bottom:10px;float:left;width:80%;display:table;margin-left:10%">
 							<div style='display:table-row'>
 								<div style='display:table-cell'>
 									<div class="st-eachfield st-row">
@@ -284,11 +323,11 @@
 											<span class="st-error-msg" style="display:none"></span>
 										</div>
 										<div class="st-input-area">
-											<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates">
+											<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates" size="50">
 										</div>
 									</div>
 								</div>
-								<div style='display:table-cell;float:right'>
+								<div style='display:table-cell;text-align:right'>
 									<div class="st-eachfield st-row">
 										<div class="st-label-area">
 											<label>Gross Pay</label>
@@ -296,7 +335,7 @@
 											<span class="st-error-msg" style="display:none"></span>
 										</div>
 										<div class="st-input-area">
-											<input class="print-field form-control" id="grossPay" readonly value="MYR 0.00"></input>
+											<input class="print-field form-control" id="grossPay" readonly value="MYR 0.00" style="text-align:right"></input>
 										</div>
 									</div>
 								</div>
@@ -311,11 +350,11 @@
 											<span class="st-error-msg" style="display:none"></span>
 										</div>
 										<div class="st-input-area">
-											<input id="headerDesignation" class="print-field form-control" type="text" value="" placeholder="Programmer">
+											<input id="headerDesignation" class="print-field form-control" type="text" value="" placeholder="Programmer" size="30">
 										</div>
 									</div>
 								</div>
-								<div style='display:table-cell;float:right'>
+								<div style='display:table-cell;text-align:right'>
 									<div class="st-eachfield st-row">
 										<div class="st-label-area">
 											<label>Total Deduction</label>
@@ -323,7 +362,7 @@
 											<span class="st-error-msg" style="display:none"></span>
 										</div>
 										<div class="st-input-area">
-											<input class="print-field form-control" id="totalDeduction" readonly value="MYR 0.00"></input>
+											<input class="print-field form-control" id="totalDeduction" readonly value="MYR 0.00" style="text-align:right"></input>
 											<span style="display:none" id="totalOther" readonly value="MYR 0.00"></span>
 										</div>
 									</div>
@@ -339,7 +378,7 @@
 											<span class="st-error-msg" style="display:none"></span>
 										</div>
 										<div class="st-input-area">
-											<input class="print-field form-control" id="netPay" readonly value="MYR 0.00"></input>
+											<input class="print-field form-control" id="netPay" readonly value="MYR 0.00" style="text-align:right"></input>
 										</div>
 									</div>
 								</div>
@@ -350,7 +389,7 @@
 
 				<div style="float:left;margin-top:25px;display:block;width:100%"></div>
 
-				<div style='float:left;width:90%;margin-left:5%;margin-top:10px;'>
+				<div style='float:left;width:100%;margin-left:0%;margin-top:10px;'>
 					<div style="float:left;display:table;width:100%;border-spacing:20px">
 						<div style="display:table-row;width:100%">
 							<div id="divMasterEarn" style="display:table-cell;width:50%">
@@ -376,6 +415,11 @@
 
 		<div id="dialogSalaryTrx" style="display:none;">
 			<div id="dialogPayslip"></div>
+		</div>
+
+		<div class="footer" style="bottom:0;float:left;width:100%;text-align:center;margin-top:200px;font-size:13px"> 
+			<div style="float:left;border-bottom:1px dotted #ccc;width:100%;padding:0;"></div> 
+			<p style="padding-top:5px">Copyright &copy; 2005-2018 Shujutech Inc. All rights reserved.</p>
 		</div>
 
 		
