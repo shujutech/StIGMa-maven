@@ -139,6 +139,7 @@ function startOkCancelNifty(titleHtml, msgHtml, jsOk, jsCancel) {
 	swal({
 		title: titleHtml,
 		content: msgHtml,
+		closeOnClickOutside: false,
 		buttons: true
 	})
 	.then((value) => {
@@ -1350,32 +1351,40 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 		dateStart = UiUtil.DateForDisplay(UiUtil.DateMonthStart(new Date()));
 	else
 		dateStart = UiUtil.DateForDisplay(UiUtil.DateMonthStart(aDateStart));
-	var divDateStart = UiUtil.CreateDatePicker('From', dateStart, dateStart, "UiUtil", true ,false);
+	var divDateStart = UiUtil.CreateDatePicker('From', dateStart, dateStart, "UiUtil", true , false);
 
 	var dateEnd;
 	if (aDateEnd === undefined) 
 		dateEnd = UiUtil.DateForDisplay(UiUtil.DateMonthEnd(new Date()));
 	else 
 		dateEnd = UiUtil.DateForDisplay(UiUtil.DateMonthEnd(aDateEnd));
-	var divDateEnd = UiUtil.CreateDatePicker('To', dateEnd, dateEnd, "UiUtil", true ,false);
+	var divDateEnd = UiUtil.CreateDatePicker('To', dateEnd, dateEnd, "UiUtil", true , false);
 
 	$(divDateStart).attr('id', 'dateFrom');
 	$(divDateStart).css('float', 'left');
 	$(divDateStart).css('width', '40%');
+	$(divDateStart).css('cssText', 'display: inline-block !important');
+	$(divDateStart).css('text-align', 'left');
+	$(divDateStart).css('margin-right', '20px');
 	$(divDateStart).find('label').css('font-weight', 'normal');
 
 	$(divDateEnd).attr('id', 'dateEnd');
 	$(divDateEnd).css('float', 'left');
 	$(divDateEnd).css('width', '40%');
+	$(divDateEnd).css('cssText', 'display: inline-block !important');
+	$(divDateEnd).css('text-align', 'left');
+	$(divDateEnd).css('margin-right', '20px');
 	$(divDateEnd).find('label').css('font-weight', 'normal');
 	
-	var divTitle = document.createElement('div');
-	divTitle.innerHTML = aTitleBody;
-	$(divTitle).css('width', '100%');
-	$(divTitle).css('font-size', 'larger');
-	$(divTitle).css('font-style', 'italic');
-	$(divTitle).css('margin-bottom', '17px');
-	$(divTitle).css('margin-top', '10px');
+	if (UiUtil.NotUndefineNotNullNotBlank(aTitleBody)) {
+		var divTitle = document.createElement('div');
+		divTitle.innerHTML = aTitleBody;
+		$(divTitle).css('width', '100%');
+		$(divTitle).css('font-size', 'larger');
+		$(divTitle).css('font-style', 'italic');
+		$(divTitle).css('margin-bottom', '17px');
+		$(divTitle).css('margin-top', '10px');
+	}
 
 	var iMonthLeft = document.createElement('i');
 	iMonthLeft.setAttribute("class", "fa fa-chevron-circle-left");
@@ -1402,6 +1411,7 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	var divMonthNavg = UiUtil.CreateTextFieldWithLabel("", divControl);
 	$(divMonthNavg).css('float', 'left');
 	$(divMonthNavg).css('width', '20%');
+	$(divMonthNavg).css('margin-top', '30px');
 
 	var divCol = document.createElement('div');
 	$(divCol).css('float', 'left');
@@ -1413,7 +1423,11 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	divCol.appendChild(divMonthNavg);
 	
 	var divPeriod = document.createElement('div');
-	divPeriod.appendChild(divTitle);
+	if (UiUtil.NotUndefineNotNullNotBlank(aTitleBody)) {
+		divPeriod.appendChild(divTitle);
+	}
+	$(divPeriod).css('float', 'left');
+	$(divPeriod).css('margin-bottom', '30px');
 	divPeriod.appendChild(divCol);
 
 	showDialogOkCancel(aTitleHeader, divPeriod, onOk, onCancel);

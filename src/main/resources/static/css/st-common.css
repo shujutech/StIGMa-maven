@@ -91,6 +91,7 @@ a.st-crud-menu {
 }
 .swal-title:first-child {
 	margin-top: 10px;
+	padding-bottom: 0px;
 }
 .swal-modal {
 	width: fit-content !important;
