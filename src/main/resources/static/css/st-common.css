@@ -89,3 +89,13 @@ a.st-crud-menu {
 .fa {
 	margin-right: 5px !important;
 }
+.swal-title:first-child {
+	margin-top: 10px;
+}
+.swal-modal {
+	width: fit-content !important;
+}
+.swal-button {
+	padding: 0px !important;
+	line-height: 3.25em;
+}
