@@ -89,14 +89,32 @@ a.st-crud-menu {
 .fa {
 	margin-right: 5px !important;
 }
+.date-picker {
+	z-index: 10010;
+}
 .swal-title:first-child {
 	margin-top: 10px;
 	padding-bottom: 0px;
 }
 .swal-modal {
 	width: fit-content !important;
+	z-index: 9990;
+}
+.swal-button:active {
+	background-color: grey;
+	color: white;
 }
 .swal-button {
 	padding: 0px !important;
 	line-height: 3.25em;
+	background-color: grey;
+    color: #555;
+}
+.swal-button--cancel {
+    color: #555;
+    background-color: #efefef;
+}
+.swal2-overflow {
+	overflow-x: visible;
+	overflow-y: visible;
 }

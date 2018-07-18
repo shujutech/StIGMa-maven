@@ -132,14 +132,16 @@ function dlgwaitRefresh() {
 		};
 	}
 } 
-function showDialogOkCancel(titleHtml, msgHtml, jsOk, jsCancel) {
-	startOkCancelNifty(titleHtml, msgHtml, jsOk, jsCancel);
+function showDialogOkCancel(titleHtml, msgHtml, jsOk, jsCancel, jsScript) {
+	startOkCancelNifty(titleHtml, msgHtml, jsOk, jsCancel, jsScript);
 };
-function startOkCancelNifty(titleHtml, msgHtml, jsOk, jsCancel) {
+function startOkCancelNifty(titleHtml, msgHtml, jsOk, jsCancel, jsScript) {
 	swal({
 		title: titleHtml,
 		content: msgHtml,
 		closeOnClickOutside: false,
+		customClass: 'swal2-overflow',
+		onOpen: jsScript,
 		buttons: true
 	})
 	.then((value) => {
@@ -416,8 +418,8 @@ function NumberWithComma(aNum) {
   };
 })(jQuery);
 var UiUtil = {};
-//UiUtil.ImgErrorBlink = "img/imgErrorBlink.gif";
-UiUtil.ImgErrorBlink = "img/imgErrorBlink.png";
+UiUtil.ImgErrorBlink = "img/imgErrorBlink.gif";
+//UiUtil.ImgErrorBlink = "img/imgErrorBlink.png";
 UiUtil.Months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 UiUtil.IsNum = function(aDgtMth) {
 	var strDgtMth = aDgtMth;
@@ -894,18 +896,6 @@ UiUtil.StorePrevObj = function(aName, aObj) {
 		localStorage.setItem(aName, JSON.stringify(newObj));
 	}
 };
-/*
-UiUtil.BeforeUnloadCheck = function(initialObject) {
-	var objBeforeEdit = jQuery.extend(true, {}, initialObject);
-	var objAfterEdit = initialObject;
-	return function() {
-		$('input').each(function() {
-			$(this).trigger('blur'); //each input event one by one... will be blured
-		});
-		return(UiUtil.BackNavi(objBeforeEdit, objAfterEdit));
-	};
-};
-*/
 UiUtil.BackNavi = function(aBeforeEdit, aAfterEdit) {
 	var beforeEdit = JSON.stringify(aBeforeEdit);
 	var afterEdit = JSON.stringify(aAfterEdit);
@@ -1172,6 +1162,7 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 
 	var spanPicker= document.createElement("span");
 	spanPicker.setAttribute("id", "dpk_" + rdmId);
+	$(spanPicker).css("margin", "auto");
 
 	var jsPicker = document.createElement("script");
 	jsPicker.setAttribute("type", "text/javascript");
@@ -1344,6 +1335,16 @@ UiUtil.NavigateMonth = function(aDirection, aDateStart, aIdMth) {
 	var jsDateEnd = UiUtil.DateMonthEnd(jsDateOutput);
 	UiUtil.SetDatePickerValue('dateEnd', jsDateEnd);
 };
+UiUtil.ExtractScript = function(scriptList) {
+	var fullScript = "";
+	for(var cntr = 0; cntr < scriptList.length; cntr++) { 
+		var eachScript = scriptList[cntr]; 
+		var scriptText = $(eachScript).html().replace("<![CDATA[", "").replace("]]>", "").replace(/\//g, '').trim(); 
+		fullScript += scriptText;
+	}
+	if (UiUtil.NotUndefineNotNullNotBlank(fullScript)) fullScript += ";";
+	return(fullScript);
+};
 UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateEnd, onOk, onCancel) {
 	startDialogWait();
 	var dateStart;
@@ -1390,11 +1391,13 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	iMonthLeft.setAttribute("class", "fa fa-chevron-circle-left");
 	$(iMonthLeft).css('font-size', 'larger');
 	$(iMonthLeft).css('cursor', 'pointer');
+	$(iMonthLeft).css('cssText', 'margin: 0px !important');
 	$(iMonthLeft).click(function() { UiUtil.NavigateMonth('minus', UiUtil.GetDatePickerValue('dateFrom'), 'monthAbbrv'); });
 	var iMonthRight = document.createElement('i');
 	iMonthRight.setAttribute("class", "fa fa-chevron-circle-right");
 	$(iMonthRight).css('font-size', 'larger');
 	$(iMonthRight).css('cursor', 'pointer');
+	$(iMonthRight).css('cssText', 'margin: 0px !important');
 	$(iMonthRight).click(function() { UiUtil.NavigateMonth('add', UiUtil.GetDatePickerValue('dateFrom'), 'monthAbbrv'); });
 	var spanMonthAbbrv = document.createElement('span');
 	spanMonthAbbrv.setAttribute("class", "unselectable");
@@ -1430,8 +1433,14 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	$(divPeriod).css('margin-bottom', '30px');
 	divPeriod.appendChild(divCol);
 
-	showDialogOkCancel(aTitleHeader, divPeriod, onOk, onCancel);
-	$('#modal-1').style('min-width', '600px', 'important');
+	var scriptList = $(divDateStart).find("script");	
+	var fullScript = UiUtil.ExtractScript(scriptList);
+
+	scriptList = $(divDateEnd).find("script");	
+	fullScript += UiUtil.ExtractScript(scriptList);
+	var jsFunc = new Function(fullScript);
+	
+	showDialogOkCancel(aTitleHeader, divPeriod, onOk, onCancel, jsFunc);
 	UiUtil.NavigateMonth('static', UiUtil.DateBEToDateJs(dateStart), 'monthAbbrv');
 	stopDialogWait();
 };
