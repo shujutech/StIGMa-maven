@@ -90,7 +90,7 @@ a.st-crud-menu {
 	margin-right: 5px !important;
 }
 .date-picker {
-	z-index: 10010;
+	z-index: 10010 !important;
 }
 .swal-title:first-child {
 	margin-top: 10px;
@@ -98,7 +98,7 @@ a.st-crud-menu {
 }
 .swal-modal {
 	width: fit-content !important;
-	z-index: 9990;
+	z-index: 999 !important;
 }
 .swal-button:active {
 	background-color: grey;
@@ -113,8 +113,4 @@ a.st-crud-menu {
 .swal-button--cancel {
     color: #555;
     background-color: #efefef;
-}
-.swal2-overflow {
-	overflow-x: visible;
-	overflow-y: visible;
 }

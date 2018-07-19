@@ -140,8 +140,11 @@ function startOkCancelNifty(titleHtml, msgHtml, jsOk, jsCancel, jsScript) {
 		title: titleHtml,
 		content: msgHtml,
 		closeOnClickOutside: false,
-		customClass: 'swal2-overflow',
-		onOpen: jsScript,
+		//className: 'swal2-overflow',
+		//onOpen: jsScript,
+		onOpen: function() {
+			console.log("sweeetlert..............");
+		},
 		buttons: true
 	})
 	.then((value) => {
@@ -1340,6 +1343,7 @@ UiUtil.ExtractScript = function(scriptList) {
 	for(var cntr = 0; cntr < scriptList.length; cntr++) { 
 		var eachScript = scriptList[cntr]; 
 		var scriptText = $(eachScript).html().replace("<![CDATA[", "").replace("]]>", "").replace(/\//g, '').trim(); 
+		//var scriptText = $(eachScript).html().replace("<!--[CDATA[", "").replace("]]-->", "").replace(/\//g, '').trim(); 
 		fullScript += scriptText;
 	}
 	if (UiUtil.NotUndefineNotNullNotBlank(fullScript)) fullScript += ";";
@@ -1435,10 +1439,11 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 
 	var scriptList = $(divDateStart).find("script");	
 	var fullScript = UiUtil.ExtractScript(scriptList);
-
 	scriptList = $(divDateEnd).find("script");	
 	fullScript += UiUtil.ExtractScript(scriptList);
 	var jsFunc = new Function(fullScript);
+	//$(divDateStart).find("script").remove();
+	//$(divDateEnd).find("script").remove();
 	
 	showDialogOkCancel(aTitleHeader, divPeriod, onOk, onCancel, jsFunc);
 	UiUtil.NavigateMonth('static', UiUtil.DateBEToDateJs(dateStart), 'monthAbbrv');
