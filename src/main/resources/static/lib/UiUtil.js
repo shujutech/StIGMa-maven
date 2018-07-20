@@ -137,15 +137,13 @@ function showDialogOkCancel(titleHtml, msgHtml, jsOk, jsCancel, jsScript) {
 };
 function startOkCancelNifty(titleHtml, msgHtml, jsOk, jsCancel, jsScript) {
 	swal({
-		title: titleHtml,
-		content: msgHtml,
-		closeOnClickOutside: false,
-		//className: 'swal2-overflow',
-		//onOpen: jsScript,
-		onOpen: function() {
-			console.log("sweeetlert..............");
-		},
-		buttons: true
+		title: titleHtml
+		, html: msgHtml
+		, showConfirmButton: true
+		, showCancelButton: true
+		, focusConfirm: true
+		//, className: 'swal2-overflow'
+		//, onOpen: jsScript
 	})
 	.then((value) => {
 		if (value) {
@@ -1170,8 +1168,10 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 	var jsPicker = document.createElement("script");
 	jsPicker.setAttribute("type", "text/javascript");
 
+	var dpkId = "'id': 'st_" + spanPicker.id + "'";
 	if (aUseSpanPicker === true) {
 		jsPicker.innerHTML = "\n" + "//<![CDATA[  " + "\n"
+		//+ " var opts = {" + dpkId + ", formElements:{" + dpkId + ", '" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false, positioned: '" + spanPicker.id + "'};"
 		+ "	var opts = {formElements:{'" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false, positioned: '" + spanPicker.id + "'};"
 		+ "	datePickerController.createDatePicker(opts);"
 		+ "\n" + "//]]>" + "\n";
@@ -1334,9 +1334,9 @@ UiUtil.NavigateMonth = function(aDirection, aDateStart, aIdMth) {
 	$('#' + aIdMth).html(strMth);
 
 	var jsDateStart = UiUtil.DateMonthStart(jsDateOutput);
-	UiUtil.SetDatePickerValue('dateFrom', jsDateStart);
+	UiUtil.SetDatePickerValue('st-dp-dateFrom', jsDateStart);
 	var jsDateEnd = UiUtil.DateMonthEnd(jsDateOutput);
-	UiUtil.SetDatePickerValue('dateEnd', jsDateEnd);
+	UiUtil.SetDatePickerValue('st-dp-dateEnd', jsDateEnd);
 };
 UiUtil.ExtractScript = function(scriptList) {
 	var fullScript = "";
@@ -1365,20 +1365,12 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 		dateEnd = UiUtil.DateForDisplay(UiUtil.DateMonthEnd(aDateEnd));
 	var divDateEnd = UiUtil.CreateDatePicker('To', dateEnd, dateEnd, "UiUtil", true , false);
 
-	$(divDateStart).attr('id', 'dateFrom');
-	$(divDateStart).css('float', 'left');
-	$(divDateStart).css('width', '40%');
-	$(divDateStart).css('cssText', 'display: inline-block !important');
-	$(divDateStart).css('text-align', 'left');
-	$(divDateStart).css('margin-right', '20px');
+	$(divDateStart).attr('id', 'st-dp-dateFrom');
+	$(divDateStart).css('cssText', 'float: left: width: 40%; display: inline-block !important; text-align: left; margin-right: 20px');
 	$(divDateStart).find('label').css('font-weight', 'normal');
 
-	$(divDateEnd).attr('id', 'dateEnd');
-	$(divDateEnd).css('float', 'left');
-	$(divDateEnd).css('width', '40%');
-	$(divDateEnd).css('cssText', 'display: inline-block !important');
-	$(divDateEnd).css('text-align', 'left');
-	$(divDateEnd).css('margin-right', '20px');
+	$(divDateEnd).attr('id', 'st-dp-dateEnd');
+	$(divDateEnd).css('cssText', 'float: left: width: 40%; display: inline-block !important; text-align: left; margin-right: 20px');
 	$(divDateEnd).find('label').css('font-weight', 'normal');
 	
 	if (UiUtil.NotUndefineNotNullNotBlank(aTitleBody)) {
@@ -1392,17 +1384,19 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	}
 
 	var iMonthLeft = document.createElement('i');
+	$(iMonthLeft).attr('id', 'st-dp-iMonthLeft');
 	iMonthLeft.setAttribute("class", "fa fa-chevron-circle-left");
-	$(iMonthLeft).css('font-size', 'larger');
-	$(iMonthLeft).css('cursor', 'pointer');
-	$(iMonthLeft).css('cssText', 'margin: 0px !important');
-	$(iMonthLeft).click(function() { UiUtil.NavigateMonth('minus', UiUtil.GetDatePickerValue('dateFrom'), 'monthAbbrv'); });
+	$(iMonthLeft).css('cssText', 'margin: 0px !important; font-size: larger; cursor: pointer');
+	$(document).ready(function() {
+		$("#st-dp-iMonthLeft").click(function() { UiUtil.NavigateMonth('minus', UiUtil.GetDatePickerValue('st-dp-dateFrom'), 'monthAbbrv'); });
+	});
 	var iMonthRight = document.createElement('i');
+	$(iMonthRight).attr('id', 'st-dp-iMonthRight');
 	iMonthRight.setAttribute("class", "fa fa-chevron-circle-right");
-	$(iMonthRight).css('font-size', 'larger');
-	$(iMonthRight).css('cursor', 'pointer');
-	$(iMonthRight).css('cssText', 'margin: 0px !important');
-	$(iMonthRight).click(function() { UiUtil.NavigateMonth('add', UiUtil.GetDatePickerValue('dateFrom'), 'monthAbbrv'); });
+	$(iMonthRight).css('cssText', 'margin: 0px !important; font-size: larger; cursor: pointer');
+	$(document).ready(function() {
+		$("#st-dp-iMonthRight").click(function() { UiUtil.NavigateMonth('add', UiUtil.GetDatePickerValue('st-dp-dateFrom'), 'monthAbbrv'); });
+	});
 	var spanMonthAbbrv = document.createElement('span');
 	spanMonthAbbrv.setAttribute("class", "unselectable");
 	$(spanMonthAbbrv).css('padding-left', '6px');
@@ -1418,7 +1412,7 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	var divMonthNavg = UiUtil.CreateTextFieldWithLabel("", divControl);
 	$(divMonthNavg).css('float', 'left');
 	$(divMonthNavg).css('width', '20%');
-	$(divMonthNavg).css('margin-top', '30px');
+	$(divMonthNavg).css('margin-top', '42px');
 
 	var divCol = document.createElement('div');
 	$(divCol).css('float', 'left');
@@ -1437,13 +1431,16 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	$(divPeriod).css('margin-bottom', '30px');
 	divPeriod.appendChild(divCol);
 
+	/*
 	var scriptList = $(divDateStart).find("script");	
 	var fullScript = UiUtil.ExtractScript(scriptList);
 	scriptList = $(divDateEnd).find("script");	
 	fullScript += UiUtil.ExtractScript(scriptList);
 	var jsFunc = new Function(fullScript);
+	*/
 	//$(divDateStart).find("script").remove();
 	//$(divDateEnd).find("script").remove();
+	var jsFunc = new Function();
 	
 	showDialogOkCancel(aTitleHeader, divPeriod, onOk, onCancel, jsFunc);
 	UiUtil.NavigateMonth('static', UiUtil.DateBEToDateJs(dateStart), 'monthAbbrv');

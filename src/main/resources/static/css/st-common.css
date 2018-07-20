@@ -92,25 +92,35 @@ a.st-crud-menu {
 .date-picker {
 	z-index: 10010 !important;
 }
-.swal-title:first-child {
+.swal2-title:first-child {
 	margin-top: 10px;
 	padding-bottom: 0px;
 }
-.swal-modal {
+.swal2-modal {
 	width: fit-content !important;
 	z-index: 999 !important;
 }
-.swal-button:active {
-	background-color: grey;
-	color: white;
+.swal2-popup .swal2-actions {
+    justify-content: flex-end !important;
+    margin: 0 !important;
 }
-.swal-button {
+button.swal2-styled:hover {
+	background-color: grey !important;
+	color: white !important;
+}
+button.swal2-styled {
 	padding: 0px !important;
-	line-height: 3.25em;
-	background-color: grey;
-    color: #555;
+	line-height: 2.25em !important;
+    color: #555 !important;
 }
-.swal-button--cancel {
+button.swal2-confirm {
+	background-color: grey !important;
+}
+.swal2-button--cancel {
     color: #555;
     background-color: #efefef;
+}
+.swal2-overflow {
+  overflow-x: visible;
+  overflow-y: visible;
 }
