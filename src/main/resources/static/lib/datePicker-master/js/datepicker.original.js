@@ -2328,13 +2328,12 @@ var datePickerController = (function datePickerController() {
     };
     datePicker.prototype.cumulativeOffset = function(element) {
         var t = 0, l = 0;
-        var tp = element.getBoundingClientRect().top + window.pageYOffset; 
         do {
             t += element.offsetTop  || 0;
             l += element.offsetLeft || 0;
             element = element.offsetParent;
         } while(element);
-        return [l, tp];
+        return [l, t];
     };
     datePicker.prototype.outOfRange = function(tmpDate) {
 
