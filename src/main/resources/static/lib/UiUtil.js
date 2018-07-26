@@ -142,6 +142,7 @@ function startOkCancelNifty(titleHtml, msgHtml, jsOk, jsCancel, jsScript) {
 		, showConfirmButton: true
 		, showCancelButton: true
 		, focusConfirm: true
+		, allowOutsideClick: false
 		//, className: 'swal2-overflow'
 		//, onOpen: jsScript
 	})
@@ -1102,6 +1103,9 @@ UiUtil.CreateTextFieldNoLabel = function(id, aValue) {
 UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName, aUseSpanPicker, aShowTime, aSlideIdx) {
 	var spanDay = document.createElement("span");
 	var rdmId = UiUtil.GenElementId(displayLabel, aSlideIdx);
+
+	$("#fd-y_" + rdmId).remove();
+
 	var tfDay = UiUtil.CreateTextFieldNoLabel("d_" + rdmId);
 	tfDay.setAttribute("size", 2);
 	tfDay.setAttribute("class", CLS_DATE_PICKER);
@@ -1168,16 +1172,17 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 	var jsPicker = document.createElement("script");
 	jsPicker.setAttribute("type", "text/javascript");
 
-	var dpkId = "'id': 'st_" + spanPicker.id + "'";
+	var dpkId = "'id': '" + tfYear.id + "'";
 	if (aUseSpanPicker === true) {
 		jsPicker.innerHTML = "\n" + "//<![CDATA[  " + "\n"
-		//+ " var opts = {" + dpkId + ", formElements:{" + dpkId + ", '" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false, positioned: '" + spanPicker.id + "'};"
-		+ "	var opts = {formElements:{'" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false, positioned: '" + spanPicker.id + "'};"
+		+ " var opts = {" + dpkId + ", formElements:{'" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false, positioned: '" + spanPicker.id + "'};"
+		//+ "	var opts = {formElements:{'" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false, positioned: '" + spanPicker.id + "'};"
 		+ "	datePickerController.createDatePicker(opts);"
 		+ "\n" + "//]]>" + "\n";
 	} else {
 		jsPicker.innerHTML = "\n" + "//<![CDATA[  " + "\n"
-		+ "	var opts = {formElements:{'" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false};"
+		+ "	var opts = {" + dpkId + ", formElements:{'" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false};"
+		//+ "	var opts = {formElements:{'" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false};"
 		+ "	datePickerController.createDatePicker(opts);"
 		+ "\n" + "//]]>" + "\n";
 	}
