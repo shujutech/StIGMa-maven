@@ -69,6 +69,9 @@
 			#divOther table td:nth-of-type(3) {
 				display: none;
 			}
+			#divEmpInfo .st-eachfield.st-row {
+				margin-right: 2.1em !important;
+			}
 			.column-text {
 				float: left;
 				width: 48%;
@@ -207,12 +210,10 @@
 	-webkit-animation: spin 2s linear infinite;
 	animation: spin 2s linear infinite;
 }
-
 @-webkit-keyframes spin {
 	0% { -webkit-transform: rotate(0deg); }
 	100% { -webkit-transform: rotate(360deg); }
 }
-
 @keyframes spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
@@ -275,11 +276,11 @@
 									</select>
 								</span>
 								<span>
-									<input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" onkeyup="UiForm.handleDollar(this, event, &quot;68464_ct&quot;)" autofocus>
+									<input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" autofocus data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, '68464_ct')">
 								</span>
 								<span class="st-symbol">.</span>
 								<span>
-									<input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" onkeyup="UiForm.handleCent(this, event)">
+									<input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" data-mask="00" data-mask-reverse="true">
 								</span>
 							</parentwrapper>
 						</div>
@@ -317,10 +318,12 @@
 					</div>
 					<div class="st-eachfield st-row">
 						<div class="st-label-area">
-							<label>No Of Children</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
+							<label>No Of Children</label>
+							<img src="img/imgErrorBlank.png" style="display: none;">
+							<span class="st-error-msg" style="display: none"></span>
 						</div>
 						<div class="st-input-area">
-							<input class="form-control" type="text" value="" size="2">
+							<input class="form-control" type="text" value="" size="2" data-mask="00">
 						</div>
 					</div>
 				</fieldset>

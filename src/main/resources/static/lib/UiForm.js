@@ -713,17 +713,6 @@ UiForm.prototype.createPhone = function(displayLabel, jsonMobile, listNdc, mpBas
 	return(result);
 };
 
-UiForm.handleDollar = function(el, ev, centid) {
-	el.value = el.value.replace(/\D/g, '');
-	el.value = UiForm.numberWithComma(el.value);
-	var code = ev.keyCode;
-	if (code === 190) {
-		UiUtil.GetActiveSlideElement(centid).focus();
-	}
-};
-UiForm.handleCent = function(el, ev, centid) {
-	el.value = el.value.replace(/\D/g, '');
-};
 UiForm.HandleMoney = function(aStrToHandle) {
 	var result = "";
 	if (UiUtil.NotUndefineNotNullNotBlank(aStrToHandle)) {

@@ -1666,6 +1666,14 @@ UiUtil.Json2Money = function(result, strValue) {
 		}
 	}
 };
+UiUtil.HandleDollar = function(el, ev, centid) {
+	var code = ev.keyCode;
+	if (code === 190) {
+		$("#" + centid).focus();
+	}
+};
+UiUtil.HandleCent = function(el, ev, centid) {
+};
 UiUtil.CreateMoney = function(displayLabel, jsonMoney, jsonPath) {
 	var	mnyName = UiUtil.GetRandom5();
 	var mnyValue = {};
@@ -1678,8 +1686,6 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, jsonPath) {
 	var crcy = UiUtil.CreateComboBox(undefined);
 	UiUtil.PopulateComboBoxWithValue(crcy, jsonMoney.currencies, mnyValue.currency);
 	crcy.setAttribute("id", mnyName + "_cy");
-//	crcy.setAttribute("onchange", "UiUtil.changeMoney('" + jsonPath + "' , this)");
-//	crcy.setAttribute("onblur", "UiUtil.changeMoney('" + jsonPath + "' , this)");
 
 	var spCrcy = document.createElement("span");
 	spCrcy.setAttribute("class", "symbol");
@@ -1688,8 +1694,8 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, jsonPath) {
 	var spDlr = document.createElement("span");
 	var tfDlr = UiUtil.CreateTextFieldNoLabel(mnyName + "_dl", mnyValue.dollar);
 	tfDlr.setAttribute("style", "text-align:right");
-//	tfDlr.setAttribute("onchange", "UiUtil.changeMoney('" + jsonPath + "' , this)");
-//	tfDlr.setAttribute("onblur", "UiUtil.changeMoney('" + jsonPath + "' , this)");
+	tfDlr.setAttribute("data-mask", "###,###,###,###,###,###,##0");
+	tfDlr.setAttribute("data-mask-reverse", "true");
 	spDlr.appendChild(tfDlr);
 
 	var decPoint = document.createElement("span");
@@ -1699,13 +1705,12 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, jsonPath) {
 	var spCnt = document.createElement("span");
 	var tfCnt = UiUtil.CreateTextFieldNoLabel(mnyName + "_ct", mnyValue.cent);
 	tfCnt.setAttribute("style", "text-align:right");
+	tfCnt.setAttribute("data-mask", "00");
 	tfCnt.setAttribute("size", 2);
-//	tfCnt.setAttribute("onchange", "UiUtil.changeMoney('" + jsonPath + "' , this)");
-//	tfCnt.setAttribute("onblur", "UiUtil.changeMoney('" + jsonPath + "' , this)");
 	spCnt.appendChild(tfCnt);
 
-	tfDlr.setAttribute("onkeyup", "UiUtil.handleDollar(this, event, \"" + tfCnt.id + "\")");
-	tfCnt.setAttribute("onkeyup", "UiUtil.handleCent(this, event)");
+	tfDlr.setAttribute("onkeyup", "UiUtil.HandleDollar(this, event, \"" + tfCnt.id + "\")");
+	tfCnt.setAttribute("onkeyup", "UiUtil.HandleCent(this, event)");
 
 	var parent = document.createElement("parentwrapper");
 	parent.appendChild(spCrcy);
