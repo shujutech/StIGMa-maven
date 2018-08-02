@@ -60,53 +60,6 @@ function createJqDlgInfo(dlgDiv) {
 		}
 	});
 } 
-var JqDlgIsInit = false;
-function createJqDlgWait(dlgDiv) {
-	$(function() {
-		var msgid = '#' + dlgDiv.id;
-		if (JqDlgIsInit === false) {
-			JqDlgIsInit = true;
-			$(msgid).dialog({
-				autoOpen: false,
-				modal: true,
-				buttons: {
-				}
-			});
-			function dgWaitJqOpen(jsAction) {
-				dgOkFunc = jsAction;
-				$(msgid).dialog('open');
-			};
-			$.fn.dgWaitJqOpen = dgWaitJqOpen;
-			function dgWaitJqClose() {
-				$(msgid).dialog('close');
-				$(msgid).remove();
-			};
-			$.fn.dgWaitJqClose = dgWaitJqClose;
-		} else {
-			$(msgid).dialog();
-		}
-	});
-}
-function showDialogWait(titleHtml, msgHtml, jsAction) {
-	var divId = 'singleton_wait';
-	var dlgDiv = $('#' + divId)[0];
-	if (dlgDiv === undefined) {
-		var dlgDiv = document.createElement('div');
-		dlgDiv.setAttribute('id', divId);
-	} 
-	if ($(dlgDiv).css('display') === 'block') return;
-	dlgDiv.setAttribute('title', titleHtml);
-	dlgDiv.style.padding = '5% 0';
-	dlgDiv.innerHTML = msgHtml;
-	if (jsAction === undefined) jsAction = doNothing;
-	document.body.appendChild(dlgDiv);
-	createJqDlgWait(dlgDiv);
-	if ($.fn.dgWaitJqOpen !== undefined) {;
-		$.fn.dgWaitJqOpen(jsAction);
-	}
-	$('.ui-dialog-titlebar').hide();
-	$('.ui-dialog').addClass('dlgwaitcss');
-}; 
 function stopWaitJQueryUi() {
 	if ($.fn.dgWaitJqClose !== undefined) {
 		$.fn.dgWaitJqClose();
@@ -143,8 +96,6 @@ function startOkCancelNifty(titleHtml, msgHtml, jsOk, jsCancel, jsScript) {
 		, showCancelButton: true
 		, focusConfirm: true
 		, allowOutsideClick: false
-		//, className: 'swal2-overflow'
-		//, onOpen: jsScript
 	})
 	.then((value) => {
 		if (value) {
@@ -193,17 +144,18 @@ function getFileNameFromPath(path) {
 	return ary[ary.length - 1];
 }; 
 function stopDialogWait() {
-	//stopWaitJQueryUi();
 	stopWaitNifty();
 }
-var waitMsg = 'Please Wait...';
 function startDialogWait() {
-	//startWaitJQueryUi();
-	startWaitNifty();
-};
-function startWaitJQueryUi() {
-	var htmlMsg = '<div class="loader"></div><div style="text-align:center;position:absolute;margin-top:-30px;left:0;right:0"><label>' + waitMsg + '</label></div>'; 
-	showDialogWait('', htmlMsg, doNothing);
+	var waitMsg = "<div class='loader'>Please Wait...</div>";
+	swal({
+		title: "" 
+		, html: waitMsg
+		, allowOutsideClick: false
+		, timer: 2000
+		, showCancelButton: false
+		, showConfirmButton: false
+	})
 };
 function displayMsg(type, mesg) {
 	var msgPlace = document.getElementById('msgArea');
