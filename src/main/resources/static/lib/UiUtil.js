@@ -531,7 +531,20 @@ UiUtil.GenElementId = function(displayLabel, aSlideIdx) {
 	}			
 	return(genId);
 };
-UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aSlideIdx, aId) {
+UiUtil.MaskNumberWithWidth = function(aSize) {
+	var theMask = "###,###,###,###,###,###,##0";
+	if (UiUtil.NotUndefineNotNullNotBlank(aSize)) {
+		theMask = "0";
+		for(var cntr = 1; cntr < parseInt(aSize); cntr++) {
+			if (theMask.length % 3 === 0) {
+				theMask = "," + theMask;
+			}
+			theMask = "#" + theMask;
+		}
+	}
+	return(theMask);
+};
+UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aSlideIdx, aId, aFieldType) {
 	var inputTxt = UiUtil.CreateTextFieldNoLabel(aId, aValue);
 
 	var genBind;
@@ -556,6 +569,13 @@ UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aSlideIdx, aId) {
 
 	if (aSize !== undefined) {
 		inputTxt.setAttribute("size", aSize);
+	}
+
+	if (aFieldType !== undefined) {
+		if (aFieldType == "integer") {
+			var theMask = UiUtil.MaskNumberWithWidth(aSize);
+			inputTxt.setAttribute("data-mask", theMask);
+		}
 	}
 
 	var widgetGrp = UiUtil.CreateTextFieldWithLabel(displayLabel, inputTxt);
@@ -1691,10 +1711,11 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, jsonPath) {
 	spCrcy.setAttribute("class", "symbol");
 	spCrcy.appendChild(crcy);
 
+	var theMask = UiUtil.MaskNumberWithWidth();
 	var spDlr = document.createElement("span");
 	var tfDlr = UiUtil.CreateTextFieldNoLabel(mnyName + "_dl", mnyValue.dollar);
 	tfDlr.setAttribute("style", "text-align:right");
-	tfDlr.setAttribute("data-mask", "###,###,###,###,###,###,##0");
+	tfDlr.setAttribute("data-mask", theMask);
 	tfDlr.setAttribute("data-mask-reverse", "true");
 	spDlr.appendChild(tfDlr);
 

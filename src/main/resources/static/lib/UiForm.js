@@ -206,8 +206,9 @@ UiForm.prototype.editAreaRecursion = function(aObj2Display, aMasterSet, aChildSe
 				// do nothing
 				cntrField++;
 			} else if ((fieldValue.data !== undefined && typeof(fieldValue.data) !== 'object') || fieldValue.lookup === true) { // atomic fields
+				var fieldType = fieldValue.type;
 				var labelName = fieldName;
-				var inputField = this.createWidget(aObjIdx, labelName, fieldValue, aParentFqnName);
+				var inputField = this.createWidget(aObjIdx, labelName, fieldValue, aParentFqnName, fieldType);
 				if (inputField !== null) {
 					if (aChildSet === null && rootSet === null && aNoChildSet === false) { // create new rootSet when order sequence grouping changes i.e. displayPosition 
 						if (aUnestedFeel === true)	
@@ -428,7 +429,7 @@ UiForm.populateMasterChildCmbx = function(childCmb, childFqn, aValue) {
 		});
 	}
 };
-UiForm.prototype.createWidget = function(aObjIdx, fieldName, fieldValue, aBasePath) {
+UiForm.prototype.createWidget = function(aObjIdx, fieldName, fieldValue, aBasePath, fieldType) {
 	var widgetGrp = null;
 	if (this.forPrint === false) {
 		var fieldFqnName = getJsonPath(aBasePath, fieldName);
@@ -442,7 +443,7 @@ UiForm.prototype.createWidget = function(aObjIdx, fieldName, fieldValue, aBasePa
 		} else if (fieldValue.type === "html" ) {
 			widgetGrp = UiUtil.CreateHtmlField(fieldName, fieldValue, fieldFqnName);
 		} else {
-			widgetGrp = UiUtil.CreateTextField(fieldName, fieldValue.data, fieldValue.size, aObjIdx);
+			widgetGrp = UiUtil.CreateTextField(fieldName, fieldValue.data, fieldValue.size, aObjIdx, undefined, fieldType);
 			var txtField = widgetGrp.getElementsByTagName("input")[0];
 			txtField.UiForm = this;
 		}
@@ -457,21 +458,6 @@ UiForm.prototype.createWidget = function(aObjIdx, fieldName, fieldValue, aBasePa
 		widgetGrp = UiUtil.CreateTextFieldWithLabel(fieldName, printTxt);
 	}
 	
-	/*
-	if (UiUtil.NotUndefineNotNull(widgetGrp) && UiUtil.NotUndefineNotNull(aObjIdx)) {
-		var widgetList = $(widgetGrp).find("input");
-		for(var cntr = 0; cntr < widgetList.length; cntr++) {
-			var widget = widgetList[cntr];
-			if (UiUtil.NotUndefineNotNull(widget)) {
-				var widgetId = $(widget).attr('id');
-				if (UiUtil.NotUndefineNotNull(widgetId)) {
-					widget.setAttribute('id', aObjIdx + "_" + widgetId);
-				}
-			}
-		}
-	}
-	*/
-
 	return(widgetGrp);
 };
 UiForm.prototype.createChildSet = function(masterSet, setName, isArray, seqNum) {
