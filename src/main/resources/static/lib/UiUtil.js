@@ -144,13 +144,21 @@ function getFileNameFromPath(path) {
 	return ary[ary.length - 1];
 }; 
 function stopDialogWait() {
-	swal.close();
+	if ($("#st-swal-dialog-wait").length != 0) {
+		swal.close();
+	}
 }
-function startDialogWait() {
-	var waitMsg = "<div style='margin-top: 20px'></div>" + "<div style='margin: auto' class='loadersmall'></div>" + "<div style='width: 100%; text-align: center; min-width: 500px; font-size: 20px; padding-top: 20px'>Please Wait...</div>";
+function startDialogWait(aWaitMsg) {
+	aWaitMsg = "Your data is being fetch"
+	var waitMsg = "<div style='margin-top: 20px; min-width: 500px'></div>" 
+	+ "<div style='margin: auto' class='loadersmall'></div>" 
+	+ "<div style='width: 100%; text-align: center; font-size: 20px; padding-top: 20px'>Please wait...</div>";
+	if (UiUtil.NotUndefineNotNullNotBlank(aWaitMsg)) {
+		waitMsg += "<div style='width: 100%; text-align: center; font-size: 13px; padding-top: 7px; font-weight: 300'>" + aWaitMsg + "<div>";
+	}
 	swal({
 		title: waitMsg
-		, html: ""
+		, html: "<div id='st-swal-dialog-wait' style='display: none'></div>"
 		, allowOutsideClick: false
 		, timer: 30000
 		, showCancelButton: false
@@ -1327,7 +1335,7 @@ UiUtil.ExtractScript = function(scriptList) {
 	return(fullScript);
 };
 UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateEnd, onOk, onCancel) {
-	//startDialogWait();
+	startDialogWait();
 	var dateStart;
 	if (aDateStart === undefined) 
 		dateStart = UiUtil.DateForDisplay(UiUtil.DateMonthStart(new Date()));
@@ -1421,7 +1429,7 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	
 	showDialogOkCancel(aTitleHeader, divPeriod, onOk, onCancel, jsFunc);
 	UiUtil.NavigateMonth('static', UiUtil.DateBEToDateJs(dateStart), 'monthAbbrv');
-	//stopDialogWait();
+	stopDialogWait();
 };
 UiUtil.NumberWithComma = function(aNum) {
 	return aNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
