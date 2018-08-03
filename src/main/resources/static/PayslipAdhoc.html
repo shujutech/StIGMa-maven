@@ -537,13 +537,13 @@
 				UiUtil.SetValByJsonPath(oneSlip, "Employer Cost", strEmployerCost);
 			};
 			var createSalarySlipScreen = function() {
-				startDialogWait();
+				UiUtil.DialogWaitStart();
 				var requestParam = {};
 
 				oneEmployee = {};
 				oneSlip = {"objectId":-1,"clasz":"biz.shujutech.o2rm.SalarySlipMalaysia","data":{"Batch Id":{"data":"","size":"32"},"Status":{"clasz":"biz.shujutech.o2rm.SalarySlipStatus","dataset":[]},"Company Alias":{"data":"","updateable":"false","size":"32"},"Company":{"data":"","updateable":"false","size":"32"},"Employee":{"data":"","updateable":"false","size":"32"},"Employee Alias":{"data":"","updateable":"false","size":"32"},"Designation":{"data":"","updateable":"false","size":"32"},"Salary Period":{"data":"","updateable":"false","size":"32"},"Employer Cost":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period From":{"data":"","type":"date"},"Net Pay":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period To":{"data":"","type":"date"},"Earnings":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[{"clasz":"biz.shujutech.o2rm.SalaryTransactionMalaysia","objectId":-1,"data":{"Sequence":{"data":"6","dontDisplay":true},"Descr":{"data":"Basic Salary","size":"50"},"Amount":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"System Generated":{"data":"true","type":"boolean","dontDisplay":true}}}]},"Deductions":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]},"Others":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]}}};
 				drawSalarySlipScreen();
-				stopDialogWait();
+				UiUtil.DialogWaitStop();
 			};
 			var dontDisplaySeq = function(aryTrx) {
 				for(var cntr in aryTrx) {
@@ -636,7 +636,7 @@
 				var aryData = objData.dataset;
 				var aryIdx = UiGrid.getAllCheckRow(edtbg);
 				if (aryIdx.length === 0) {
-					startDialogInfo('Error', "There is no record selected, please tick the checkbox at the " + aType + " table first!", UiGrid.doNothing);
+					UiUtil.DialogInfo('Error', "There is no record selected, please tick the checkbox at the " + aType + " table first!", UiUtil.DoNothing);
 				} else {
 					aryIdx.sort(function(left, right) {
 						return left < right; // sort descending
@@ -646,7 +646,7 @@
 						var idxData = idxTable - 1;
 						var data = UiUtil.GetVarByJsonPath(aryData[idxData], 'Sequence');
 						if (idxData + 1 >= aryData.length) {
-							startDialogInfo('Error', "Transaction is already down, cannot move down anymore");
+							UiUtil.DialogInfo('Error', "Transaction is already down, cannot move down anymore");
 							break;
 						} else {
 							var dataDown = UiUtil.GetVarByJsonPath(aryData[idxData + 1], 'Sequence');
@@ -669,7 +669,7 @@
 				var aryData = objData.dataset;
 				var aryIdx = UiGrid.getAllCheckRow(edtbg);
 				if (aryIdx.length === 0) {
-					startDialogInfo('Error', "There is no record selected, please tick the checkbox at the " + aType + " table first!", UiGrid.doNothing);
+					UiUtil.DialogInfo('Error', "There is no record selected, please tick the checkbox at the " + aType + " table first!", UiUtil.DoNothing);
 				} else {
 					aryIdx.sort(function(left, right) {
 						return left > right; // sort ascending 
@@ -679,7 +679,7 @@
 						var idxData = idxTable - 1;
 						var data = UiUtil.GetVarByJsonPath(aryData[idxData], 'Sequence');
 						if (idxData - 1 < 0 ) {
-							startDialogInfo('Error', "Transaction is already up, cannot move up anymore");
+							UiUtil.DialogInfo('Error', "Transaction is already up, cannot move up anymore");
 							break;
 						} else {
 							var dataUp = UiUtil.GetVarByJsonPath(aryData[idxData - 1], 'Sequence');
@@ -707,7 +707,7 @@
 				var eod = getEarningOrDeduction(aType, "Edit");
 				var idx = UiGrid.getFirstCheckRow(eod.netEdtbg);
 				if (idx === undefined) {
-					startDialogInfo('Error', "There is no record selected, please tick the checkbox at the " + aType + " table first!", UiGrid.doNothing);
+					UiUtil.DialogInfo('Error', "There is no record selected, please tick the checkbox at the " + aType + " table first!", UiUtil.DoNothing);
 				} else {
 					var toEdit = eod.netEdtbg.inputObj.dataset[idx - 1];
 					var okNewRq = okEditSalaryTrx("dialogSalaryTrx", toEdit, aType, eod.netEdtbg);
@@ -737,7 +737,7 @@
 				return(parseInt(nextSeq, 10) + 1);
 			};
 			var newSalaryTrx = function(aType) {
-				startDialogWait();
+				UiUtil.DialogWaitStart();
 				var requestParam = { targetClasz: oneSlip.clasz, trxType: aType };
 				UiUtil.BeAction(requestParam, "newField", "SalarySlipForm", function(respond) {
 					var eod = getEarningOrDeduction(aType, "New");
@@ -772,7 +772,7 @@
 				$("#dialogPayslip").find(".st-label-area").css('width', '20%');
 				$("#dialogPayslip").find("label:contains('Descr')").text(aType);
 				dlgWidget = $('<div></div>').append($($('#' + "dialogPayslip").find('.st-fs01')[0]).children());
-				showDialogOkCancel(netTitle, dlgWidget, okNewRq, cancelRq);
+				UiUtil.DialogOkCancel(netTitle, dlgWidget, okNewRq, cancelRq);
 			};
 			var getEarningOrDeduction = function(aType, aAction) {
 				var netEdtbg;
@@ -843,7 +843,7 @@
 				window.print();
 			};
 			var recomputeSalarySlip = function() {
-				startDialogWait();
+				UiUtil.DialogWaitStart();
 				var requestParam = {salarySlip: JSON.stringify(oneSlip) };
 				UiUtil.BeAction(requestParam, "recompute", "adhocPayslip", function(jsonObject) {
 					oneSlip = UiUtil.GetAryByJsonPath(jsonObject, "")[0];

@@ -1028,7 +1028,7 @@ UiForm.prototype.setupCtrl = function(cntrObj, strClsz, titleStr, basePath, fiel
 	}
 };
 UiForm.prototype.newFieldObject = function(fieldClasz, fieldsetTitle, basePath, targetName) {
-	startDialogWait();
+	UiUtil.DialogWaitStart();
 	var tempScrollTop = $(window).scrollTop();
 	var inpClasz = fieldClasz;
 	var fieldFqnName = getJsonPath(basePath, targetName);
@@ -1107,7 +1107,7 @@ UiForm.prototype.deleteFieldObject = function(fieldsetTitle, basePath, fieldName
 	}
 
 	var sendDelRq = this.sendDeleteFieldObject(this, fieldsetTitle, basePath, fieldName);
-	showDialogOkCancel('Confirm to Delete', 'Confirm to delete ' + fieldBrief + '?', sendDelRq);
+	UiUtil.DialogOkCancel('Confirm to Delete', 'Confirm to delete ' + fieldBrief + '?', sendDelRq);
 };
 UiForm.prototype.getFieldBrief = function(aDisplayField) {
 	var result = '';
@@ -1419,10 +1419,10 @@ UiForm.prototype.callSave2Backend = function() {
 	});
 };
 UiForm.prototype.warnOnSave = function(aWarnMsg, aWarnIgnore) {
-	UiUtil.ShowDialogYesNo('Confirm to Save', aWarnMsg, this.callSave2Backend(), aWarnIgnore);
+	UiUtil.DialogYesNo('Confirm to Save', aWarnMsg, this.callSave2Backend(), aWarnIgnore);
 };
 UiForm.prototype.saveObject2Backend = function(aThis) {
-	startDialogWait();
+	UiUtil.DialogWaitStart();
 	var editArea = aThis;
 	var requestParam = {parentOid: this.parentOid, object2Save: JSON.stringify(this.obj2Edit)};
 	UiUtil.BeAction(requestParam, 'save', this.baseUrl

@@ -25,146 +25,13 @@ $(document).ready(function(){
 		$('span',this).css('background-image',newimg);
 	}));
 }); 
-function doNothing() {}; 
-function startDialogInfo(titleHtml, msgHtml, jsAction) {
-	//startInfoJq(titleHtml, msgHtml, jsAction);
-	startInfoNifty(titleHtml, msgHtml, jsAction);
-}
-function startInfoJq(titleHtml, msgHtml, jsAction) {
-	var divId = Math.floor(Math.random()*90000) + 10000;
-	var dlgDiv = document.createElement('div');
-	dlgDiv.setAttribute('id', divId);
-	dlgDiv.setAttribute('title', titleHtml);
-	dlgDiv.innerHTML = '<label>' + msgHtml + '</label>';
-	if (jsAction === undefined) jsAction = doNothing;
-	document.body.appendChild(dlgDiv);
-	createJqDlgInfo(dlgDiv);
-	$.fn.dgInfoJq(jsAction);
-};
-function createJqDlgInfo(dlgDiv) {
-	$(function() {
-		var msgid = '#' + dlgDiv.id;
-		$(msgid).dialog({
-			autoOpen: false,
-			modal: true,
-			minHeight: 180,
-			minWidth: 350,
-			buttons: {
-				Ok: function() {'Ok'; dgOkFunc(); $(this).dialog('close'); $(msgid).remove();}
-			}
-		});
-		$.fn.dgInfoJq = dgInfoJq;
-		function dgInfoJq(jsAction) {
-			dgOkFunc = jsAction;
-			$(msgid).dialog('open');
-		}
-	});
-} 
-function stopWaitJQueryUi() {
-	if ($.fn.dgWaitJqClose !== undefined) {
-		$.fn.dgWaitJqClose();
-	}
-};
-function dlgwaitRefresh() {
-	if (Worker !== undefined) {
-		if (wkr === undefined) {
-			wkr = new Worker('js/DialogWaitH5.js');
-		}
-		wkr.onmessage = function(chgdata) {
-			var msgelem =	document.getElementById('dlgwait-msg');
-			if (msgelem !== undefined) {
-				if (chgdata.data % 2 === 0) {
-					msgelem.innerHTML = 'Please Wait...';
-				} else {
-					msgelem.innerHTML = 'Loading...';
-				}
-			} else {
-				wkr.terminate();
-				wkr = undefined;
-			}
-		};
-	}
-} 
-function showDialogOkCancel(titleHtml, msgHtml, jsOk, jsCancel, jsScript) {
-	startOkCancelNifty(titleHtml, msgHtml, jsOk, jsCancel, jsScript);
-};
-function startOkCancelNifty(titleHtml, msgHtml, jsOk, jsCancel, jsScript) {
-	swal({
-		title: titleHtml
-		, html: msgHtml
-		, showConfirmButton: true
-		, showCancelButton: true
-		, focusConfirm: true
-		, allowOutsideClick: false
-	})
-	.then((value) => {
-		if (value) {
-			jsOk();
-		} else {
-			jsCancel();
-		}
-	});
-};
-function startOkCancelJQueryUi(titleHtml, msgHtml, jsAction) {
-	var divId = Math.floor(Math.random()*90000) + 10000;
-	var dlgDiv = document.createElement('div');
-	dlgDiv.setAttribute('id', divId);
-	dlgDiv.setAttribute('title', titleHtml);
-	dlgDiv.innerHTML = '<label>' + msgHtml + '</label>';
-	if (typeof jsAction === 'undefined') jsAction = doNothing;
-	document.body.appendChild(dlgDiv);
-	createJqDlgOkCancel(dlgDiv);
-	$.fn.dgOkCancelJq(jsAction);
-};
-function createJqDlgOkCancel(dlgDiv) {
-	$(function() {
-		var msgid = '#' + dlgDiv.id;
-		$(msgid).dialog({
-			autoOpen: false,
-			modal: true,
-			minHeight: 180,
-			minWidth: 350,
-			buttons: {
-				Ok: function() {'Ok'; dgOkFunc(); $(this).dialog('close'); $(msgid).remove();},
-				Cancel: function() {'Cancel'; $(this).dialog('close'); $(msgid).remove();}
-			}
-		});
-		$.fn.dgOkCancelJq = dgOkCancelJq;
-		function dgOkCancelJq(jsAction) {
-			dgOkFunc = jsAction;
-			$(msgid).dialog('open');
-		}
-	});
-} 
 function getFileNameFromPath(path) {
-	var pos=path.indexOf('(')+1;
-	path=path.slice(pos,-1);
-	path=path.replace(/["']{1}/gi,'');
+	var pos = path.indexOf('(') + 1;
+	path = path.slice(pos, -1);
+	path = path.replace(/["']{1}/gi, '');
 	var ary = path.split('/');
 	return ary[ary.length - 1];
 }; 
-function stopDialogWait() {
-	if ($("#st-swal-dialog-wait").length != 0) {
-		swal.close();
-	}
-}
-function startDialogWait(aWaitMsg) {
-	aWaitMsg = "Your data is being fetch"
-	var waitMsg = "<div style='margin-top: 20px; min-width: 500px'></div>" 
-	+ "<div style='margin: auto' class='loadersmall'></div>" 
-	+ "<div style='width: 100%; text-align: center; font-size: 20px; padding-top: 20px'>Please wait...</div>";
-	if (UiUtil.NotUndefineNotNullNotBlank(aWaitMsg)) {
-		waitMsg += "<div style='width: 100%; text-align: center; font-size: 13px; padding-top: 7px; font-weight: 300'>" + aWaitMsg + "<div>";
-	}
-	swal({
-		title: waitMsg
-		, html: "<div id='st-swal-dialog-wait' style='display: none'></div>"
-		, allowOutsideClick: false
-		, timer: 30000
-		, showCancelButton: false
-		, showConfirmButton: false 
-	});
-};
 function displayMsg(type, mesg) {
 	var msgPlace = document.getElementById('msgArea');
 	if (msgPlace !== undefined && msgPlace !== null) {
@@ -235,9 +102,6 @@ function getJsonPath(aBasePath, fieldName) {
 	aBasePath += fieldName;
 	return(aBasePath);
 };
-//function onEdit(tableName) {
-//	enableDisableArea('editArea', 'listArea');
-//} 
 $(document).ready(function(){
 	$('.lityjtno').click(function () {
 		$('.lityjtno').css('background', 'url(img/loading.gif) no-repeat center center');
@@ -379,10 +243,115 @@ function NumberWithComma(aNum) {
     }
   };
 })(jQuery);
+
+
+
+/*
+ * 
+ * 
+ * Start of using UiUtil as the namespace instead of just 
+ * global function above. We migrate it over to use the UiUtil
+ * namespace gradually.
+ * 
+ * 
+*/
+
 var UiUtil = {};
 UiUtil.ImgErrorBlink = "img/imgErrorBlink.gif";
-//UiUtil.ImgErrorBlink = "img/imgErrorBlink.png";
 UiUtil.Months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+
+UiUtil.DialogWaitStart = function(aWaitMsg) {
+	var waitMsg = "<div style='margin-top: 20px; min-width: 500px'></div>" 
+	+ "<div style='margin: auto' class='loadersmall'></div>" 
+	+ "<div style='width: 100%; text-align: center; font-size: 20px; padding-top: 20px'>Please wait...</div>";
+	if (UiUtil.NotUndefineNotNullNotBlank(aWaitMsg)) {
+		waitMsg += "<div style='width: 100%; text-align: center; font-size: 13px; padding-top: 7px; font-weight: 300'>" + aWaitMsg + "<div>";
+	}
+	swal({
+		title: waitMsg
+		, html: "<div id='st-swal-dialog-wait' style='display: none'></div>"
+		, allowOutsideClick: false
+		, timer: 30000
+		, showCancelButton: false
+		, showConfirmButton: false 
+	});
+};
+UiUtil.DialogWaitStop = function() {
+	if ($("#st-swal-dialog-wait").length != 0) {
+		swal.close();
+	}
+};
+UiUtil.DialogYesNo = function(titleHtml, msgHtml, jsYes, jsNo) {
+	var strType = undefined;
+	if (typeof msgHtml === "string") {
+		msgHtml = "<div style='display: block; margin-bottom: 30px'>" + msgHtml + "</div>";
+		strType = 'question';
+	}
+	swal({
+		title: titleHtml
+		, html: msgHtml
+		, type: strType
+		, showConfirmButton: true
+		, showCancelButton: true
+		, confirmButtonText: 'Yes'
+		, cancelButtonText: 'No'
+		, focusConfirm: true
+		, allowOutsideClick: false
+	})
+	.then((value) => {
+		if (value) {
+			if (UiUtil.NotUndefineNotNullNotBlank(jsYes)) {
+				jsYes();
+			}
+		} else {
+			if (UiUtil.NotUndefineNotNullNotBlank(jsNo)) {
+				jsNo();
+			}
+		}
+	});
+};
+UiUtil.DialogOkCancel = function(titleHtml, msgHtml, jsOk, jsCancel) {
+	var strType = undefined;
+	if (typeof msgHtml === "string") {
+		msgHtml = "<div style='display: block; margin-bottom: 30px'>" + msgHtml + "</div>";
+		strType = 'question';
+	}
+	swal({
+		title: titleHtml
+		, html: msgHtml
+		, type: strType
+		, showConfirmButton: true
+		, showCancelButton: true
+		, focusConfirm: true
+		, allowOutsideClick: false
+	})
+	.then((value) => {
+		if (value) {
+			if (UiUtil.NotUndefineNotNullNotBlank(jsOk)) {
+				jsOk();
+			}
+		} else {
+			if (UiUtil.NotUndefineNotNullNotBlank(jsCancel)) {
+				jsCancel();
+			}
+		}
+	});
+};
+UiUtil.DialogInfo = function(titleHtml, msgHtml, jsAction) {
+	swal({
+		title: titleHtml
+		, html: msgHtml
+		, showConfirmButton: true
+		, showCancelButton: false 
+		, focusConfirm: true
+		, allowOutsideClick: false
+	})
+	.then((value) => {
+		if (UiUtil.NotUndefineNotNullNotBlank(jsAction)) {
+			jsAction();
+		}
+	});
+};
 UiUtil.IsNum = function(aDgtMth) {
 	var strDgtMth = aDgtMth;
 	if (typeof aDgtMth !== "string") {
@@ -540,10 +509,6 @@ UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aSlideIdx, aId, a
 
 	var widgetGrp = UiUtil.CreateTextFieldWithLabel(displayLabel, inputTxt);
 	return(widgetGrp);
-};
-UiUtil.DialogInfo = function(titleHtml, msgHtml, jsAction) {
-	stopDialogWait();
-	startInfoNifty(titleHtml, msgHtml, jsAction);
 };
 UiUtil.CheckJsonBlank = function(aJson, aName, aErrorMsg) {
 	var result = false;
@@ -772,7 +737,7 @@ UiUtil.CallBackendJson = function (aUrl, aMsg, aSuccFunc, aFailFunc, aFinallyFun
 			}
 		});
 	} else {
-		UiUtil.ShowDialogInfo("Error", "Cannot do backend call, invalid JSON: " + aMsg);
+		UiUtil.DialogInfo("Error", "Cannot do backend call, invalid JSON: " + aMsg);
 		aFinallyFunc();
 	}
 	return(result);
@@ -781,7 +746,7 @@ UiUtil.CallBackend = function (aUrl, aMsg, aSuccFunc, aFailFunc, aFinallyFunc, a
 	return(UiUtil.CallBackendJson(aUrl, aMsg, aSuccFunc, aFailFunc, aFinallyFunc, aNoOkMsg));
 };
 UiUtil.BeAction = function(aData, aActionKeyword, aUrl, aSuccFunc, aFailFunc, aMoreData) { 
-	startDialogWait();
+	UiUtil.DialogWaitStart();
 	var theUrl = aUrl + '?type=' + aActionKeyword;
 	var requestParam = {parentOid: this.parentOid, data: JSON.stringify(aData)};
 	if (UiUtil.NotUndefineNotNull(aMoreData)) {
@@ -798,13 +763,13 @@ UiUtil.BeAction = function(aData, aActionKeyword, aUrl, aSuccFunc, aFailFunc, aM
 		}
 	}
 	, function() { 
-		stopDialogWait(); 
+		UiUtil.DialogWaitStop(); 
 	}
 	, true 
 	);
 };
 UiUtil.BeActionHtml= function(aData, aActionKeyword, aUrl, aSuccFunc, aFailFunc, aMoreData) { 
-	startDialogWait();
+	UiUtil.DialogWaitStart();
 	var theUrl = aUrl + '?type=' + aActionKeyword;
 	var requestParam = {parentOid: this.parentOid, data: JSON.stringify(aData)};
 	if (UiUtil.NotUndefineNotNull(aMoreData)) {
@@ -821,7 +786,7 @@ UiUtil.BeActionHtml= function(aData, aActionKeyword, aUrl, aSuccFunc, aFailFunc,
 		}
 	}
 	, function() { 
-		stopDialogWait(); 
+		UiUtil.DialogWaitStop(); 
 	}
 	, true 
 	);
@@ -882,7 +847,7 @@ UiUtil.BackNavi = function(aBeforeEdit, aAfterEdit) {
 	var beforeEdit = JSON.stringify(aBeforeEdit);
 	var afterEdit = JSON.stringify(aAfterEdit);
 	if (beforeEdit !== afterEdit) {
-		stopDialogWait();
+		UiUtil.DialogWaitStop();
 		//$("#wait-loading").css("display", "none"); // this for only one element
 		$('[id="wait-loading"]').css("display", "none"); // for mutiple element with the same id
 		return("All changes will be lost...");
@@ -902,7 +867,7 @@ UiUtil.CallFunctionOrGoto = function(aOnCancelGoto) {
 			UiUtil.loadHRef(aOnCancelGoto);
 		}
 	} else {
-		startDialogWait();
+		UiUtil.DialogWaitStart();
 		window.history.go(-1);
 	}
 };
@@ -910,7 +875,7 @@ UiUtil.CancelEdit = function(aOnCancelGoto) {
 	if (UiUtil.NotUndefineNotNull(window.onbeforeunload)) {
 		var changeAlertMsg = window.onbeforeunload();
 		if (changeAlertMsg !== null) {
-			showDialogOkCancel('Confirm to Cancel', 'You have made changes, confirm to cancel?', function() {
+			UiUtil.DialogOkCancel('Confirm to Cancel', 'You have made changes, confirm to cancel?', function() {
 				window.onbeforeunload = null;
 				UiUtil.CallFunctionOrGoto(aOnCancelGoto);
 			});
@@ -1219,15 +1184,6 @@ UiUtil.CreateCheckBox = function(displayLabel, aValue) {
 UiUtil.IsNumeric = function(num) {
   return !isNaN(num);
 };
-UiUtil.ShowDialogYesNo = function(titleHtml, msgHtml, jsYes, jsNo) {
-	startYesNoNifty(titleHtml, msgHtml, jsYes, jsNo);
-};
-UiUtil.ShowDialogOkCancel = function(titleHtml, msgHtml, jsOk, jsCancel) {
-	startOkCancelNifty(titleHtml, msgHtml, jsOk, jsCancel);
-};
-UiUtil.ShowDialogInfo = function(titleHtml, msgHtml, jsAction) {
-	startInfoNifty(titleHtml, msgHtml, jsAction);
-};
 UiUtil.CallBackendHtml = function (aUrl, aMsg, aSuccFunc, aFailFunc, aFinallyFunc, aNoOkMsg) {
 	if (UiUtil.NotUndefineNotNullNotBlank(aMsg) === false) {
 		console.log("WARN, calling to UiUtil.CallBackend with empty HTML value in aMsg");
@@ -1310,7 +1266,7 @@ UiUtil.NavigateMonth = function(aDirection, aDateStart, aIdMth) {
 		numMth--;
 	} else if (aDirection === 'static') {
 	} else {
-		startDialogInfo('Error', "Internal application/javascript error!");
+		UiUtil.DialogInfo('Error', "Internal application/javascript error!");
 		return;	
 	}
 	var jsDateOutput = new Date(jsDateInput.getFullYear(), numMth, jsDateInput.getDate());
@@ -1335,7 +1291,7 @@ UiUtil.ExtractScript = function(scriptList) {
 	return(fullScript);
 };
 UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateEnd, onOk, onCancel) {
-	startDialogWait();
+	UiUtil.DialogWaitStart();
 	var dateStart;
 	if (aDateStart === undefined) 
 		dateStart = UiUtil.DateForDisplay(UiUtil.DateMonthStart(new Date()));
@@ -1427,9 +1383,9 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	//$(divDateEnd).find("script").remove();
 	var jsFunc = new Function();
 	
-	showDialogOkCancel(aTitleHeader, divPeriod, onOk, onCancel, jsFunc);
+	UiUtil.DialogOkCancel(aTitleHeader, divPeriod, onOk, onCancel, jsFunc);
 	UiUtil.NavigateMonth('static', UiUtil.DateBEToDateJs(dateStart), 'monthAbbrv');
-	stopDialogWait();
+	UiUtil.DialogWaitStop();
 };
 UiUtil.NumberWithComma = function(aNum) {
 	return aNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
