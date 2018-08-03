@@ -144,18 +144,18 @@ function getFileNameFromPath(path) {
 	return ary[ary.length - 1];
 }; 
 function stopDialogWait() {
-	stopWaitNifty();
+	swal.close();
 }
 function startDialogWait() {
-	var waitMsg = "<div class='loader'>Please Wait...</div>";
+	var waitMsg = "<div style='margin-top: 20px'></div>" + "<div style='margin: auto' class='loadersmall'></div>" + "<div style='width: 100%; text-align: center; min-width: 500px; font-size: 20px; padding-top: 20px'>Please Wait...</div>";
 	swal({
-		title: "" 
-		, html: waitMsg
+		title: waitMsg
+		, html: ""
 		, allowOutsideClick: false
-		, timer: 2000
+		, timer: 30000
 		, showCancelButton: false
-		, showConfirmButton: false
-	})
+		, showConfirmButton: false 
+	});
 };
 function displayMsg(type, mesg) {
 	var msgPlace = document.getElementById('msgArea');
@@ -524,7 +524,7 @@ UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aSlideIdx, aId, a
 	}
 
 	if (aFieldType !== undefined) {
-		if (aFieldType == "integer") {
+		if (aFieldType === "integer") {
 			var theMask = UiUtil.MaskNumberWithWidth(aSize);
 			inputTxt.setAttribute("data-mask", theMask);
 		}
@@ -1327,7 +1327,7 @@ UiUtil.ExtractScript = function(scriptList) {
 	return(fullScript);
 };
 UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateEnd, onOk, onCancel) {
-	startDialogWait();
+	//startDialogWait();
 	var dateStart;
 	if (aDateStart === undefined) 
 		dateStart = UiUtil.DateForDisplay(UiUtil.DateMonthStart(new Date()));
@@ -1421,7 +1421,7 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	
 	showDialogOkCancel(aTitleHeader, divPeriod, onOk, onCancel, jsFunc);
 	UiUtil.NavigateMonth('static', UiUtil.DateBEToDateJs(dateStart), 'monthAbbrv');
-	stopDialogWait();
+	//stopDialogWait();
 };
 UiUtil.NumberWithComma = function(aNum) {
 	return aNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
