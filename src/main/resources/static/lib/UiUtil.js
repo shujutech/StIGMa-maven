@@ -473,7 +473,7 @@ UiUtil.MaskNumberWithWidth = function(aSize) {
 	}
 	return(theMask);
 };
-UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aSlideIdx, aId, aFieldType) {
+UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aSlideIdx, aId, aFieldType, aFieldMask) {
 	var inputTxt = UiUtil.CreateTextFieldNoLabel(aId, aValue);
 
 	var genBind;
@@ -500,10 +500,17 @@ UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aSlideIdx, aId, a
 		inputTxt.setAttribute("size", aSize);
 	}
 
-	if (aFieldType !== undefined) {
-		if (aFieldType === "integer") {
-			var theMask = UiUtil.MaskNumberWithWidth(aSize);
-			inputTxt.setAttribute("data-mask", theMask);
+	if (UiUtil.NotUndefineNotNull(aFieldMask)) {
+		inputTxt.setAttribute("data-mask", aFieldMask);
+		var maskPlaceholder = aFieldMask.replace(/0/g , " ");
+		maskPlaceholder = maskPlaceholder.replace(/#/g , " ");
+		inputTxt.setAttribute("placeholder", maskPlaceholder);
+	} else {
+		if (UiUtil.NotUndefineNotNull(aFieldType)) {
+			if (aFieldType === "integer") {
+				var theMask = UiUtil.MaskNumberWithWidth(aSize);
+				inputTxt.setAttribute("data-mask", theMask);
+			}
 		}
 	}
 

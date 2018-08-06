@@ -207,8 +207,9 @@ UiForm.prototype.editAreaRecursion = function(aObj2Display, aMasterSet, aChildSe
 				cntrField++;
 			} else if ((fieldValue.data !== undefined && typeof(fieldValue.data) !== 'object') || fieldValue.lookup === true) { // atomic fields
 				var fieldType = fieldValue.type;
+				var fieldMask = fieldValue.mask;
 				var labelName = fieldName;
-				var inputField = this.createWidget(aObjIdx, labelName, fieldValue, aParentFqnName, fieldType);
+				var inputField = this.createWidget(aObjIdx, labelName, fieldValue, aParentFqnName, fieldType, fieldMask);
 				if (inputField !== null) {
 					if (aChildSet === null && rootSet === null && aNoChildSet === false) { // create new rootSet when order sequence grouping changes i.e. displayPosition 
 						if (aUnestedFeel === true)	
@@ -429,7 +430,7 @@ UiForm.populateMasterChildCmbx = function(childCmb, childFqn, aValue) {
 		});
 	}
 };
-UiForm.prototype.createWidget = function(aObjIdx, fieldName, fieldValue, aBasePath, fieldType) {
+UiForm.prototype.createWidget = function(aObjIdx, fieldName, fieldValue, aBasePath, fieldType, fieldMask) {
 	var widgetGrp = null;
 	if (this.forPrint === false) {
 		var fieldFqnName = getJsonPath(aBasePath, fieldName);
@@ -443,7 +444,7 @@ UiForm.prototype.createWidget = function(aObjIdx, fieldName, fieldValue, aBasePa
 		} else if (fieldValue.type === "html" ) {
 			widgetGrp = UiUtil.CreateHtmlField(fieldName, fieldValue, fieldFqnName);
 		} else {
-			widgetGrp = UiUtil.CreateTextField(fieldName, fieldValue.data, fieldValue.size, aObjIdx, undefined, fieldType);
+			widgetGrp = UiUtil.CreateTextField(fieldName, fieldValue.data, fieldValue.size, aObjIdx, undefined, fieldType, fieldMask);
 			var txtField = widgetGrp.getElementsByTagName("input")[0];
 			txtField.UiForm = this;
 		}
