@@ -206,6 +206,8 @@
 		<script type="text/javascript" src="lib/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
 		<script type="text/javascript" src="lib/datePicker-master/js/datepicker.js"></script>
 		<script type="text/javascript" src="lib/sweetalert2.all.min.js"></script>
+		<script type="text/javascript" src="lib/vue.js"></script>
+		<script type="text/javascript" src="lib/knockout-3.4.2.js"></script>
 
 		<script type='text/javascript' src='js/editablegrid-master/editablegrid.js'></script>
 		<script type='text/javascript' src='js/editablegrid-master/editablegrid_charts.js'></script>
@@ -244,20 +246,25 @@
 							<label>Monthly Salary</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
 						</div>
 						<div class="st-input-area">
-							<parentwrapper>
+							<div>
 								<span class="st-symbol">
 									<select class="custom-select" style="width:90px" id="68464_cy">
 										<option value="MYR">MYR</option>
 									</select>
 								</span>
 								<span>
-									<input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" autofocus data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, '68464_ct')">
+									<input class="form-control" type="text" value="" id="68464_dl" 
+									style="text-align:right" 
+									autofocus 
+									data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" 
+									v-model="dt_basic_pay_dollar"
+									onkeyup="UiUtil.HandleDollar(this, event, '68464_ct')">
 								</span>
 								<span class="st-symbol">.</span>
 								<span>
-									<input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" data-mask="00" data-mask-reverse="true">
+									<input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" data-mask="00">
 								</span>
-							</parentwrapper>
+							</div>
 						</div>
 					</div>
 					<div class="st-eachfield st-row">
@@ -305,7 +312,7 @@
 			</div>
 		</div>
 
-		<div class="each-body">
+		<div id="body_payslip" class="each-body">
 			<div id="divFlipSlip" onclick="UiUtil.FlipUpDown('divPayslip')">
 				<h2 style="font-size:1.5rem;padding-left:5px">Payslip</h2>
 			</div>
@@ -324,7 +331,9 @@
 									<span class="st-error-msg" style="display:none"></span>
 								</div>
 								<div class="st-input-area">
-									<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd" size="50" style="text-align:center">
+									<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd" size="50" style="text-align:center" 
+									data-bind="value: dt_company_name1.data"
+									>
 								</div>
 							</div>
 						</div>
@@ -367,7 +376,9 @@
 											<span class="st-error-msg" style="display:none"></span>
 										</div>
 										<div class="st-input-area">
-											<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates" size="50">
+											<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates" size="50"
+											v-model="dt_employee_name"
+											>
 										</div>
 									</div>
 								</div>
@@ -542,6 +553,20 @@
 
 				oneEmployee = {};
 				oneSlip = {"objectId":-1,"clasz":"biz.shujutech.o2rm.SalarySlipMalaysia","data":{"Batch Id":{"data":"","size":"32"},"Status":{"clasz":"biz.shujutech.o2rm.SalarySlipStatus","dataset":[]},"Company Alias":{"data":"","updateable":"false","size":"32"},"Company":{"data":"","updateable":"false","size":"32"},"Employee":{"data":"","updateable":"false","size":"32"},"Employee Alias":{"data":"","updateable":"false","size":"32"},"Designation":{"data":"","updateable":"false","size":"32"},"Salary Period":{"data":"","updateable":"false","size":"32"},"Employer Cost":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period From":{"data":"","type":"date"},"Net Pay":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period To":{"data":"","type":"date"},"Earnings":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[{"clasz":"biz.shujutech.o2rm.SalaryTransactionMalaysia","objectId":-1,"data":{"Sequence":{"data":"6","dontDisplay":true},"Descr":{"data":"Basic Salary","size":"50"},"Amount":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"System Generated":{"data":"true","type":"boolean","dontDisplay":true}}}]},"Deductions":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]},"Others":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]}}};
+
+dt_employee_name = "William B. Gates";
+vueAdhocPayslip = new Vue({
+	el: '#body_payslip',
+	data: {
+		dt_employee_name
+	}
+});
+dt_company_name1 = UiUtil.GetVarByJsonPath(oneSlip, "Company");
+var kncAdhocPayslip = function(companyName) {
+    dt_company_name1.data= ko.observable(companyName);
+};
+ko.applyBindings(new kncAdhocPayslip("Start Sdn Bhd")); 
+
 				drawSalarySlipScreen();
 				UiUtil.DialogWaitStop();
 			};
@@ -882,6 +907,7 @@
 				createSalarySlipScreen(function() {});
 				dialogArea = new UiForm('dialogArea');
 			} ;
+
 		</script>
 	</body>
 </html>
