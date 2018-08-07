@@ -19,6 +19,9 @@ input {
 select {
 	width: auto !important;
 }
+span {
+	float: left;
+}
 legend {
 	width: fit-content;
 	font-weight: bold;
@@ -88,13 +91,14 @@ parentwrapper {
 	min-width:15px;
 }
 .st-array-widget {
-	text-align: right;
+	display: inline-block;
 	border-style: none;
 	background: none;
 	margin-right: 5px;
 	width: 99%;
 }
 .st-array-btn {
+	float: right;
 	margin-left: 4px;
 	cursor: pointer;
 }
