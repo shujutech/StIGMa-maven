@@ -207,7 +207,6 @@
 		<script type="text/javascript" src="lib/datePicker-master/js/datepicker.js"></script>
 		<script type="text/javascript" src="lib/sweetalert2.all.min.js"></script>
 		<script type="text/javascript" src="lib/vue.js"></script>
-		<script type="text/javascript" src="lib/knockout-3.4.2.js"></script>
 
 		<script type='text/javascript' src='js/editablegrid-master/editablegrid.js'></script>
 		<script type='text/javascript' src='js/editablegrid-master/editablegrid_charts.js'></script>
@@ -257,7 +256,6 @@
 									style="text-align:right" 
 									autofocus 
 									data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" 
-									v-model="dt_basic_pay_dollar"
 									onkeyup="UiUtil.HandleDollar(this, event, '68464_ct')">
 								</span>
 								<span class="st-symbol">.</span>
@@ -332,7 +330,7 @@
 								</div>
 								<div class="st-input-area">
 									<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd" size="50" style="text-align:center" 
-									data-bind="value: dt_company_name1.data"
+									v-model="dt_company"
 									>
 								</div>
 							</div>
@@ -377,7 +375,7 @@
 										</div>
 										<div class="st-input-area">
 											<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates" size="50"
-											v-model="dt_employee_name"
+											v-model="dt_employee"
 											>
 										</div>
 									</div>
@@ -554,18 +552,15 @@
 				oneEmployee = {};
 				oneSlip = {"objectId":-1,"clasz":"biz.shujutech.o2rm.SalarySlipMalaysia","data":{"Batch Id":{"data":"","size":"32"},"Status":{"clasz":"biz.shujutech.o2rm.SalarySlipStatus","dataset":[]},"Company Alias":{"data":"","updateable":"false","size":"32"},"Company":{"data":"","updateable":"false","size":"32"},"Employee":{"data":"","updateable":"false","size":"32"},"Employee Alias":{"data":"","updateable":"false","size":"32"},"Designation":{"data":"","updateable":"false","size":"32"},"Salary Period":{"data":"","updateable":"false","size":"32"},"Employer Cost":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period From":{"data":"","type":"date"},"Net Pay":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period To":{"data":"","type":"date"},"Earnings":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[{"clasz":"biz.shujutech.o2rm.SalaryTransactionMalaysia","objectId":-1,"data":{"Sequence":{"data":"6","dontDisplay":true},"Descr":{"data":"Basic Salary","size":"50"},"Amount":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"System Generated":{"data":"true","type":"boolean","dontDisplay":true}}}]},"Deductions":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]},"Others":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]}}};
 
-dt_employee_name = "William B. Gates";
+var dt_employee = "William B. Gates";
+var dt_company = "Shujutech Incoporation";
 vueAdhocPayslip = new Vue({
 	el: '#body_payslip',
 	data: {
-		dt_employee_name
+		dt_employee: dt_employee
+		, dt_company
 	}
 });
-dt_company_name1 = UiUtil.GetVarByJsonPath(oneSlip, "Company");
-var kncAdhocPayslip = function(companyName) {
-    dt_company_name1.data= ko.observable(companyName);
-};
-ko.applyBindings(new kncAdhocPayslip("Start Sdn Bhd")); 
 
 				drawSalarySlipScreen();
 				UiUtil.DialogWaitStop();

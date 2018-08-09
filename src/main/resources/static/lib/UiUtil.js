@@ -476,22 +476,24 @@ UiUtil.MaskNumberWithWidth = function(aSize) {
 UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aSlideIdx, aId, aFieldType, aFieldMask) {
 	var inputTxt = UiUtil.CreateTextFieldNoLabel(aId, aValue);
 
-	var genBind;
-	var genId;
+	var genDataId;
+	var genElementId;
 	if (UiUtil.NotUndefineNotNullNotBlank(displayLabel)) {
-		genBind = UiUtil.TitleCaseToCamelCase(displayLabel);
-		genId = "wt_" + genBind;
-		inputTxt.setAttribute("data-bind", "value: " + genBind);
+		var dataName = UiUtil.TitleCaseToCamelCase(displayLabel);
+		genElementId = "wt_" + dataName;
+		genDataId = "dt_" + dataName;
 	}
 
 	if (UiUtil.NotUndefineNotNullNotBlank(aId)) {
 		inputTxt.setAttribute("id", aId);
 	} else {
-		if (UiUtil.NotUndefineNotNullNotBlank(genId)) {
+		if (UiUtil.NotUndefineNotNullNotBlank(genElementId)) {
 			if (UiUtil.NotUndefineNotNullNotBlank(aSlideIdx)) {
-				inputTxt.setAttribute("id", aSlideIdx + "_" + genId);
+				inputTxt.setAttribute("id", aSlideIdx + "_" + genElementId);
+				inputTxt.setAttribute("v-model", aSlideIdx + "_" + genDataId);
 			} else {
-				inputTxt.setAttribute("id", genId);
+				inputTxt.setAttribute("id", genElementId);
+				inputTxt.setAttribute("v-model", genDataId);
 			}
 		}			
 	}
