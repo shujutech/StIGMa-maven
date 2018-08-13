@@ -188,7 +188,7 @@ UiForm.prototype.displayUiForm = function(aLocationId, aObj2Edit, aIdx, aBaseUrl
 UiForm.prototype.editAreaRecursion = function(aObj2Display, aMasterSet, aChildSet, aParentFqnName, aObjName, aObjIdx, aUnestedFeel, aAvoidRecursive, aSetNum, aNoChildSet) {
 	if(aNoChildSet === undefined) aNoChildSet = false;
 	var cntrField = 0;
-	aParentFqnName = getJsonPath(aParentFqnName, aObjName);
+	aParentFqnName = UiUtil.GetJsonPath(aParentFqnName, aObjName);
 	var rootSet = null;
 	for (var cntr in aAvoidRecursive) {
 		if (aAvoidRecursive[cntr].Oid === String(aObj2Display.objectId) && aAvoidRecursive[cntr].clasz === aObj2Display.clasz) {
@@ -325,54 +325,47 @@ UiForm.prototype.editAreaRecursion = function(aObj2Display, aMasterSet, aChildSe
 UiForm.prototype.useCustomWidget = function(aName, aValue, aSet, aBasePath) {
 	var result = true;
 	if (this.forPrint === false) {
-		var targetedFqn = getJsonPath(aBasePath, aName);
+		var fieldFqn = UiUtil.GetJsonPath(aBasePath, aName);
 		if (aValue.type === "mobilephone" ) {
-			var mbl = this.createMobilephone(aName, aValue, targetedFqn);
+			var mbl = UiUtil.CreateMobilePhone(aName, aValue, fieldFqn);
 			if (mbl !== undefined) {
 				aSet.appendChild(mbl);
 			}
 		} else if (aValue.type === 'telephone' ) {
-			var tel = this.createTelephone(aName, aValue, targetedFqn);
+			var tel = UiUtil.CreateTelephone(aName, aValue, fieldFqn);
 			if (tel !== undefined) {
 				aSet.appendChild(tel);
 			}
 		} else if (aValue.type === 'money' ) {
-			var mny = UiUtil.CreateMoney(aName, aValue, targetedFqn);
+			var mny = UiUtil.CreateMoney(aName, aValue, fieldFqn);
 			if (mny !== undefined) {
 				aSet.appendChild(mny);
 			}
 		} else if (aValue.type === 'boolean' ) {
 			var chkbxArea = UiUtil.CreateCheckBox(aName, aValue);
 			var chkbx = chkbxArea.getElementsByTagName("input")[0];
-			chkbx.setAttribute("onchange", this.myName + ".setValueBoolean('" + targetedFqn + "', this)");
+			chkbx.setAttribute("onchange", this.myName + ".setValueBoolean('" + fieldFqn + "', this)");
 			aSet.appendChild(chkbxArea);
 		} else if (aValue.type === 'salary' ) {
 		} else if (aValue.type === 'country' ) {
 			var inputArea = UiUtil.CreateComboBox(aName);
 			var cmb = inputArea.getElementsByTagName("select")[0];
 			cmb.toBeEmpty = [];
-			var childFqn = targetedFqn.replace('Country', 'State'); // change targetedFqn last field to state
-			UiForm.populateComboBoxWithName(cmb, aValue.option, aValue.data);
-			//cmb.setAttribute("onchange", this.myName + ".setValue('" + targetedFqn + "', this);" + " " + this.myName +  ".filterChildComboBox(this, '" + childFqn + "');" + " "+ this.myName + " .emptyChildCombox(this)");
-			//cmb.setAttribute("onblur", this.myName + ".setValue('" + targetedFqn + "', this)");
+			var childFqn = fieldFqn.replace('Country', 'State'); // change fieldFqn last field to state
+			UiUtil.PopulateComboBoxWithName(cmb, aValue.option, aValue.data);
 			aSet.appendChild(inputArea);
 		} else if (aValue.type === 'state' ) {
 			var inputArea = UiUtil.CreateComboBox(aName);
 			var cmb = inputArea.getElementsByTagName("select")[0];
 			cmb.toBeEmpty = [];
-			var childFqn = targetedFqn.replace('State', 'City');
-			//cmb.setAttribute("onchange", this.myName + ".setValue('" + targetedFqn + "', this);" + " " + this.myName + " .filterChildComboBox(this, '" + childFqn + "');" + " "  + this.myName + "  .emptyChildComboBox(this)");
-			//cmb.setAttribute("onblur", this.myName + ".setValue('" + targetedFqn + "', this)");
+			var childFqn = fieldFqn.replace('State', 'City');
 			aSet.appendChild(inputArea);
-			UiForm.populateMasterChildCmbx (cmb, targetedFqn, aValue);
+			UiUtil.PopulateMasterChildCmbx(cmb, fieldFqn, aValue, this.obj2Edit);
 		} else if (aValue.type === 'city' ) {
 			var inputArea = UiUtil.CreateComboBox(aName);
 			var cmb = inputArea.getElementsByTagName("select")[0];
-			//var childFqn = targetedFqn.replace('City', 'State');
-			//cmb.setAttribute("onchange", this.myName + ".setValue('" + targetedFqn + "', this);");
-			//cmb.setAttribute("onblur", this.myName + ".setValue('" + targetedFqn + "', this)");
 			aSet.appendChild(inputArea);
-			UiForm.populateMasterChildCmbx (cmb, targetedFqn, aValue);
+			UiUtil.PopulateMasterChildCmbx(cmb, fieldFqn, aValue, this.obj2Edit);
 
 			var cmbState = $(cmb).parents('.' + CLS_EACHFIELD).prev().find('select');
 			if (cmbState.length !== 0) {
@@ -381,7 +374,7 @@ UiForm.prototype.useCustomWidget = function(aName, aValue, aSet, aBasePath) {
 					cmbCountry[0].toBeEmpty.push(cmb);
 				}
 			}
-	} else {
+		} else {
 			result = false;
 		}
 	} else {
@@ -416,35 +409,21 @@ UiForm.filterChildCmbx = function(parentCmbx, strChildFqn) {
 		}
 	});
 };
-UiForm.populateMasterChildCmbx = function(childCmb, childFqn, aValue) {
-	var parentCmb = $(childCmb).parents('.' + CLS_EACHFIELD).prev().find('select');
-	if (parentCmb.length !== 0) {
-		var targetObj = UiUtil.GetVarByJsonPath(childCmb.UiForm.obj2Edit, childFqn);
-		$(childCmb).empty();
-		var parentCurrentValue = $(parentCmb).find('option:selected').text();
-		$.each(targetObj.option, function(master, child) {
-			if (master === parentCurrentValue) {
-				UiForm.populateComboBoxWithValue(childCmb, child, aValue.data);
-				return(false);
-			}
-		});
-	}
-};
 UiForm.prototype.createWidget = function(aObjIdx, fieldName, fieldValue, aBasePath, fieldType, fieldMask) {
 	var widgetGrp = null;
 	if (this.forPrint === false) {
-		var fieldFqnName = getJsonPath(aBasePath, fieldName);
+		var fieldFqn = UiUtil.GetJsonPath(aBasePath, fieldName);
 		if (fieldValue.lookup === true) {
-			widgetGrp = UiUtil.CreateComboBox(fieldName, aObjIdx);
+			widgetGrp = UiUtil.CreateComboBox(fieldName, aObjIdx, fieldFqn);
 			var cmb = widgetGrp.getElementsByTagName("select")[0];
 			UiForm.populateComboBoxWithName(cmb, fieldValue.option, fieldValue.data);
 			cmb.UiForm = this;
 		} else if (fieldValue.type === "datetime" ||fieldValue.type === "date" ) {
-			widgetGrp = UiUtil.CreateDatePicker(fieldName, fieldValue, fieldFqnName, this.myName, true, false, aObjIdx);
+			widgetGrp = UiUtil.CreateDatePicker(fieldName, fieldValue, fieldFqn, this.myName, true, false, aObjIdx, fieldFqn);
 		} else if (fieldValue.type === "html" ) {
-			widgetGrp = UiUtil.CreateHtmlField(fieldName, fieldValue, fieldFqnName);
+			widgetGrp = UiUtil.CreateHtmlField(fieldName, fieldValue, fieldFqn);
 		} else {
-			widgetGrp = UiUtil.CreateTextField(fieldName, fieldValue.data, fieldValue.size, aObjIdx, undefined, fieldType, fieldMask);
+			widgetGrp = UiUtil.CreateTextField(fieldName, fieldValue.data, fieldValue.size, aObjIdx, undefined, fieldType, fieldMask, fieldFqn);
 			var txtField = widgetGrp.getElementsByTagName("input")[0];
 			txtField.UiForm = this;
 		}
@@ -637,6 +616,7 @@ UiForm.prototype.createButton = function(btnLabel, btnId) {
 	newBtn.setAttribute('id', btnId);
 	return(newBtn);
 };
+/*
 UiForm.prototype.createTelephone = function(displayLabel, jsonTelephone, jsonPath) {
 	var listAreaCode = UiUtil.CreateComboBox(undefined);
 	var tpBase = UiUtil.GetRandom5();
@@ -644,14 +624,14 @@ UiForm.prototype.createTelephone = function(displayLabel, jsonTelephone, jsonPat
 	var result = this.createPhone(displayLabel, jsonTelephone, listAreaCode, tpBase, jsonPath);
 	return(result);
 };
-UiForm.prototype.createMobilephone = function(displayLabel, jsonMobile, jsonPath) {
+UiForm.prototype.createMobilePhone = function(displayLabel, jsonMobile, aFieldFqn) {
 	var listNdc = UiUtil.CreateComboBox(undefined);
 	var mpBase = UiUtil.GetRandom5();
 	listNdc.setAttribute("id", mpBase + "_mid");
-	var result = this.createPhone(displayLabel, jsonMobile, listNdc, mpBase, jsonPath);
+	var result = this.createPhone(displayLabel, jsonMobile, listNdc, mpBase, aFieldFqn);
 	return(result);
 };
-UiForm.prototype.createPhone = function(displayLabel, jsonMobile, listNdc, mpBase, jsonPath) {
+UiForm.prototype.createPhone = function(displayLabel, jsonMobile, listNdc, mpBase, aFieldFqn) {
 	var strArray = jsonMobile.data.split("-");
 	var codeCtry = strArray[0];
 	var codeNdc = strArray[1];
@@ -661,8 +641,6 @@ UiForm.prototype.createPhone = function(displayLabel, jsonMobile, listNdc, mpBas
 	var ctryId = mpBase + "_ctry";
 	listCountry.setAttribute("id", ctryId);
 	UiForm.populateComboBoxWithName(listCountry, jsonMobile.countrycode, codeCtry);
-	//listCountry.setAttribute("onchange", "UiForm.changePhone('" + jsonPath + "' , this)");
-	//listCountry.setAttribute("onblur", "UiForm.changePhone('" + jsonPath + "' , this)");
 
 	var spCountry = document.createElement("span");
 	spCountry.setAttribute("class", "st-symbol");
@@ -671,16 +649,12 @@ UiForm.prototype.createPhone = function(displayLabel, jsonMobile, listNdc, mpBas
 	var spNdc = document.createElement("span");
 	spNdc.setAttribute("class", "st-symbol");
 	spNdc.appendChild(listNdc);
-	//listNdc.setAttribute("onchange", "UiForm.changePhone('" + jsonPath + "' , this)");
-	//listNdc.setAttribute("onblur", "UiForm.changePhone('" + jsonPath + "' , this)");
 
 	var spNo = document.createElement("span");
 	var tfNo = UiUtil.CreateTextFieldNoLabel(mpBase + "_mn");
 	if (codeSubNo !== undefined) {
 		tfNo.setAttribute("value", codeSubNo);
 	}
-	//tfNo.setAttribute("onchange", "UiForm.changePhone('" + jsonPath + "' , this)");
-	//tfNo.setAttribute("onblur", "UiForm.changePhone('" + jsonPath + "' , this)");
 	spNo.appendChild(tfNo);
 
 	var funcName = "mphn_" + mpBase;
@@ -699,7 +673,6 @@ UiForm.prototype.createPhone = function(displayLabel, jsonMobile, listNdc, mpBas
 
 	return(result);
 };
-
 UiForm.HandleMoney = function(aStrToHandle) {
 	var result = "";
 	if (UiUtil.NotUndefineNotNullNotBlank(aStrToHandle)) {
@@ -738,6 +711,7 @@ UiForm.FormatMoney = function(aStrToHandle) {
 	}
 	return(result);
 };
+*/
 UiForm.numberWithComma = function(x) {
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
@@ -961,6 +935,7 @@ UiForm.prototype.setOk = function(errormsg) {
 	var ok = document.createComment("000");
 	errormsg.appendChild(ok);
 };
+/*
 UiForm.prototype.createDynamicList = function(masterId, childId, jsonMaster) {
 	var StrSwitchStart = "var arr; var option; function " + masterId + "(val)"
 	+ " {"
@@ -1001,6 +976,7 @@ UiForm.prototype.createDynamicList = function(masterId, childId, jsonMaster) {
 	var result = StrSwitchStart + strCase + StrSwitchEnd;
 	return(result);
 };
+*/
 UiForm.prototype.removeNode = function(parentNode) {
 	while (parentNode.firstChild) {
     parentNode.removeChild(parentNode.firstChild);
@@ -1032,7 +1008,7 @@ UiForm.prototype.newFieldObject = function(fieldClasz, fieldsetTitle, basePath, 
 	UiUtil.DialogWaitStart();
 	var tempScrollTop = $(window).scrollTop();
 	var inpClasz = fieldClasz;
-	var fieldFqnName = getJsonPath(basePath, targetName);
+	var fieldFqnName = UiUtil.GetJsonPath(basePath, targetName);
 	var thisUiForm = this; // once gointo ajax call, this is no this prototype anymore
 	var requestParam = {targetClasz: JSON.stringify(inpClasz), fieldFqn: fieldFqnName};
 	UiUtil.BeAction(requestParam, 'newField', this.baseUrl, function(jsonObject) {
@@ -1088,7 +1064,7 @@ UiForm.prototype.newFieldObject = function(fieldClasz, fieldsetTitle, basePath, 
 	);
 };
 UiForm.prototype.deleteFieldObject = function(fieldsetTitle, basePath, fieldName) {
-	var fieldFqnName = getJsonPath(basePath, fieldName);
+	var fieldFqnName = UiUtil.GetJsonPath(basePath, fieldName);
 	var targetField = UiUtil.GetVarByJsonPath(this.obj2Edit, fieldFqnName);
 	var fieldBrief = '';
 	if (targetField.dataset !== undefined) {
@@ -1153,7 +1129,7 @@ UiForm.prototype.getObjClasz = function(aObj) {
 UiForm.prototype.sendDeleteFieldObject = function(aThis, fieldsetTitle, basePath, targetName) {
 	return function() {
 		var thisUiForm = aThis; // once gointo a call dialog box, this is window this, not UiForm this
-		var fieldFqnName = getJsonPath(basePath, targetName);
+		var fieldFqnName = UiUtil.GetJsonPath(basePath, targetName);
 		var targetField = UiUtil.GetVarByJsonPath(aThis.obj2Edit, fieldFqnName);
 		var setMaster = document.getElementById(thisUiForm.locationId);
 

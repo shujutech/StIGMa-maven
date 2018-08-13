@@ -95,13 +95,6 @@ function getVarByJsonPath(fromObject, fieldFullName) {
 	}
 	return(result);
 }
-function getJsonPath(aBasePath, fieldName) {
-	if (aBasePath !== "" && fieldName !== "") {
-		aBasePath += ".";
-	}
-	aBasePath += fieldName;
-	return(aBasePath);
-};
 $(document).ready(function(){
 	$('.lityjtno').click(function () {
 		$('.lityjtno').css('background', 'url(img/loading.gif) no-repeat center center');
@@ -260,6 +253,13 @@ var UiUtil = {};
 UiUtil.ImgErrorBlink = "img/imgErrorBlink.gif";
 UiUtil.Months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 
+UiUtil.GetJsonPath = function(aBasePath, fieldName) {
+	if (aBasePath !== "" && fieldName !== "") {
+		aBasePath += ".";
+	}
+	aBasePath += fieldName;
+	return(aBasePath);
+};
 UiUtil.DialogWaitStart = function(aWaitMsg) {
 	var waitMsg = "<div style='margin-top: 20px; min-width: 500px'></div>" 
 	+ "<div style='margin: auto' class='loadersmall'></div>" 
@@ -449,16 +449,22 @@ UiUtil.GetDatePickerValue = function(aDivName) {
 UiUtil.GetRandom5 = function() {
 	return(Math.floor(Math.random()*90000) + 10000);
 };
-UiUtil.GenElementId = function(displayLabel, aSlideIdx) {
+UiUtil.GenElementId = function(aId, aFieldFqn) {
+	// generate element id according to slideIndex and field Fqn
 	var genId;
-	if (displayLabel !== undefined && displayLabel !== "") {
-		var widgetVar = UiUtil.TitleCaseToCamelCase(displayLabel);
-		genId = "wt_" + widgetVar;
-		if (UiUtil.NotUndefineNotNullNotBlank(aSlideIdx)) {
-			genId = aSlideIdx + "_" + genId;
-		}
-	}			
+	if (UiUtil.NotUndefineNotNullNotBlank(aId)) {
+		genId = aId;
+	} else if (UiUtil.NotUndefineNotNullNotBlank(aFieldFqn)) {
+		var fqnName = aFieldFqn.replace(/ /g,"_");
+		genId = "wt_" + fqnName;
+	} else {
+		genId = "wt_rd" + UiUtil.GetRandom5();
+	}
+	
 	return(genId);
+};
+UiUtil.GetFieldId = function(aElementId) {
+	return (aElementId.substr(3));
 };
 UiUtil.MaskNumberWithWidth = function(aSize) {
 	var theMask = "###,###,###,###,###,###,##0";
@@ -473,35 +479,17 @@ UiUtil.MaskNumberWithWidth = function(aSize) {
 	}
 	return(theMask);
 };
-UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aSlideIdx, aId, aFieldType, aFieldMask) {
+UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aSlideIdx, aId, aFieldType, aFieldMask, aFieldFqn) {
 	var inputTxt = UiUtil.CreateTextFieldNoLabel(aId, aValue);
 
-	var genDataId;
-	var genElementId;
-	if (UiUtil.NotUndefineNotNullNotBlank(displayLabel)) {
-		var dataName = UiUtil.TitleCaseToCamelCase(displayLabel);
-		genElementId = "wt_" + dataName;
-		genDataId = "dt_" + dataName;
-	}
-
-	if (UiUtil.NotUndefineNotNullNotBlank(aId)) {
-		inputTxt.setAttribute("id", aId);
-	} else {
-		if (UiUtil.NotUndefineNotNullNotBlank(genElementId)) {
-			if (UiUtil.NotUndefineNotNullNotBlank(aSlideIdx)) {
-				inputTxt.setAttribute("id", aSlideIdx + "_" + genElementId);
-				inputTxt.setAttribute("v-model", aSlideIdx + "_" + genDataId);
-			} else {
-				inputTxt.setAttribute("id", genElementId);
-				inputTxt.setAttribute("v-model", genDataId);
-			}
-		}			
-	}
+	var elementId = UiUtil.GenElementId(aId, aFieldFqn);
+	inputTxt.setAttribute("id", elementId);
 
 	if (aSize !== undefined) {
 		inputTxt.setAttribute("size", aSize);
 	}
 
+	// mask according to given mask or data type
 	if (UiUtil.NotUndefineNotNull(aFieldMask)) {
 		inputTxt.setAttribute("data-mask", aFieldMask);
 		var maskPlaceholder = aFieldMask.replace(/0/g , " ");
@@ -1054,9 +1042,9 @@ UiUtil.CreateTextFieldNoLabel = function(id, aValue) {
 	}
 	return(inputTxt);
 };
-UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName, aUseSpanPicker, aShowTime, aSlideIdx) {
+UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName, aUseSpanPicker, aShowTime, aSlideIdx, aFieldFqn) {
 	var spanDay = document.createElement("span");
-	var rdmId = UiUtil.GenElementId(displayLabel, aSlideIdx);
+	var rdmId = UiUtil.GenElementId(displayLabel, aFieldFqn);
 
 	$("#fd-y_" + rdmId).remove();
 
@@ -1306,14 +1294,14 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 		dateStart = UiUtil.DateForDisplay(UiUtil.DateMonthStart(new Date()));
 	else
 		dateStart = UiUtil.DateForDisplay(UiUtil.DateMonthStart(aDateStart));
-	var divDateStart = UiUtil.CreateDatePicker('From', dateStart, dateStart, "UiUtil", true , false);
+	var divDateStart = UiUtil.CreateDatePicker('From', dateStart, dateStart, "UiUtil", true , false, undefined);
 
 	var dateEnd;
 	if (aDateEnd === undefined) 
 		dateEnd = UiUtil.DateForDisplay(UiUtil.DateMonthEnd(new Date()));
 	else 
 		dateEnd = UiUtil.DateForDisplay(UiUtil.DateMonthEnd(aDateEnd));
-	var divDateEnd = UiUtil.CreateDatePicker('To', dateEnd, dateEnd, "UiUtil", true , false);
+	var divDateEnd = UiUtil.CreateDatePicker('To', dateEnd, dateEnd, "UiUtil", true , false, undefined);
 
 	$(divDateStart).attr('id', 'st-dp-dateFrom');
 	$(divDateStart).css('cssText', 'float: left: width: 40%; display: inline-block !important; text-align: left; margin-right: 20px');
@@ -1477,9 +1465,9 @@ UiUtil.HrefCssExist = function(cssPath) {
 	}	
 	return(false);
 };
-UiUtil.CreateComboBox = function(displayLabel, aSlideIdx) {
+UiUtil.CreateComboBox = function(displayLabel, aSlideIdx, aFieldFqn) {
 	var input = document.createElement("select");
-	var genId = UiUtil.GenElementId(displayLabel, aSlideIdx);
+	var genId = UiUtil.GenElementId(displayLabel, aFieldFqn);
 	if (UiUtil.NotUndefineNotNullNotBlank(genId)) {
 		input.setAttribute("id", genId);
 	}
@@ -1618,9 +1606,10 @@ UiUtil.HandleDollar = function(el, ev, centid) {
 	}
 };
 UiUtil.HandleCent = function(el, ev, centid) {
+	// do nothing
 };
-UiUtil.CreateMoney = function(displayLabel, jsonMoney, jsonPath) {
-	var	mnyName = UiUtil.GetRandom5();
+UiUtil.CreateMoney = function(displayLabel, jsonMoney, aFieldFqn) {
+	var	mnyName = UiUtil.GenElementId(undefined, aFieldFqn);
 	var mnyValue = {};
 	mnyValue.currency = '';
 	mnyValue.dollar = '';
@@ -1630,7 +1619,7 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, jsonPath) {
 
 	var crcy = UiUtil.CreateComboBox(undefined);
 	UiUtil.PopulateComboBoxWithValue(crcy, jsonMoney.currencies, mnyValue.currency);
-	crcy.setAttribute("id", mnyName + "_cy");
+	crcy.setAttribute("id", mnyName);
 
 	var spCrcy = document.createElement("span");
 	spCrcy.setAttribute("class", "symbol");
@@ -1667,13 +1656,11 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, jsonPath) {
 
 	return(result);
 };
-UiUtil.CreateHtmlField = function(displayLabel, aValue, aFqnName) {
+UiUtil.CreateHtmlField = function(displayLabel, aValue, aFieldFqn) {
 	var inputTxt = document.createElement("textarea");
-	if (aFqnName !== undefined && aFqnName !== "") {
-		aFqnName = aFqnName.replace(/ /g,"_");
-		inputTxt.setAttribute("id", aFqnName);
-	}
-	//inputTxt.setAttribute("class", CLS_INPUT);
+	var genId = UiUtil.GenElementId(undefined, aFieldFqn);
+	inputTxt.setAttribute("id", genId);
+	
 	inputTxt.innerHTML = aValue.data;
 	inputTxt.style.width = "750px";
 	inputTxt.style.height = "100px";
@@ -1683,6 +1670,7 @@ UiUtil.CreateHtmlField = function(displayLabel, aValue, aFqnName) {
 	var result = document.createElement("div");
 	result.appendChild(divArea);
 
+	var fieldId = UiUtil.GetFieldId(genId);
 	var jsNicE = document.createElement("script");
 	jsNicE.setAttribute("type", "text/javascript");
 	jsNicE.innerHTML = "\n" + "//<![CDATA[  "
@@ -1691,14 +1679,160 @@ UiUtil.CreateHtmlField = function(displayLabel, aValue, aFqnName) {
 	+ "\n" + "var jsVar = {};"
 	+ "\n" + "jsVar.value = this.nicInstances[0].getContent();"
 	+ "\n" + "if (" + this.myName + " !== undefined) {"
-	+ "\n" + "\t" + this.myName + ".setValueNoBr('" + aFqnName + "', jsVar);"
+	+ "\n" + "\t" + this.myName + ".setValueNoBr('" + fieldId + "', jsVar);"
 	+ "\n" + "}"
-  + "\n" + "});"
+	+ "\n" + "});"
 	+ "\n" + "//]]>" + "\n";
 	var jsexe = document.createElement("jsnice"); // cannot append directly on the body, the script will not execute, why?
 	jsexe.appendChild(jsNicE);
 	divArea.appendChild(jsexe);
 
+	return(result);
+};
+UiUtil.PopulateComboBoxWithName = function(cmb, jsonObj, chosen) {
+	var opt = document.createElement("option"); 
+	opt.value = ""; 
+	opt.innerHTML = ""; 
+	cmb.appendChild(opt); 
+
+	if (jsonObj !== undefined) {
+		$.each(jsonObj, function(name, value)  { 
+			var opt = document.createElement("option"); 
+			opt.value = name; 
+			opt.innerHTML = name; 
+			if (name === chosen) {
+				opt.setAttribute("selected", '');
+			}
+			cmb.appendChild(opt); 
+		});
+	}
+};
+UiUtil.PopulateComboBoxWithValue = function(cmb, choices, chosen) {
+	var opt = document.createElement("option"); 
+	opt.value = ""; 
+	opt.innerHTML = ""; 
+	cmb.appendChild(opt); 
+
+	if (choices !== undefined) {
+		$.each(choices, function(name, value)  { 
+			var opt = document.createElement("option"); 
+			opt.value = value; 
+			opt.innerHTML = value; 
+			if (value === chosen) {
+				opt.setAttribute("selected", '');
+			}
+			cmb.appendChild(opt); 
+		});
+	}
+};
+UiUtil.CreateTelephone = function(displayLabel, jsonTelephone, aFieldFqn) {
+	var listAreaCode = UiUtil.CreateComboBox(undefined);
+	var tpBase = UiUtil.GenElementId(undefined, aFieldFqn);
+	listAreaCode.setAttribute("id", tpBase);
+	var result = UiUtil.CreatePhone(displayLabel, jsonTelephone, listAreaCode, tpBase, aFieldFqn);
+	return(result);
+};
+UiUtil.CreateMobilePhone = function(displayLabel, jsonMobile, aFieldFqn) {
+	var listNdc = UiUtil.CreateComboBox(undefined);
+	var mpBase = UiUtil.GenElementId(undefined, aFieldFqn);
+	listNdc.setAttribute("id", mpBase);
+	var result = UiUtil.CreatePhone(displayLabel, jsonMobile, listNdc, mpBase, aFieldFqn);
+	return(result);
+};
+UiUtil.CreatePhone = function(displayLabel, jsonMobile, listNdc, mpBase, aFieldFqn) {
+	var strArray = jsonMobile.data.split("-");
+	var codeCtry = strArray[0];
+	var codeNdc = strArray[1];
+	var codeSubNo = strArray[2];
+
+	var listCountry = UiUtil.CreateComboBox(undefined);
+	var ctryId = mpBase + "_ctry";
+	listCountry.setAttribute("id", ctryId);
+	UiUtil.PopulateComboBoxWithName(listCountry, jsonMobile.countrycode, codeCtry);
+
+	var spCountry = document.createElement("span");
+	spCountry.setAttribute("class", "st-symbol");
+	spCountry.appendChild(listCountry);
+
+	var spNdc = document.createElement("span");
+	spNdc.setAttribute("class", "st-symbol");
+	spNdc.appendChild(listNdc);
+
+	var spNo = document.createElement("span");
+	var tfNo = UiUtil.CreateTextFieldNoLabel(mpBase + "_mn");
+	if (codeSubNo !== undefined) {
+		tfNo.setAttribute("value", codeSubNo);
+	}
+	spNo.appendChild(tfNo);
+
+	var funcName = "mphn_" + mpBase;
+	var scrptDyn = UiUtil.CreateDynamicList(funcName, listNdc.id, jsonMobile.countrycode);
+	//this.scriptAddWithRemove(scrptDyn, funcName);
+	var chgFunc = funcName + "(this.value)";
+	listCountry.setAttribute("onchange", chgFunc);
+
+	UiUtil.PopulateComboBoxWithValue(listNdc, jsonMobile.countrycode[codeCtry], codeNdc); // to populate the selected NDC
+
+	var parent = document.createElement("parentwrapper");
+	parent.appendChild(spCountry);
+	parent.appendChild(spNdc);
+	parent.appendChild(spNo);
+	var result = UiUtil.CreateTextFieldWithLabel(displayLabel, parent);
+
+	return(result);
+};
+UiUtil.PopulateMasterChildCmbx = function(childCmb, childFqn, aValue, aObj2Edit) {
+	var parentCmb = $(childCmb).parents('.' + CLS_EACHFIELD).prev().find('select');
+	if (parentCmb.length !== 0) {
+		var targetObj = UiUtil.GetVarByJsonPath(aObj2Edit, childFqn);
+		$(childCmb).empty();
+		var parentCurrentValue = $(parentCmb).find('option:selected').text();
+		$.each(targetObj.option, function(master, child) {
+			if (master === parentCurrentValue) {
+				UiUtil.PopulateComboBoxWithValue(childCmb, child, aValue.data);
+				return(false);
+			}
+		});
+	}
+};
+UiUtil.CreateDynamicList = function(masterId, childId, jsonMaster) {
+	var StrSwitchStart = "var arr; var option; function " + masterId + "(val)"
+	+ " {"
+	+ " var slc_all = $('select[id=" + childId + "]'" + ");"
+	+ " for(var cntr=0; cntr < slc_all.length; cntr++) {"
+	+ " 	var slc_target = slc_all[cntr];"
+	+ " 	slc_target.options.length = 0;"
+	+ " 	switch (val) {";
+	var StrCase = "case 'REPLACE_SELECTED_COUNTRY':"
+	+ " 	arr = new Array(REPLACE_NDC_LIST_BY_COUNTRY);"
+	+ " 	slc_target.disabled = false;"
+	+ " 	for (var i=0;i<arr.length;i++) {"
+	+ " 	option = new Option(arr[i],arr[i]);"
+	+ " 	slc_target.options[i] = option;"
+	+ " 	}"
+	+ " 	break;";
+	var StrSwitchEnd = "default:"
+	+ " 	slc_target.disabled = false;"
+	+ " 	slc_target.options.length = 0;"
+	+ " 	break;"
+	+ " 	}"
+	+ " }"
+	+ " }";
+
+	var strCase = "";
+	$.each(jsonMaster, function(name, value) {
+		strCase += StrCase.replace("REPLACE_SELECTED_COUNTRY", name);
+		var strAry = "";
+		for(var cntr = 0; cntr < value.length; cntr++) {
+			if (strAry !== "") {
+				strAry += ", ";
+			}
+			strAry += "'" + value[cntr] + "'";
+		}
+		strCase = strCase.replace("REPLACE_NDC_LIST_BY_COUNTRY", strAry) + " ";
+	});
+
+	var result = StrSwitchStart + strCase + StrSwitchEnd;
 	return(result);
 };
 UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
