@@ -18,6 +18,7 @@ input {
 }
 select {
 	width: auto !important;
+	min-width: 70px;
 }
 span {
 	float: left;

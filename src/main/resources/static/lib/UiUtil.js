@@ -253,12 +253,41 @@ var UiUtil = {};
 UiUtil.ImgErrorBlink = "img/imgErrorBlink.gif";
 UiUtil.Months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 
+UiUtil.SpecialCharReplace = function(aFunctionName) {
+	var result = aFunctionName.replace(/ /g, "_");
+	result = result.replace(/\[/g, "bracketo");
+	result = result.replace(/\]/g, "bracketc");
+	result = result.replace(/\./g, "dot");
+	return(result);
+};
+UiUtil.SpecialCharUnplace = function(aFunctionName) {
+	var result = aFunctionName.replace(/bracketo/g, "[");
+	result = result.replace(/bracketc/g, "]");
+	result = result.replace(/dot/g, ".");
+	return(result);
+};
+UiUtil.ScriptAddWithRemove = function(strScript, idName) {
+	var tmp = UiUtil.ScriptAdd(strScript);
+	tmp.setAttribute("id", idName);
+	//this.sourceToBeRemove.push(idName);
+};
+UiUtil.ScriptAdd = function(strScript) {
+	var head = document.getElementsByTagName('head')[0];
+	var scpt = document.createElement('script');
+	scpt.type = 'text/javascript';
+	scpt.appendChild(document.createTextNode(strScript));
+	head.appendChild(scpt);
+	return(scpt);
+};
 UiUtil.GetJsonPath = function(aBasePath, fieldName) {
 	if (aBasePath !== "" && fieldName !== "") {
 		aBasePath += ".";
 	}
 	aBasePath += fieldName;
 	return(aBasePath);
+};
+UiUtil.SetValue = function(aObj2Edit, aFqn, aWidget) { 
+	UiUtil.JsonAssignment(aObj2Edit, aFqn, aWidget.value);
 };
 UiUtil.DialogWaitStart = function(aWaitMsg) {
 	var waitMsg = "<div style='margin-top: 20px; min-width: 500px'></div>" 
@@ -449,14 +478,18 @@ UiUtil.GetDatePickerValue = function(aDivName) {
 UiUtil.GetRandom5 = function() {
 	return(Math.floor(Math.random()*90000) + 10000);
 };
-UiUtil.GenElementId = function(aId, aFieldFqn) {
+UiUtil.GenElementId = function(aId, aFieldFqn, aPrefix) {
 	// generate element id according to slideIndex and field Fqn
 	var genId;
 	if (UiUtil.NotUndefineNotNullNotBlank(aId)) {
 		genId = aId;
 	} else if (UiUtil.NotUndefineNotNullNotBlank(aFieldFqn)) {
-		var fqnName = aFieldFqn.replace(/ /g,"_");
-		genId = "wt_" + fqnName;
+		var fqnName = UiUtil.SpecialCharReplace(aFieldFqn);
+		if (UiUtil.NotUndefineNotNullNotBlank(aPrefix)) {
+			genId = aPrefix + fqnName;
+		} else {
+			genId = "wt_" + fqnName;
+		}
 	} else {
 		genId = "wt_rd" + UiUtil.GetRandom5();
 	}
@@ -464,6 +497,7 @@ UiUtil.GenElementId = function(aId, aFieldFqn) {
 	return(genId);
 };
 UiUtil.GetFieldId = function(aElementId) {
+	var result = UiUtil.SpecialCharUnplace(aElementId);
 	return (aElementId.substr(3));
 };
 UiUtil.MaskNumberWithWidth = function(aSize) {
@@ -1465,9 +1499,9 @@ UiUtil.HrefCssExist = function(cssPath) {
 	}	
 	return(false);
 };
-UiUtil.CreateComboBox = function(displayLabel, aSlideIdx, aFieldFqn) {
+UiUtil.CreateComboBox = function(displayLabel, aFieldFqn) {
 	var input = document.createElement("select");
-	var genId = UiUtil.GenElementId(displayLabel, aFieldFqn);
+	var genId = UiUtil.GenElementId(undefined, aFieldFqn);
 	if (UiUtil.NotUndefineNotNullNotBlank(genId)) {
 		input.setAttribute("id", genId);
 	}
@@ -1727,14 +1761,14 @@ UiUtil.PopulateComboBoxWithValue = function(cmb, choices, chosen) {
 };
 UiUtil.CreateTelephone = function(displayLabel, jsonTelephone, aFieldFqn) {
 	var listAreaCode = UiUtil.CreateComboBox(undefined);
-	var tpBase = UiUtil.GenElementId(undefined, aFieldFqn);
+	var tpBase = UiUtil.GenElementId(undefined, aFieldFqn, "pa_"); // prefix with phone area code
 	listAreaCode.setAttribute("id", tpBase);
 	var result = UiUtil.CreatePhone(displayLabel, jsonTelephone, listAreaCode, tpBase, aFieldFqn);
 	return(result);
 };
 UiUtil.CreateMobilePhone = function(displayLabel, jsonMobile, aFieldFqn) {
 	var listNdc = UiUtil.CreateComboBox(undefined);
-	var mpBase = UiUtil.GenElementId(undefined, aFieldFqn);
+	var mpBase = UiUtil.GenElementId(undefined, aFieldFqn, "pa_");
 	listNdc.setAttribute("id", mpBase);
 	var result = UiUtil.CreatePhone(displayLabel, jsonMobile, listNdc, mpBase, aFieldFqn);
 	return(result);
@@ -1746,7 +1780,7 @@ UiUtil.CreatePhone = function(displayLabel, jsonMobile, listNdc, mpBase, aFieldF
 	var codeSubNo = strArray[2];
 
 	var listCountry = UiUtil.CreateComboBox(undefined);
-	var ctryId = mpBase + "_ctry";
+	var ctryId = UiUtil.GenElementId(undefined, aFieldFqn, "pc_"); // prefix with telephone country code
 	listCountry.setAttribute("id", ctryId);
 	UiUtil.PopulateComboBoxWithName(listCountry, jsonMobile.countrycode, codeCtry);
 
@@ -1759,25 +1793,28 @@ UiUtil.CreatePhone = function(displayLabel, jsonMobile, listNdc, mpBase, aFieldF
 	spNdc.appendChild(listNdc);
 
 	var spNo = document.createElement("span");
-	var tfNo = UiUtil.CreateTextFieldNoLabel(mpBase + "_mn");
+	var tfNoId = UiUtil.GenElementId(undefined, aFieldFqn, "pn_"); // prefix with telephone number
+	var tfNo = UiUtil.CreateTextFieldNoLabel(tfNoId);
 	if (codeSubNo !== undefined) {
 		tfNo.setAttribute("value", codeSubNo);
 	}
 	spNo.appendChild(tfNo);
 
-	var funcName = "mphn_" + mpBase;
+	var funcName = UiUtil.GenElementId(undefined, aFieldFqn, "pf_");
 	var scrptDyn = UiUtil.CreateDynamicList(funcName, listNdc.id, jsonMobile.countrycode);
-	//this.scriptAddWithRemove(scrptDyn, funcName);
+	UiUtil.ScriptAddWithRemove(scrptDyn, funcName);
 	var chgFunc = funcName + "(this.value)";
 	listCountry.setAttribute("onchange", chgFunc);
 
 	UiUtil.PopulateComboBoxWithValue(listNdc, jsonMobile.countrycode[codeCtry], codeNdc); // to populate the selected NDC
 
+	var phoneId = UiUtil.GenElementId(undefined, aFieldFqn); // prefix with telephone country code
 	var parent = document.createElement("parentwrapper");
 	parent.appendChild(spCountry);
 	parent.appendChild(spNdc);
 	parent.appendChild(spNo);
 	var result = UiUtil.CreateTextFieldWithLabel(displayLabel, parent);
+	result.setAttribute("id", phoneId);
 
 	return(result);
 };
@@ -1834,6 +1871,49 @@ UiUtil.CreateDynamicList = function(masterId, childId, jsonMaster) {
 
 	var result = StrSwitchStart + strCase + StrSwitchEnd;
 	return(result);
+};
+UiUtil.SetComboBoxWithValue = function(cmb, choices, chosen) {
+	var opt = document.createElement("option"); 
+	opt.value = ""; 
+	opt.innerHTML = ""; 
+	cmb.appendChild(opt); 
+
+	if (choices !== undefined) {
+		$.each(choices, function(name, value)  { 
+			var opt = document.createElement("option"); 
+			opt.value = value; 
+			opt.innerHTML = value; 
+			if (value === chosen) {
+				opt.setAttribute("selected", '');
+			}
+			cmb.appendChild(opt); 
+		});
+	}
+};
+UiUtil.FilterChildComboBox = function(aObj2Edit, parentCmbx, strChildFqn) {
+	var childCmbx = $(parentCmbx).parents('.' + CLS_EACHFIELD).next().find('select');
+	if (childCmbx.length === 0) return;
+	var targetObj = UiUtil.GetVarByJsonPath(aObj2Edit, strChildFqn);
+	childCmbx.empty();
+	$.each(targetObj.option, function(master, child) {
+		if (master === parentCmbx.value) {
+			UiUtil.SetComboBoxWithValue(childCmbx[0], child, '');
+			return(false);
+		}
+	});
+};
+UiUtil.EmptyChildComboBox = function(aWidget) {
+	if (aWidget.toBeEmpty !== undefined) {
+		for (var cntr = 0; cntr < aWidget.toBeEmpty.length; cntr++) {
+			$(aWidget.toBeEmpty[cntr]).empty();
+		}
+	}
+};
+UiUtil.SetupMasterChildComboBox = function(cmb, theUiForm, fieldFqn, childFqn) {
+	cmb.setAttribute("onchange", "UiUtil.SetValue(" + theUiForm + ".obj2Edit, '" + fieldFqn + "', this)" 
+	+ "; " + "UiUtil.FilterChildComboBox(" + theUiForm + ".obj2Edit" + ", this, '" + childFqn + "')" 
+	+ "; UiUtil.EmptyChildComboBox(this)");
+	cmb.setAttribute("onblur", "UiUtil.SetValue(" + theUiForm + ".obj2Edit, '" +  fieldFqn + "', this)");
 };
 UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 	var largestHeight = 0;

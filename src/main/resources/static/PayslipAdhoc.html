@@ -103,8 +103,9 @@
 				body * {
 					visibility: hidden;
 				}
-				#divPayslipInfo, #divPayslipInfo * {
+				#divPayslipFull, #divPayslipFull * {
 					visibility: visible;
+					font-size: 12px;
 				}
 				table tr th.boolean {
 					display: none;
@@ -115,10 +116,14 @@
 				.st-crud-menu {
 					display: none;
 				}
-				#divPayslipInfo {
+				#divPayslipFull {
 					position: absolute;
 					left: 0;
 					top: 0;
+					margin-top: 50px;
+				}
+				#mth-period-popup {
+					display: none;
 				}
 			}
 			.print-field {}
@@ -319,150 +324,152 @@
 					<button id="btnPrintTop" onclick="printSalarySlip();">Print...</button>
 					<button id="btnRecomputeTop" onclick="recomputeSalarySlip();">Recompute</button>
 				</fieldset>
-				<div id="divPayslipInfo" style="display:none;float:left;width:100%;margin-top:20px">
-					<div style="text-align:center">
-						<div class='' style='display:inline-block;'>
-							<div class="st-eachfield st-row">
-								<div class="st-label-area">
-									<label>Company</label>
-									<img src="img/imgErrorBlank.png" style="display: none" alt="">
-									<span class="st-error-msg" style="display:none"></span>
+				<div id="divPayslipFull" style="float:left;width:100%">
+					<div id="divPayslipInfo" style="display:none;float:left;width:100%;margin-top:20px">
+						<div style="text-align:center">
+							<div class='' style='display:inline-block;'>
+								<div class="st-eachfield st-row">
+									<div class="st-label-area">
+										<label>Company</label>
+										<img src="img/imgErrorBlank.png" style="display: none" alt="">
+										<span class="st-error-msg" style="display:none"></span>
+									</div>
+									<div class="st-input-area">
+										<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd" size="50" style="text-align:center" 
+										v-model="dt_company"
+										>
+									</div>
 								</div>
-								<div class="st-input-area">
-									<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd" size="50" style="text-align:center" 
-									v-model="dt_company"
-									>
+							</div>
+							<br>
+							<div class='' style='display:inline-block;'>
+								<div class="st-eachfield st-row" style="float:left">
+									<div class="st-label-area">
+										<label>Period From</label>
+										<img src="img/imgErrorBlank.png" style="display: none" alt="">
+										<span class="st-error-msg" style="display:none"></span>
+									</div>
+									<div class="st-input-area">
+										<input id="headerPeriodFrom" class="print-field form-control" type="text" value="" placeholder="01-Dec-2018" style="text-align:center">
+									</div>
+								</div>
+								<div class="st-eachfield st-row" style="float:left">
+									<div class="st-label-area" style='margin-left:50px'>
+										<label>Period To</label>
+										<img src="img/imgErrorBlank.png" style="display: none" alt="">
+										<span class="st-error-msg" style="display:none"></span>
+									</div>
+									<div class="st-input-area">
+										<input id="headerPeriodTo" class="print-field form-control" type="text" value="" placeholder="31-Dec-2018" style="text-align:center">
+									</div>
+									<span id="mth-period-popup" onclick="showCalendarPeriod(); return false" style="cursor:pointer">
+										<img src="img/imgCalendar.png" alt="">
+									</span>
 								</div>
 							</div>
 						</div>
-						<br>
-						<div class='' style='display:inline-block;'>
-							<div class="st-eachfield st-row" style="float:left">
-								<div class="st-label-area">
-									<label>Period From</label>
-									<img src="img/imgErrorBlank.png" style="display: none" alt="">
-									<span class="st-error-msg" style="display:none"></span>
-								</div>
-								<div class="st-input-area">
-									<input id="headerPeriodFrom" class="print-field form-control" type="text" value="" placeholder="01-Dec-2018" style="text-align:center">
-								</div>
-							</div>
-							<div class="st-eachfield st-row" style="float:left">
-								<div class="st-label-area" style='margin-left:50px'>
-									<label>Period To</label>
-									<img src="img/imgErrorBlank.png" style="display: none" alt="">
-									<span class="st-error-msg" style="display:none"></span>
-								</div>
-								<div class="st-input-area">
-									<input id="headerPeriodTo" class="print-field form-control" type="text" value="" placeholder="31-Dec-2018" style="text-align:center">
-								</div>
-								<span onclick="showCalendarPeriod(); return false" style="cursor:pointer">
-									<img src="img/imgCalendar.png" alt="">
-								</span>
-							</div>
-						</div>
-					</div>
-		
-					<div style="width:100%;float:left">
-						<div id="divEmployeeDetail" style="margin-top:25px;margin-bottom:10px;float:left;width:80%;display:table;margin-left:10%">
-							<div style='display:table-row'>
-								<div style='display:table-cell'>
-									<div class="st-eachfield st-row">
-										<div class="st-label-area">
-											<label>Employee</label>
-											<img src="img/imgErrorBlank.png" style="display: none" alt="">
-											<span class="st-error-msg" style="display:none"></span>
+			
+						<div style="width:100%;float:left">
+							<div id="divEmployeeDetail" style="margin-top:25px;margin-bottom:10px;float:left;width:80%;display:table;margin-left:10%">
+								<div style='display:table-row'>
+									<div style='display:table-cell'>
+										<div class="st-eachfield st-row">
+											<div class="st-label-area">
+												<label>Employee</label>
+												<img src="img/imgErrorBlank.png" style="display: none" alt="">
+												<span class="st-error-msg" style="display:none"></span>
+											</div>
+											<div class="st-input-area">
+												<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates" size="50"
+												v-model="dt_employee"
+												>
+											</div>
 										</div>
-										<div class="st-input-area">
-											<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates" size="50"
-											v-model="dt_employee"
-											>
+									</div>
+									<div style='display:table-cell;text-align:right'>
+										<div class="st-eachfield st-row">
+											<div class="st-label-area">
+												<label>Gross Pay</label>
+												<img src="img/imgErrorBlank.png" style="display: none" alt="">
+												<span class="st-error-msg" style="display:none"></span>
+											</div>
+											<div class="st-input-area">
+												<input class="print-field form-control" id="grossPay" readonly value="MYR 0.00" style="text-align:right"></input>
+											</div>
 										</div>
 									</div>
 								</div>
-								<div style='display:table-cell;text-align:right'>
-									<div class="st-eachfield st-row">
-										<div class="st-label-area">
-											<label>Gross Pay</label>
-											<img src="img/imgErrorBlank.png" style="display: none" alt="">
-											<span class="st-error-msg" style="display:none"></span>
+			
+								<div style='display:table-row'>
+									<div style='display:table-cell'>
+										<div class="st-eachfield st-row">
+											<div class="st-label-area">
+												<label>Designation</label>
+												<img src="img/imgErrorBlank.png" style="display: none" alt="">
+												<span class="st-error-msg" style="display:none"></span>
+											</div>
+											<div class="st-input-area">
+												<input id="headerDesignation" class="print-field form-control" type="text" value="" placeholder="Programmer" size="30">
+											</div>
 										</div>
-										<div class="st-input-area">
-											<input class="print-field form-control" id="grossPay" readonly value="MYR 0.00" style="text-align:right"></input>
+									</div>
+									<div style='display:table-cell;text-align:right'>
+										<div class="st-eachfield st-row">
+											<div class="st-label-area">
+												<label>Total Deduction</label>
+												<img src="img/imgErrorBlank.png" style="display: none" alt="">
+												<span class="st-error-msg" style="display:none"></span>
+											</div>
+											<div class="st-input-area">
+												<input class="print-field form-control" id="totalDeduction" readonly value="MYR 0.00" style="text-align:right"></input>
+												<span style="display:none" id="totalOther" readonly value="MYR 0.00"></span>
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-		
-							<div style='display:table-row'>
-								<div style='display:table-cell'>
-									<div class="st-eachfield st-row">
-										<div class="st-label-area">
-											<label>Designation</label>
-											<img src="img/imgErrorBlank.png" style="display: none" alt="">
-											<span class="st-error-msg" style="display:none"></span>
-										</div>
-										<div class="st-input-area">
-											<input id="headerDesignation" class="print-field form-control" type="text" value="" placeholder="Programmer" size="30">
-										</div>
-									</div>
-								</div>
-								<div style='display:table-cell;text-align:right'>
-									<div class="st-eachfield st-row">
-										<div class="st-label-area">
-											<label>Total Deduction</label>
-											<img src="img/imgErrorBlank.png" style="display: none" alt="">
-											<span class="st-error-msg" style="display:none"></span>
-										</div>
-										<div class="st-input-area">
-											<input class="print-field form-control" id="totalDeduction" readonly value="MYR 0.00" style="text-align:right"></input>
-											<span style="display:none" id="totalOther" readonly value="MYR 0.00"></span>
+			
+								<div style='display:table-row'>
+									<div style='display:table-cell'>
+										<div class="st-eachfield st-row">
+											<div class="st-label-area">
+												<label>Net Pay</label>
+												<img src="img/imgErrorBlank.png" style="display: none" alt="">
+												<span class="st-error-msg" style="display:none"></span>
+											</div>
+											<div class="st-input-area">
+												<input class="print-field form-control" id="netPay" readonly value="MYR 0.00" style="text-align:right"></input>
+											</div>
 										</div>
 									</div>
-								</div>
-							</div>
-		
-							<div style='display:table-row'>
-								<div style='display:table-cell'>
-									<div class="st-eachfield st-row">
-										<div class="st-label-area">
-											<label>Net Pay</label>
-											<img src="img/imgErrorBlank.png" style="display: none" alt="">
-											<span class="st-error-msg" style="display:none"></span>
-										</div>
-										<div class="st-input-area">
-											<input class="print-field form-control" id="netPay" readonly value="MYR 0.00" style="text-align:right"></input>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div style="float:left;margin-top:25px;display:block;width:100%"></div>
-
-				<div style='float:left;width:100%;margin-left:0%;margin-top:10px;'>
-					<div style="float:left;display:table;width:100%;border-spacing:20px">
-						<div style="display:table-row;width:100%">
-							<div id="divMasterEarn" style="display:table-cell;width:50%">
-								<div id='divEarning'></div>
-							</div>
-							<div id="divMasterDeduct" style="display:table-cell">
-								<div id='divDeduction'></div>
-							</div>
-						</div>
-
-						<div style="display:table-row">
-							<div style="display:table-cell"></div>
-							<div style="display:table-cell">
-								<div id="divMasterOther">
-									<div id='divOther'></div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+	
+					<div style="float:left;margin-top:25px;display:block;width:100%"></div>
+	
+					<div id="divPayslipTable" style='float:left;width:100%;margin-left:0%;margin-top:10px;'>
+						<div style="float:left;display:table;width:100%;border-spacing:20px">
+							<div style="display:table-row;width:100%">
+								<div id="divMasterEarn" style="display:table-cell;width:50%">
+									<div id='divEarning'></div>
+								</div>
+								<div id="divMasterDeduct" style="display:table-cell">
+									<div id='divDeduction'></div>
+								</div>
+							</div>
+	
+							<div style="display:table-row">
+								<div style="display:table-cell"></div>
+								<div style="display:table-cell">
+									<div id="divMasterOther">
+										<div id='divOther'></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div> 
 			</div>
 		</div>
 
