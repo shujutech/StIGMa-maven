@@ -1350,7 +1350,7 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	var divMonthNavg = UiUtil.CreateTextFieldWithLabel("", divControl);
 	$(divMonthNavg).css('float', 'left');
 	$(divMonthNavg).css('width', '20%');
-	$(divMonthNavg).css('margin-top', '42px');
+	$(divMonthNavg).css('margin-top', '29px');
 
 	var divCol = document.createElement('div');
 	$(divCol).css('float', 'left');

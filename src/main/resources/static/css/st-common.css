@@ -111,6 +111,7 @@ parentwrapper {
 .st-input-area {
 }
 a.st-crud-menu {
+	float: left;
 	border-left:thick solid darkgray;
 	border-width:1px;
 	padding-right:10px;
@@ -122,6 +123,7 @@ a.st-crud-menu {
 }
 .fa {
 	margin-right: 5px !important;
+	float: left;
 }
 .date-picker {
 	z-index: 10010 !important;
