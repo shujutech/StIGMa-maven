@@ -21,7 +21,7 @@
 			}
 			table.stdGrid {border-collapse:collapse;border:2px solid #c7c7c7;;width:100%} 
 			table.stdGrid td,table.stdGrid th {padding:5px}
-			table.stdGrid th {background:#f9f9f9;text-align:left;border-bottom:1px solid #c7c7c7;}
+			table.stdGrid th {text-align:left;border-bottom:1px solid #c7c7c7;}
 			table.stdGrid tr {line-height: 2.00; font-weight: 300;}
 			table.stdGrid>tbody tr:hover{cursor:pointer;background:#E5E5E5;color:black}
 			table.stdGrid tbody {-webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; }
@@ -181,7 +181,7 @@
 				display: block;
 				width: 90%;
 				margin-left: 5%;
-				margin-top: 10px;
+				margin-top: 0px;
 				padding-top: 10px;
 			}
 			#divFlipEmpInfo, #divFlipSlip {
@@ -200,6 +200,18 @@
 				background: transparent;
 				border-bottom: 1px solid lightgray;
 				border-radius: 0;
+			}
+			.btn {
+				padding: 10px 40px;
+				font-size: 16px;
+				line-height: 1.33;
+				border-radius: 4px;
+				color: #fff;
+				background-color: rgb(191,1,54);
+				border-color: #d67118;
+				text-decoration: none;
+				font-weight: 700;
+				text-shadow: 1px 1px 1px rgba(0,0,0,0.75);
 			}
 		</style>
 
@@ -226,17 +238,12 @@
 		<script type="text/javascript" src="lib/UiGrid.js"></script>   
 	</head>
 	<body>
-		<div>
-			<img id='msgImage' src='img/imgInfo.gif' style='vertical-align:middle; margin-right:0px;' alt="">
-			<span id='msgArea'></span>
-		</div>
-
 		<div style="width: 100%; float: left; text-align: center">
 			<h1 style="margin-bottom:2px;font-size:2.1rem">Malaysia Payroll, Payslip, PCB, EPF, SOCSO Calculator</h1>
 			<h2 style="margin-bottom:10px;font-size:1.6rem">Monthly Statutory Deductions for Malaysia Payslip</h2>
 		</div>
 
-		<div class="each-body" style="background: #f8f8f8">
+		<div class="each-body" style="background: transparent">
 			<div id="divFlipEmpInfo" onclick="UiUtil.FlipUpDown('divEmpInfo')">
 				<h2 style="font-size:1.5rem;padding-left:5px">Tax Information</h2>
 			</div>
@@ -244,7 +251,7 @@
 				<fieldset class="fs-btn">
 					<button id="btnGenPayslip" onclick="genPayslip();" style="margin-right: 2px">Generate Payslip</button>
 				</fieldset>
-				<fieldset class="st-fs01" style="padding-top:50px;padding-bottom:120px;padding-left:1%;padding-right:1%">
+				<fieldset class="st-fs01" style="padding-top:35px;padding-bottom:45px;padding-left:1%;padding-right:1%">
 					<div class="st-eachfield st-row">
 						<div class="st-label-area">
 							<label>Monthly Salary</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
@@ -316,10 +323,14 @@
 		</div>
 
 		<div id="body_payslip" class="each-body">
-			<div id="divFlipSlip" onclick="UiUtil.FlipUpDown('divPayslip')">
-				<h2 style="font-size:1.5rem;padding-left:5px">Payslip</h2>
+			<div id="divFlipSlip" style="float:left;width:100%" onclick="UiUtil.FlipUpDown('divPayslip')">
+				<h2 style="float:left;font-size:1.5rem;padding-left:5px">Payslip</h2>
+				<div style="float:left;font-weight:100;font-size:small;margin-left:10px;margin-top:5px">
+					<img id='msgImage' src='img/imgInfo.gif' style='vertical-align:middle; margin-right:0px;float:left' alt="">
+					<span id='msgArea' style="float:left"></span>
+				</div>
 			</div>
-			<div id="divPayslip">
+			<div id="divPayslip" style="display: none">
 				<fieldset class="fs-btn">
 					<button id="btnPrintTop" onclick="printSalarySlip();">Print...</button>
 					<button id="btnRecomputeTop" onclick="recomputeSalarySlip();">Recompute</button>
@@ -477,14 +488,34 @@
 			<div id="dialogPayslip"></div>
 		</div>
 
-		<div class="footer" style="bottom:0;float:left;width:100%;text-align:center;margin-top:200px;font-size:13px"> 
+		<div class="footer" style="display:flex;align-items:center;bottom:0;float:left;width:100%;text-align:center;margin-top:100px;height:280px;font-size:12px;background-image:url(img/blue-wave-footer.png)"> 
+			<div style="width:100%;">
+				<div style="width:100%;color:white;font-size:xx-large">Need to Do Payroll on Regular Basis?</div>
+				<div style="width:100%;color:white;font-size:small;font-weight:100">
+					<a href="http://shujutech.mywire.org/StEMS/Main?goto=SignUp" style="color:white;">Sign up</a>
+					to easily process payroll for all your employees or contact us by clicking 
+					<a href="http://shujutech.mywire.org/StEMS/Main?goto=ContactUs" style="color:white;font-weight:600"> Here.</a>
+					</div>
+					<div style="display:flex;margin-top:40px;"> 
+						<a style="margin-left:auto;margin-right:auto;padding-left:60px;padding-right:60px" class="btn" 
+						href='javascript:loadHRef("/StEMS/Main?goto=SignUp");'>Sign Up<strong></strong></a> 
+					</div>
+			</div>
+		</div>
+
+		<div class="footer" style="bottom:0;float:left;width:100%;text-align:center;margin:0;font-size:12px;background:#03072f;"> 
+			<!--  
 			<div style="float:left;border-bottom:1px dotted #ccc;width:100%;padding:0;"></div> 
-			<p style="padding-top:5px">Copyright &copy; 2005-2018 Shujutech Inc. All rights reserved.</p>
+			-->
+			<p style="padding-top:5px;color:gray">Copyright &copy; 2005-2018 Shujutech Inc. All rights reserved.</p>
 		</div>
 
 		
 		<script type='text/javascript'>
-			function drawSalarySlipScreen() {
+			var genPayslip = function() {
+				UiUtil.FlipUpDown('divPayslip');
+			};
+			var drawSalarySlipScreen = function() {
 					UiUtil.StorePrevObj("salarySlipFormPrevObj", oneSlip);
 					var datasetTrx = UiUtil.GetVarByJsonPath(oneSlip, 'Earnings');
 					dontDisplaySeq(datasetTrx.dataset);
@@ -861,8 +892,10 @@ vueAdhocPayslip = new Vue({
 			};
 			var showCalendarPeriod = function() {
 				UiUtil.DialogPeriodRange("Select Payslip Period", "", undefined, undefined, function(){
-					var dateStart = UiUtil.DatePickerForBE('st-dp-dateFrom');
-					var dateEnd = UiUtil.DatePickerForBE('st-dp-dateEnd');
+					var dateFrom = UiUtil.DatePickerForBE('st-dp-dateFrom');
+					var dateTo = UiUtil.DatePickerForBE('st-dp-dateEnd');
+					$("#headerPeriodFrom").val(dateFrom);
+					$("#headerPeriodTo").val(dateTo);
 				}, function() {
 				});
 			};

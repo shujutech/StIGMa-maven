@@ -7,8 +7,8 @@ html {
 }
 body {
 	font-weight:600;
-	margin-left: 5px;
-	margin-right: 5px;
+	margin: 0px;
+	background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
 }
 label {
 	font-weight: bold;
@@ -121,6 +121,8 @@ a.st-crud-menu {
 	-webkit-user-select:none;
 	-moz-user-select:none;
 	-ms-user-select:none;
+	display: inline-flex;
+	align-items: center;
 }
 .fa {
 	margin-right: 5px !important;

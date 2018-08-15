@@ -367,6 +367,9 @@ UiUtil.DialogOkCancel = function(titleHtml, msgHtml, jsOk, jsCancel) {
 	});
 };
 UiUtil.DialogInfo = function(titleHtml, msgHtml, jsAction) {
+	if (typeof msgHtml === "string") {
+		msgHtml = "<div style='display: block; margin-bottom: 30px'>" + msgHtml + "</div>";
+	}
 	swal({
 		title: titleHtml
 		, html: msgHtml
@@ -624,7 +627,6 @@ UiUtil.DisplayMsgHide = function() {
 };
 UiUtil.DisplayMsg = function(type, mesg) {
 	if (UiUtil.NotUndefineNotNull(mesg) === false) return;
-	//if (mesg.length > 100) mesg = mesg.substring(0, 100);
 	var msgPlace = document.getElementById('msgArea');
 	if (UiUtil.NotUndefineNotNull(msgPlace)) {
 		if (mesg !== undefined) {
@@ -653,7 +655,7 @@ UiUtil.DialogBlink = function(aMsg, aAfterAck) {
 UiUtil.BlinkError = function(respond, aAfterAck) {
 	var errorStatus = respond.status;
 	var errorMsg = respond.msg;
-	var errorField = 	respond.errorField;
+	var errorField = respond.errorField;
 	if (!UiUtil.NotUndefineNotNullNotBlank(errorMsg)) {
 		strErrorMsg = 'System error', "Undefine error, please report to <a href='mailto:shujutech@gmail.com'>shujutech@gmail.com</a>";
 	} else {
@@ -713,7 +715,6 @@ UiUtil.CallBackendJson = function (aUrl, aMsg, aSuccFunc, aFailFunc, aFinallyFun
 	}
 
 	var result = {status:'error', msg:'Fail to make ajax call'};
-	//if (UiUtil.IsValidJson(aMsg)) {
 	if (true) {
 		$.ajax({
 			type:'post',
@@ -755,7 +756,6 @@ UiUtil.CallBackendJson = function (aUrl, aMsg, aSuccFunc, aFailFunc, aFinallyFun
 					if (xhr.getResponseHeader('Transfer-Encoding') === "chunked") {
 						if (UiUtil.NotUndefineNotNullNotBlank(aMsg)) {
 							console.log("WARN, possible multiple concurrent backend call with invalid JSON value in aMsg, ignoring it, do nothing: " + aMsg);
-							//UiUtil.loadHRef(window.location.pathname);
 						} else {
 							console.log("WARN, possible multiple concurrent backend call with empty JSON value in aMsg, ignoring it, do nothing");
 						}
@@ -1403,15 +1403,6 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	$(divPeriod).css('margin-bottom', '30px');
 	divPeriod.appendChild(divCol);
 
-	/*
-	var scriptList = $(divDateStart).find("script");	
-	var fullScript = UiUtil.ExtractScript(scriptList);
-	scriptList = $(divDateEnd).find("script");	
-	fullScript += UiUtil.ExtractScript(scriptList);
-	var jsFunc = new Function(fullScript);
-	*/
-	//$(divDateStart).find("script").remove();
-	//$(divDateEnd).find("script").remove();
 	var jsFunc = new Function();
 	
 	UiUtil.DialogOkCancel(aTitleHeader, divPeriod, onOk, onCancel, jsFunc);

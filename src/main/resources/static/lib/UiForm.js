@@ -65,46 +65,6 @@ UiForm.prototype.setValueNoBr = function(aFqn, aWidget) {
 		this.setValue(aFqn, aWidget);
 	}
 };
-/*
-UiForm.prototype.emptyChildComboBox = function(aWidget) {
-	if (aWidget.toBeEmpty !== undefined) {
-		for (var cntr = 0; cntr < aWidget.toBeEmpty.length; cntr++) {
-			$(aWidget.toBeEmpty[cntr]).empty();
-		}
-	}
-};
-UiForm.prototype.setComboBoxWithValue = function(cmb, choices, chosen) {
-	var opt = document.createElement("option"); 
-	opt.value = ""; 
-	opt.innerHTML = ""; 
-	cmb.appendChild(opt); 
-
-	if (choices !== undefined) {
-		$.each(choices, function(name, value)  { 
-			var opt = document.createElement("option"); 
-			opt.value = value; 
-			opt.innerHTML = value; 
-			if (value === chosen) {
-				opt.setAttribute("selected", '');
-			}
-			cmb.appendChild(opt); 
-		});
-	}
-};
-UiForm.prototype.filterChildComboBox = function(parentCmbx, strChildFqn) {
-	var childCmbx = $(parentCmbx).parents('.' + CLS_EACHFIELD).next().find('select');
-	if (childCmbx.length === 0) return;
-	var targetObj = UiUtil.GetVarByJsonPath(this.obj2Edit, strChildFqn);
-	childCmbx.empty();
-	var thisUiForm = this;
-	$.each(targetObj.option, function(master, child) {
-		if (master === parentCmbx.value) {
-			thisUiForm.setComboBoxWithValue(childCmbx[0], child, '');
-			return(false);
-		}
-	});
-};
-*/
 UiForm.GetHtmlEditorValue = function(aHtmlEditor) {
 	aHtmlEditor.nicInstances[0].saveContent();
 	var jsVar = aHtmlEditor.nicInstances[0].content;
@@ -153,6 +113,8 @@ UiForm.prototype.displayUiForm = function(aLocationId, aObj2Edit, aIdx, aBaseUrl
 	}
 
 	var masterDiv = document.createElement('div');
+	$(masterDiv).css('margin-left', '5px');
+	$(masterDiv).css('margin-right', '5px');
 	this.allSlider = [];
 
 	var btnSetTop = document.createElement("fieldset");
@@ -373,29 +335,14 @@ UiForm.prototype.useCustomWidget = function(aName, aValue, aSet, aBasePath) {
 			cmb.toBeEmpty = [];
 			var childFqn = fieldFqn.replace('Country', 'State'); // change fieldFqn last field to state
 			UiUtil.PopulateComboBoxWithName(cmb, aValue.option, aValue.data);
-
 			UiUtil.SetupMasterChildComboBox(cmb, this.myName, fieldFqn, childFqn);
-			/*
-			cmb.setAttribute("onchange", "UiUtil.SetValue(" + this.myName + ".obj2Edit, '" + fieldFqn + "', this)" 
-			+ "; " + "UiUtil.FilterChildComboBox(" + this.myName + ".obj2Edit" + ", this, '" + childFqn + "')" 
-			+ "; UiUtil.EmptyChildComboBox(this)");
-			cmb.setAttribute("onblur", "UiUtil.SetValue(" + this.myName + ".obj2Edit, '" +  fieldFqn + "', this)");
-			*/
-
 			aSet.appendChild(inputArea);
 		} else if (aValue.type === 'state' ) {
 			var inputArea = UiUtil.CreateComboBox(aName, fieldFqn);
 			var cmb = inputArea.getElementsByTagName("select")[0];
 			cmb.toBeEmpty = [];
 			var childFqn = fieldFqn.replace('State', 'City');
-
 			UiUtil.SetupMasterChildComboBox(cmb, this.myName, fieldFqn, childFqn);
-
-			/*
-			cmb.setAttribute("onchange", this.myName + ".setValue('" + fieldFqn + "', this);" + " " + this.myName + " .filterChildComboBox(this, '" + childFqn + "');" + " "  + this.myName + "  .emptyChildComboBox(this)");
-			cmb.setAttribute("onblur", this.myName + ".setValue('" + fieldFqn + "', this)");
-			*/
-
 			aSet.appendChild(inputArea);
 			UiUtil.PopulateMasterChildCmbx(cmb, fieldFqn, aValue, this.obj2Edit);
 		} else if (aValue.type === 'city' ) {
@@ -427,27 +374,6 @@ UiForm.prototype.useCustomWidget = function(aName, aValue, aSet, aBasePath) {
 	}
 	return(result);
 };
-/*
-UiForm.emptyChildCmbx = function(aWidget) {
-	if (aWidget.toBeEmpty !== undefined) {
-		for (var cntr = 0; cntr < aWidget.toBeEmpty.length; cntr++) {
-			$(aWidget.toBeEmpty[cntr]).empty();
-		}
-	}
-};
-UiForm.filterChildCmbx = function(parentCmbx, strChildFqn) {
-	var childCmbx = $(parentCmbx).parents('.' + CLS_EACHFIELD).next().find('select');
-	if (childCmbx.length === 0) return;
-	var targetObj = UiUtil.GetVarByJsonPath(parentCmbx.UiForm.obj2Edit, strChildFqn);
-	childCmbx.empty();
-	$.each(targetObj.option, function(master, child) {
-		if (master === parentCmbx.value) {
-			UiForm.populateComboBoxWithValue(childCmbx[0], child, '');
-			return(false);
-		}
-	});
-};
-*/
 UiForm.prototype.createWidget = function(aObjIdx, fieldName, fieldValue, aBasePath, fieldType, fieldMask) {
 	var widgetGrp = null;
 	if (this.forPrint === false) {
@@ -576,15 +502,6 @@ UiForm.prototype.setupAryCtrl = function(cntrObj, newbtn, deletebtn, nxtbtn, str
 		var slideScript = document.createElement('script');
 		slideScript.setAttribute('type', 'text/javascript');
 		
-		/*
-		slideScript.innerHTML = "\n" + "//<![CDATA[ " + "\n"
-		+ "	$(document).ready(function(){ sliderVar = $('#" + slideId + "').bxSlider({ticker:false, mode:'" + bxSliderMode + "', controls:true, pager:false, nextSelector:'#" + slideNxt + "', nextText:'" + strNext + "'});" 
-		+ "sliderVar.nextBtnId = '" + slideNxt + "';"
-		+ "var parkBtn = UiUtil.GetActiveSlideElement('" + btn.id + "');"
-		+ "parkBtn.allSlider.push(sliderVar); " 
-		+ "});"
-		+ "\n" + "//]]>" + "\n";
-		*/
 		slideScript.innerHTML = "\n" + "//<![CDATA[ " + "\n"
 		+ "	$(document).ready(function(){ " 
 		+ "var masterSlider = document.getElementById('" + slideId + "');"
@@ -878,48 +795,6 @@ UiForm.prototype.setOk = function(errormsg) {
 	var ok = document.createComment("000");
 	errormsg.appendChild(ok);
 };
-/*
-UiForm.prototype.createDynamicList = function(masterId, childId, jsonMaster) {
-	var StrSwitchStart = "var arr; var option; function " + masterId + "(val)"
-	+ " {"
-	+ " var slc_all = $('select[id=" + childId + "]'" + ");"
-	+ " for(var cntr=0; cntr < slc_all.length; cntr++) {"
-	+ " 	var slc_target = slc_all[cntr];"
-	+ " 	slc_target.options.length = 0;"
-	+ " 	switch (val) {";
-	var StrCase = "case 'REPLACE_SELECTED_COUNTRY':"
-	+ " 	arr = new Array(REPLACE_NDC_LIST_BY_COUNTRY);"
-	+ " 	slc_target.disabled = false;"
-	+ " 	for (var i=0;i<arr.length;i++) {"
-	+ " 	option = new Option(arr[i],arr[i]);"
-	+ " 	slc_target.options[i] = option;"
-	+ " 	}"
-	+ " 	break;";
-	var StrSwitchEnd = "default:"
-	+ " 	slc_target.disabled = false;"
-	+ " 	slc_target.options.length = 0;"
-	+ " 	break;"
-	+ " 	}"
-	+ " }"
-	+ " }";
-
-	var strCase = "";
-	$.each(jsonMaster, function(name, value) {
-		strCase += StrCase.replace("REPLACE_SELECTED_COUNTRY", name);
-		var strAry = "";
-		for(var cntr = 0; cntr < value.length; cntr++) {
-			if (strAry !== "") {
-				strAry += ", ";
-			}
-			strAry += "'" + value[cntr] + "'";
-		}
-		strCase = strCase.replace("REPLACE_NDC_LIST_BY_COUNTRY", strAry) + " ";
-	});
-
-	var result = StrSwitchStart + strCase + StrSwitchEnd;
-	return(result);
-};
-*/
 UiForm.prototype.removeNode = function(parentNode) {
 	while (parentNode.firstChild) {
     parentNode.removeChild(parentNode.firstChild);
@@ -1381,111 +1256,6 @@ UiForm.prototype.focusFirstWidget = function() {
 		}
 	}
 };
-/*
-UiForm.prototype.scriptAddWithRemove = function(strScript, idName) {
-	var tmp = this.scriptAdd(strScript);
-	tmp.setAttribute("id", idName);
-	this.sourceToBeRemove.push(idName);
-};
-UiForm.prototype.scriptAdd = function(strScript) {
-	var head = document.getElementsByTagName('head')[0];
-	var scpt = document.createElement('script');
-	scpt.type = 'text/javascript';
-	scpt.appendChild(document.createTextNode(strScript));
-	head.appendChild(scpt);
-	return(scpt);
-};
-*/
-/*
-UiForm.CreateComboBoxCountry = function(aName, aValue, aSet) {
-	var inputArea = UiUtil.CreateComboBox(aName);
-	var cmb = inputArea.getElementsByTagName("select")[0];
-	cmb.setAttribute('style', 'margin-top: 10px');
-	UiForm.PopulateComboBoxWithName(cmb, aValue.option, aValue.data);
-	aSet.appendChild(inputArea);
-};
-UiForm.PopulateComboBoxWithName = function(cmb, jsonObj, chosen) {
-	var opt = document.createElement("option"); 
-	opt.value = ""; 
-	opt.innerHTML = ""; 
-	cmb.appendChild(opt); 
-
-	if (jsonObj !== undefined) {
-		$.each(jsonObj, function(name, value)  { 
-			var opt = document.createElement("option"); 
-			opt.value = name; 
-			opt.innerHTML = name; 
-			if (name === chosen) {
-				opt.setAttribute("selected", '');
-			}
-			cmb.appendChild(opt); 
-		});
-	}
-};
-*/
-/*
-UiForm.AddStyle = function(cssStr) {
-	if (UiForm.StyleExist(cssStr) === false) {
-		var head = document.getElementsByTagName('head')[0];
-		var style = document.createElement('style');
-		style.type = 'text/css';
-		if (style.styleSheet){
-			style.styleSheet.cssText = cssStr;
-		} else {
-			style.appendChild(document.createTextNode(cssStr));
-		}
-		head.appendChild(style);
-	}
-};
-UiForm.StyleExist = function(strStyle) {
-	var ssList = document.styleSheets; 
-	if (!ssList) return false;
-	for (var i = 0; i < ssList.length; i++) {
-		var ss = ssList[i]; 
-		if (!ss) continue;
-		if (UiForm.XTraverseStyleSheet(ss, strStyle)) return true;
-	}
-	return false;
-};
-UiForm.XTraverseStyleSheet = function(ss, strStyle) {
-	if (!ss) return false;
-	var rls = UiForm.XGetCSSRules(ss) ; if (!rls) return false;
-	var str2 = UiForm.StdCssStr(strStyle);
-	for (var j = 0; j < rls.length; j++) {
-		var cr = rls[j];
-		if (cr.selectorText) {
-			var str1 = UiForm.StdCssStr(cr.cssText);
-			if (str1 === str2) {
-				return true; 
-			} else {
-				if (cr.cssText === str2) {
-					return true;
-				}
-			}
-		}
-		if (cr.type && cr.type === 3 && cr.styleSheet) xTraverseStyleSheet(cr.styleSheet, strStyle);
-	}
-	if (ss.imports) {
-		for (var j = 0 ; j < ss.imports.length; j++) {
-			if (xTraverseStyleSheet(ss.imports[j], strStyle)) return true;
-		}
-	}
-	return false;
-};
-UiForm.XGetCSSRules = function(ss) { 
-	return ss.rules ? ss.rules : ss.cssRules; 
-};
-UiForm.StdCssStr = function(strCss) {
-	var body = strCss.match(/[^{}]+(?=\})/g); // standardise body section string
-	var tmp = document.createElement("div");
-	tmp.style.cssText = body[0];
-
-	var tgtCss = strCss.substr(0, strCss.indexOf(body) -1); // get the targeted css name
-	var result = tgtCss + '{ ' + tmp.style.cssText + ' }';
-	
-	return(result);
-};
-*/
 UiForm.plusOne = function(seqNum) {
 	if (typeof seqNum !== 'undefined' && seqNum !== null) {
 		seqNum.startNum++;
