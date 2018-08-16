@@ -237,272 +237,276 @@
 		<script type="text/javascript" src="lib/UiGrid.js"></script>   
 	</head>
 	<body>
-	<article>
-		<div style="width: 100%; float: left; text-align: center">
-			<h1 style="margin-bottom:2px;font-size:2.1rem">Malaysia Payroll, Payslip, PCB, EPF, SOCSO Calculator</h1>
-			<h2 style="margin-bottom:10px;font-size:1.6rem">Monthly Statutory Deductions for Malaysia Payslip</h2>
-		</div>
-
-		<div class="each-body" style="background: transparent">
-			<div id="divFlipEmpInfo" onclick="UiUtil.FlipUpDown('divEmpInfo')">
-				<h2 style="font-size:1.5rem;padding-left:5px">Tax Information</h2>
-			</div>
-			<div id="divEmpInfo">
-				<fieldset class="fs-btn">
-					<button id="btnGenPayslip" onclick="genPayslip();" style="margin-right: 2px">Generate Payslip</button>
-				</fieldset>
-				<fieldset class="st-fs01" style="padding-top:35px;padding-bottom:45px;padding-left:1%;padding-right:1%">
-					<div class="st-eachfield st-row">
-						<div class="st-label-area">
-							<label>Monthly Salary</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
-						</div>
-						<div class="st-input-area">
-							<div>
-								<span class="st-symbol">
-									<select class="custom-select" style="width:90px" id="68464_cy">
-										<option value="MYR">MYR</option>
-									</select>
-								</span>
-								<span>
-									<input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" autofocus data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, '68464_ct')">
-								</span>
-								<span class="st-symbol">.</span>
-								<span>
-									<input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" data-mask="00">
-								</span>
-							</div>
-						</div>
-					</div>
-					<div class="st-eachfield st-row">
-						<div class="st-label-area">
-							<label>Tax Resident</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
-						</div>
-						<div class="st-input-area">
-							<select class="custom-select" style="min-width:70px">
-								<option value="Citizen">Citizen</option>
-								<option value="Permanent Resident">Permanent Resident</option>
-								<option value="Foreigner">Foreigner</option>
-							</select>
-						</div>
-					</div>
-					<div class="st-eachfield st-row">
-						<div class="st-label-area">
-							<label>Is Spouse Working</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
-						</div>
-						<div class="st-input-area">
-							<input class="" type="checkbox">
-						</div>
-					</div>
-					<div class="st-eachfield st-row">
-						<div class="st-label-area">
-							<label>Marital Status</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
-						</div>
-						<div class="st-input-area">
-							<select class="custom-select" style="min-width:70px">
-								<option value="Single">Single</option>
-								<option value="Married">Married</option>
-							</select>
-						</div>
-					</div>
-					<div class="st-eachfield st-row">
-						<div class="st-label-area">
-							<label>No Of Children</label>
-							<img src="img/imgErrorBlank.png" style="display: none;">
-							<span class="st-error-msg" style="display: none"></span>
-						</div>
-						<div class="st-input-area">
-							<input class="form-control" type="text" value="" size="2" data-mask="00">
-						</div>
-					</div>
-				</fieldset>
-			</div>
-		</div>
-
-		<div id="body_payslip" class="each-body">
-			<div id="divFlipSlip" style="float:left;width:100%" onclick="UiUtil.FlipUpDown('divPayslip')">
-				<h2 style="float:left;font-size:1.5rem;padding-left:5px">Payslip</h2>
-				<div style="float:left;font-weight:100;font-size:small;margin-left:10px;margin-top:5px">
-					<img id='msgImage' src='img/imgInfo.gif' style='vertical-align:middle; margin-right:0px;float:left' alt="">
-					<span id='msgArea' style="float:left"></span>
+		<div style="display:table;height:100vh">
+			<div style="display:table-row;height:75%">
+				<div style="width: 100%; float: left; text-align: center">
+					<h1 style="margin-bottom:2px;font-size:2.1rem">Malaysia Payroll, Payslip, PCB, EPF, SOCSO Calculator</h1>
+					<h2 style="margin-bottom:10px;font-size:1.6rem">Monthly Statutory Deductions for Malaysia Payslip</h2>
 				</div>
-			</div>
-			<div id="divPayslip" style="display: none">
-				<fieldset class="fs-btn">
-					<button id="btnPrintTop" onclick="printSalarySlip();">Print...</button>
-					<button id="btnRecomputeTop" onclick="recomputeSalarySlip();">Recompute</button>
-				</fieldset>
-				<div id="divPayslipFull" style="float:left;width:100%">
-					<div id="divPayslipInfo" style="display:none;float:left;width:100%;margin-top:20px">
-						<div style="text-align:center">
-							<div class='' style='display:inline-block;'>
-								<div class="st-eachfield st-row">
-									<div class="st-label-area">
-										<label>Company</label>
-										<img src="img/imgErrorBlank.png" style="display: none" alt="">
-										<span class="st-error-msg" style="display:none"></span>
-									</div>
-									<div class="st-input-area">
-										<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd" size="50" style="text-align:center" 
-										v-model="dt_company"
-										>
+		
+				<div class="each-body" style="background: transparent">
+					<div id="divFlipEmpInfo" onclick="UiUtil.FlipUpDown('divEmpInfo')">
+						<h2 style="font-size:1.5rem;padding-left:5px">Tax Information</h2>
+					</div>
+					<div id="divEmpInfo">
+						<fieldset class="fs-btn">
+							<button id="btnGenPayslip" onclick="genPayslip();" style="margin-right: 2px">Generate Payslip</button>
+						</fieldset>
+						<fieldset class="st-fs01" style="padding-top:35px;padding-bottom:45px;padding-left:1%;padding-right:1%">
+							<div class="st-eachfield st-row">
+								<div class="st-label-area">
+									<label>Monthly Salary</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
+								</div>
+								<div class="st-input-area">
+									<div>
+										<span class="st-symbol">
+											<select class="custom-select" style="width:90px" id="68464_cy">
+												<option value="MYR">MYR</option>
+											</select>
+										</span>
+										<span>
+											<input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" autofocus data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, '68464_ct')">
+										</span>
+										<span class="st-symbol">.</span>
+										<span>
+											<input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" data-mask="00">
+										</span>
 									</div>
 								</div>
 							</div>
-							<br>
-							<div class='' style='display:inline-block;'>
-								<div class="st-eachfield st-row" style="float:left">
-									<div class="st-label-area">
-										<label>Period From</label>
-										<img src="img/imgErrorBlank.png" style="display: none" alt="">
-										<span class="st-error-msg" style="display:none"></span>
-									</div>
-									<div class="st-input-area">
-										<input id="headerPeriodFrom" class="print-field form-control" type="text" value="" placeholder="01-Dec-2018" style="text-align:center">
-									</div>
+							<div class="st-eachfield st-row">
+								<div class="st-label-area">
+									<label>Tax Resident</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
 								</div>
-								<div class="st-eachfield st-row" style="float:left">
-									<div class="st-label-area" style='margin-left:50px'>
-										<label>Period To</label>
-										<img src="img/imgErrorBlank.png" style="display: none" alt="">
-										<span class="st-error-msg" style="display:none"></span>
-									</div>
-									<div class="st-input-area">
-										<input id="headerPeriodTo" class="print-field form-control" type="text" value="" placeholder="31-Dec-2018" style="text-align:center">
-									</div>
-									<span id="mth-period-popup" onclick="showCalendarPeriod(); return false" style="cursor:pointer">
-										<img src="img/imgCalendar.png" alt="">
-									</span>
+								<div class="st-input-area">
+									<select class="custom-select" style="min-width:70px">
+										<option value="Citizen">Citizen</option>
+										<option value="Permanent Resident">Permanent Resident</option>
+										<option value="Foreigner">Foreigner</option>
+									</select>
 								</div>
 							</div>
+							<div class="st-eachfield st-row">
+								<div class="st-label-area">
+									<label>Is Spouse Working</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
+								</div>
+								<div class="st-input-area">
+									<input class="" type="checkbox">
+								</div>
+							</div>
+							<div class="st-eachfield st-row">
+								<div class="st-label-area">
+									<label>Marital Status</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
+								</div>
+								<div class="st-input-area">
+									<select class="custom-select" style="min-width:70px">
+										<option value="Single">Single</option>
+										<option value="Married">Married</option>
+									</select>
+								</div>
+							</div>
+							<div class="st-eachfield st-row">
+								<div class="st-label-area">
+									<label>No Of Children</label>
+									<img src="img/imgErrorBlank.png" style="display: none;">
+									<span class="st-error-msg" style="display: none"></span>
+								</div>
+								<div class="st-input-area">
+									<input class="form-control" type="text" value="" size="2" data-mask="00">
+								</div>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+		
+				<div id="body_payslip" class="each-body">
+					<div id="divFlipSlip" style="float:left;width:100%" onclick="UiUtil.FlipUpDown('divPayslip')">
+						<h2 style="float:left;font-size:1.5rem;padding-left:5px">Payslip</h2>
+						<div style="float:left;font-weight:100;font-size:small;margin-left:10px;margin-top:5px">
+							<img id='msgImage' src='img/imgInfo.gif' style='vertical-align:middle; margin-right:0px;float:left' alt="">
+							<span id='msgArea' style="float:left"></span>
 						</div>
-			
-						<div style="width:100%;float:left">
-							<div id="divEmployeeDetail" style="margin-top:25px;margin-bottom:10px;float:left;width:80%;display:table;margin-left:10%">
-								<div style='display:table-row'>
-									<div style='display:table-cell'>
+					</div>
+					<div id="divPayslip" style="display: none">
+						<fieldset class="fs-btn">
+							<button id="btnPrintTop" onclick="printSalarySlip();">Print...</button>
+							<button id="btnRecomputeTop" onclick="recomputeSalarySlip();">Recompute</button>
+						</fieldset>
+						<div id="divPayslipFull" style="float:left;width:100%">
+							<div id="divPayslipInfo" style="display:none;float:left;width:100%;margin-top:20px">
+								<div style="text-align:center">
+									<div class='' style='display:inline-block;'>
 										<div class="st-eachfield st-row">
 											<div class="st-label-area">
-												<label>Employee</label>
+												<label>Company</label>
 												<img src="img/imgErrorBlank.png" style="display: none" alt="">
 												<span class="st-error-msg" style="display:none"></span>
 											</div>
 											<div class="st-input-area">
-												<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates" size="50"
-												v-model="dt_employee"
+												<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd" size="50" style="text-align:center" 
+												v-model="dt_company"
 												>
 											</div>
 										</div>
 									</div>
-									<div style='display:table-cell;text-align:right'>
-										<div class="st-eachfield st-row">
+									<br>
+									<div class='' style='display:inline-block;'>
+										<div class="st-eachfield st-row" style="float:left">
 											<div class="st-label-area">
-												<label>Gross Pay</label>
+												<label>Period From</label>
 												<img src="img/imgErrorBlank.png" style="display: none" alt="">
 												<span class="st-error-msg" style="display:none"></span>
 											</div>
 											<div class="st-input-area">
-												<input class="print-field form-control" id="grossPay" readonly value="MYR 0.00" style="text-align:right"></input>
+												<input id="headerPeriodFrom" class="print-field form-control" type="text" value="" placeholder="01-Dec-2018" style="text-align:center">
+											</div>
+										</div>
+										<div class="st-eachfield st-row" style="float:left">
+											<div class="st-label-area" style='margin-left:50px'>
+												<label>Period To</label>
+												<img src="img/imgErrorBlank.png" style="display: none" alt="">
+												<span class="st-error-msg" style="display:none"></span>
+											</div>
+											<div class="st-input-area">
+												<input id="headerPeriodTo" class="print-field form-control" type="text" value="" placeholder="31-Dec-2018" style="text-align:center">
+											</div>
+											<span id="mth-period-popup" onclick="showCalendarPeriod(); return false" style="cursor:pointer">
+												<img src="img/imgCalendar.png" alt="">
+											</span>
+										</div>
+									</div>
+								</div>
+					
+								<div style="width:100%;float:left">
+									<div id="divEmployeeDetail" style="margin-top:25px;margin-bottom:10px;float:left;width:80%;display:table;margin-left:10%">
+										<div style='display:table-row'>
+											<div style='display:table-cell'>
+												<div class="st-eachfield st-row">
+													<div class="st-label-area">
+														<label>Employee</label>
+														<img src="img/imgErrorBlank.png" style="display: none" alt="">
+														<span class="st-error-msg" style="display:none"></span>
+													</div>
+													<div class="st-input-area">
+														<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates" size="50"
+														v-model="dt_employee"
+														>
+													</div>
+												</div>
+											</div>
+											<div style='display:table-cell;text-align:right'>
+												<div class="st-eachfield st-row">
+													<div class="st-label-area">
+														<label>Gross Pay</label>
+														<img src="img/imgErrorBlank.png" style="display: none" alt="">
+														<span class="st-error-msg" style="display:none"></span>
+													</div>
+													<div class="st-input-area">
+														<input class="print-field form-control" id="grossPay" readonly value="MYR 0.00" style="text-align:right"></input>
+													</div>
+												</div>
+											</div>
+										</div>
+					
+										<div style='display:table-row'>
+											<div style='display:table-cell'>
+												<div class="st-eachfield st-row">
+													<div class="st-label-area">
+														<label>Designation</label>
+														<img src="img/imgErrorBlank.png" style="display: none" alt="">
+														<span class="st-error-msg" style="display:none"></span>
+													</div>
+													<div class="st-input-area">
+														<input id="headerDesignation" class="print-field form-control" type="text" value="" placeholder="Programmer" size="30">
+													</div>
+												</div>
+											</div>
+											<div style='display:table-cell;text-align:right'>
+												<div class="st-eachfield st-row">
+													<div class="st-label-area">
+														<label>Total Deduction</label>
+														<img src="img/imgErrorBlank.png" style="display: none" alt="">
+														<span class="st-error-msg" style="display:none"></span>
+													</div>
+													<div class="st-input-area">
+														<input class="print-field form-control" id="totalDeduction" readonly value="MYR 0.00" style="text-align:right"></input>
+														<span style="display:none" id="totalOther" readonly value="MYR 0.00"></span>
+													</div>
+												</div>
+											</div>
+										</div>
+					
+										<div style='display:table-row'>
+											<div style='display:table-cell'>
+												<div class="st-eachfield st-row">
+													<div class="st-label-area">
+														<label>Net Pay</label>
+														<img src="img/imgErrorBlank.png" style="display: none" alt="">
+														<span class="st-error-msg" style="display:none"></span>
+													</div>
+													<div class="st-input-area">
+														<input class="print-field form-control" id="netPay" readonly value="MYR 0.00" style="text-align:right"></input>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
+							</div>
 			
-								<div style='display:table-row'>
-									<div style='display:table-cell'>
-										<div class="st-eachfield st-row">
-											<div class="st-label-area">
-												<label>Designation</label>
-												<img src="img/imgErrorBlank.png" style="display: none" alt="">
-												<span class="st-error-msg" style="display:none"></span>
-											</div>
-											<div class="st-input-area">
-												<input id="headerDesignation" class="print-field form-control" type="text" value="" placeholder="Programmer" size="30">
-											</div>
-										</div>
-									</div>
-									<div style='display:table-cell;text-align:right'>
-										<div class="st-eachfield st-row">
-											<div class="st-label-area">
-												<label>Total Deduction</label>
-												<img src="img/imgErrorBlank.png" style="display: none" alt="">
-												<span class="st-error-msg" style="display:none"></span>
-											</div>
-											<div class="st-input-area">
-												<input class="print-field form-control" id="totalDeduction" readonly value="MYR 0.00" style="text-align:right"></input>
-												<span style="display:none" id="totalOther" readonly value="MYR 0.00"></span>
-											</div>
-										</div>
-									</div>
-								</div>
+							<div style="float:left;margin-top:25px;display:block;width:100%"></div>
 			
-								<div style='display:table-row'>
-									<div style='display:table-cell'>
-										<div class="st-eachfield st-row">
-											<div class="st-label-area">
-												<label>Net Pay</label>
-												<img src="img/imgErrorBlank.png" style="display: none" alt="">
-												<span class="st-error-msg" style="display:none"></span>
-											</div>
-											<div class="st-input-area">
-												<input class="print-field form-control" id="netPay" readonly value="MYR 0.00" style="text-align:right"></input>
+							<div id="divPayslipTable" style='float:left;width:100%;margin-left:0%;margin-top:10px;'>
+								<div style="float:left;display:table;width:100%;border-spacing:20px">
+									<div style="display:table-row;width:100%">
+										<div id="divMasterEarn" style="display:table-cell;width:50%">
+											<div id='divEarning'></div>
+										</div>
+										<div id="divMasterDeduct" style="display:table-cell">
+											<div id='divDeduction'></div>
+										</div>
+									</div>
+			
+									<div style="display:table-row">
+										<div style="display:table-cell"></div>
+										<div style="display:table-cell">
+											<div id="divMasterOther">
+												<div id='divOther'></div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> 
 					</div>
-	
-					<div style="float:left;margin-top:25px;display:block;width:100%"></div>
-	
-					<div id="divPayslipTable" style='float:left;width:100%;margin-left:0%;margin-top:10px;'>
-						<div style="float:left;display:table;width:100%;border-spacing:20px">
-							<div style="display:table-row;width:100%">
-								<div id="divMasterEarn" style="display:table-cell;width:50%">
-									<div id='divEarning'></div>
-								</div>
-								<div id="divMasterDeduct" style="display:table-cell">
-									<div id='divDeduction'></div>
-								</div>
-							</div>
-	
-							<div style="display:table-row">
-								<div style="display:table-cell"></div>
-								<div style="display:table-cell">
-									<div id="divMasterOther">
-										<div id='divOther'></div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div> 
-			</div>
-		</div>
-
-		<div id="dialogSalaryTrx" style="display:none;">
-			<div id="dialogPayslip"></div>
-		</div>
-
-		<div style="display:flex;align-items:center;bottom:0;float:left;width:100%;text-align:center;margin-top:100px;height:600px;font-size:12px;background-image:url(img/blue-wave-footer.png);background-size:100% 100%"> 
-			<div style="width:100%;">
-				<div style="width:100%;color:white;font-size:2.1rem;font-weight:500">Need to Do Payroll on Regular Basis?</div>
-				<div style="width:100%;color:white;font-size:small;font-weight:100">
-					<a href="http://shujutech.mywire.org/StEMS/Main?goto=SignUp" style="color:white;">Sign up</a>
-					to easily process payroll for all your employees or contact us by clicking 
-					<a href="http://shujutech.mywire.org/StEMS/Main?goto=ContactUs" style="color:white;font-weight:600"> Here.</a>
-					</div>
-					<div style="display:flex;margin-top:40px;"> 
-						<a style="margin-left:auto;margin-right:auto;padding-left:60px;padding-right:60px" class="btn" 
-						href='javascript:loadHRef("/StEMS/Main?goto=SignUp");'>Sign Up<strong></strong></a> 
-					</div>
-			</div>
-		</div>
-
-		<div style="bottom:0;float:left;width:100%;text-align:center;margin:0;font-size:12px;background:#03072f;"> 
-			<p style="padding:0;margin:0;color:gray">Copyright &copy; 2005-2018 Shujutech Inc. All rights reserved.</p>
-		</div>
+				</div>
 		
+				<div id="dialogSalaryTrx" style="display:none;">
+					<div id="dialogPayslip"></div>
+				</div>
+			</div>
+		
+			<div style="display:table-row;height:25%">
+				<div style="display:flex;align-items:center;bottom:0;float:left;width:100%;text-align:center;margin-top:100px;height:280px;font-size:12px;background-image:url(img/blue-wave-footer.png);background-size:100% 100%"> 
+					<div style="width:100%;">
+						<div style="width:100%;color:white;font-size:2.1rem;font-weight:500">Need to Do Payroll on Regular Basis?</div>
+						<div style="width:100%;color:white;font-size:small;font-weight:100">
+							<a href="http://shujutech.mywire.org/StEMS/Main?goto=SignUp" style="color:white;">Sign up</a>
+							to easily process payroll for all your employees or contact us by clicking 
+							<a href="http://shujutech.mywire.org/StEMS/Main?goto=ContactUs" style="color:white;font-weight:600"> Here.</a>
+							</div>
+							<div style="display:flex;margin-top:40px;"> 
+								<a style="margin-left:auto;margin-right:auto;padding-left:60px;padding-right:60px" class="btn" 
+								href='javascript:loadHRef("/StEMS/Main?goto=SignUp");'>Sign Up<strong></strong></a> 
+							</div>
+					</div>
+				</div>
+				<div style="bottom:0;float:left;width:100%;text-align:center;margin:0;font-size:12px;background:#03072f;"> 
+					<p style="padding:0;margin:0;color:gray">Copyright &copy; 2005-2018 Shujutech Inc. All rights reserved.</p>
+				</div>
+			</div>
+		</div>
+
 		<script type='text/javascript'>
 			var genPayslip = function() {
 				UiUtil.FlipUpDown('divPayslip');
