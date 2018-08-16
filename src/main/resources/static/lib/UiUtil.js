@@ -2025,4 +2025,90 @@ UiUtil.FlipUpDown = function(aElemId) {
 		$("#" + aElemId).slideDown("slow");
 	}
 };
+UiUtil.IsUiMaster = function(each) {
+	var result = false;
+	if (each.uimaster === true) {
+		result = true;
+	}
+	return(result);
+};
+UiUtil.IsSystemField = function(aName) {	
+	var result = false;
+	if (aName === "uimaster") {
+		result = true;
+	} else if (aName === "objectId") {
+		result = true;
+	} else if (aName === "clasz") {
+		result = true;
+	}
+	return(result);
+};
+UiUtil.isCustomWidget = function(aValue) {
+	var result = true;
+	if (aValue.type === "mobilephone" ) {
+	} else if (aValue.type === 'telephone' ) {
+	} else if (aValue.type === 'money' ) {
+	} else if (aValue.type === 'boolean' ) {
+	} else if (aValue.type === 'salary' ) {
+	} else if (aValue.type === 'country' ) {
+	} else if (aValue.type === 'state' ) {
+	} else if (aValue.type === 'city' ) {
+	} else {
+		result = false;
+	}
+
+	return(result);
+};
+UiUtil.PopulateData = function(aJsonObj, aParentFqnName, aObjName, aAvoidRecursive) {
+	aParentFqnName = UiUtil.GetJsonPath(aParentFqnName, aObjName);
+	for (var cntr in aAvoidRecursive) {
+		if (aAvoidRecursive[cntr].Oid === String(aJsonObj.objectId) && aAvoidRecursive[cntr].clasz === aJsonObj.clasz) {
+			return;
+		}
+	}
+
+	for(var key in aJsonObj.data) {
+		if (aJsonObj.data[key].dontDisplay !== undefined) continue;
+		var fieldName = key;
+		var fieldValue  = aJsonObj.data[fieldName];
+		if (UiUtil.isSystemField(fieldName) === false) {
+
+			if (UiUtil.isCustomWidget(fieldValue)) {
+				// custom widget values probably cannot be assign directly
+			} else if ((fieldValue.data !== undefined && typeof(fieldValue.data) !== 'object') || fieldValue.lookup === true) { // atomic fields
+				var valueToPrint = aJsonObj.data;
+				console.log("Found field: " + fieldName + ", value: " + valueToPrint);
+			} else { // handle object fields i.e. fieldobject and fieldobjectbox
+				if ((fieldValue.dataset !== undefined || typeof(fieldValue.data) === 'object') && (fieldValue.lookup === undefined || fieldValue.lookup === false)) {
+					if ($.isArray(fieldValue.dataset)) { // its fieldobjectbox
+						for (cntrObj = 0; cntrObj < fieldValue.dataset.length; cntrObj++) {
+							var aryIdx = "[" + cntrObj + "]";
+							if (UiUtil.IsUiMaster(fieldValue.dataset[cntrObj])) {
+								aAvoidRecursive.push({clasz: fieldValue.dataset[cntrObj].clasz, Oid: fieldValue.dataset[cntrObj].objectId});
+								UiUtil.PopulateData(fieldValue.dataset[cntrObj], aParentFqnName, fieldName + aryIdx, aAvoidRecursive, cntrObj);
+								aAvoidRecursive.pop();
+							} else if (UiUtil.isCustomWidget(fieldValue.dataset[cntrObj])) {
+								// do nothing
+							} else {
+								aAvoidRecursive.push({clasz: fieldValue.dataset[cntrObj].clasz, Oid: fieldValue.dataset[cntrObj].objectId});
+								UiUtil.PopulateData(fieldValue.dataset[cntrObj], aParentFqnName, fieldName + aryIdx, aAvoidRecursive, cntrObj);
+								aAvoidRecursive.pop();
+							}
+						}
+					} else { // its fieldobject
+						if (UiUtil.isCustomWidget(fieldValue)) {
+							// do nothing
+						} else {
+							aAvoidRecursive.push({clasz: fieldValue.data.clasz, Oid: fieldValue.data.objectId});
+							UiUtil.PopulateData(fieldValue, aParentFqnName, fieldName, aAvoidRecursive, 0);
+							aAvoidRecursive.pop();
+						}
+					}
+				}
+			}
+		} else {
+			// do nothing to system field
+		}
+	}
+};
 UiUtil.doNothing = function() {}; 
