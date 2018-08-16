@@ -27,9 +27,6 @@ if (typeof UiUtil === 'undefined' || UiUtil === null) {
 }
 function UiForm() {
 };
-UiForm.prototype.setValue = function(aFqn, aWidget) { 
-	UiUtil.JsonAssignment(this.obj2Edit, aFqn, aWidget.value);
-};
 UiForm.prototype.setValueBoolean = function(aFqn, aWidget) { 
 	var value = "false";
 	if ($(aWidget).prop("checked") === true) {
@@ -59,11 +56,6 @@ UiForm.prototype.getValue = function(aIndex, aFqn) {
 UiForm.prototype.beAction= function(aIndex, aActionKeyword, aUrl, aBeSucc) { 
 	var editObj  = this.rawObj.dataset[aIndex];
 	UiUtil.BeAction(editObj, aActionKeyword, aUrl, aBeSucc);
-};
-UiForm.prototype.setValueNoBr = function(aFqn, aWidget) { 
-	if (aWidget.value !== "<br>") { // ignore this damn <br> html element place in by HtmlEditor widget
-		this.setValue(aFqn, aWidget);
-	}
 };
 UiForm.GetHtmlEditorValue = function(aHtmlEditor) {
 	aHtmlEditor.nicInstances[0].saveContent();
@@ -392,9 +384,11 @@ UiForm.prototype.createWidget = function(aObjIdx, fieldName, fieldValue, aBasePa
 			var txtField = widgetGrp.getElementsByTagName("input")[0];
 			txtField.UiForm = this;
 		}
+
 		if (this.obj2Edit.objectId !== -1) {
 			this.setUpdateableOnWidget(fieldValue, widgetGrp);
 		}
+
 		this.setChangeableOnWidget(fieldValue, widgetGrp);
 	} else {
 		var printTxt = document.createElement("span");

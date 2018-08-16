@@ -286,9 +286,6 @@ UiUtil.GetJsonPath = function(aBasePath, fieldName) {
 	aBasePath += fieldName;
 	return(aBasePath);
 };
-UiUtil.SetValue = function(aObj2Edit, aFqn, aWidget) { 
-	UiUtil.JsonAssignment(aObj2Edit, aFqn, aWidget.value);
-};
 UiUtil.DialogWaitStart = function(aWaitMsg) {
 	var waitMsg = "<div style='margin-top: 20px; min-width: 500px'></div>" 
 	+ "<div style='margin: auto' class='loadersmall'></div>" 
@@ -1078,11 +1075,12 @@ UiUtil.CreateTextFieldNoLabel = function(id, aValue) {
 };
 UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName, aUseSpanPicker, aShowTime, aSlideIdx, aFieldFqn) {
 	var spanDay = document.createElement("span");
-	var rdmId = UiUtil.GenElementId(displayLabel, aFieldFqn);
+	var dtElementId = UiUtil.GenElementId(undefined, aFieldFqn);
 
-	$("#fd-y_" + rdmId).remove();
+	$("#fd-y_" + dtElementId).remove();
 
-	var tfDay = UiUtil.CreateTextFieldNoLabel("d_" + rdmId);
+	dtElementId = UiUtil.GenElementId(undefined, aFieldFqn, "dd_"); // prefix with date day
+	var tfDay = UiUtil.CreateTextFieldNoLabel(dtElementId);
 	tfDay.setAttribute("size", 2);
 	tfDay.setAttribute("class", CLS_DATE_PICKER);
 	tfDay.setAttribute("data-mask", "00");
@@ -1092,8 +1090,9 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 	slashDay.setAttribute("class", "symbol");
 	slashDay.innerHTML = "/";
 
+	dtElementId = UiUtil.GenElementId(undefined, aFieldFqn, "dm_"); // prefix with date month
 	var spanMth = document.createElement("span");
-	var tfMth = UiUtil.CreateTextFieldNoLabel("m_" + rdmId);
+	var tfMth = UiUtil.CreateTextFieldNoLabel(dtElementId);
 	tfMth.setAttribute("size", 2);
 	tfMth.setAttribute("class", CLS_DATE_PICKER);
 	tfMth.setAttribute("data-mask", "00");
@@ -1103,15 +1102,17 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 	slashMth.setAttribute("class", "symbol");
 	slashMth.innerHTML = "/";
 
+	dtElementId = UiUtil.GenElementId(undefined, aFieldFqn, "dy_"); 
 	var spanYear = document.createElement("span");
-	var tfYear = UiUtil.CreateTextFieldNoLabel("y_" + rdmId);
+	var tfYear = UiUtil.CreateTextFieldNoLabel(dtElementId);
 	tfYear.setAttribute("size", 4);
 	tfYear.setAttribute("class", CLS_DATE_PICKER);
 	tfYear.setAttribute("data-mask", "0000");
 	spanYear.appendChild(tfYear);
 
+	dtElementId = UiUtil.GenElementId(undefined, aFieldFqn, "dh_"); 
 	var spanHour = document.createElement("span");
-	var tfHour = UiUtil.CreateTextFieldNoLabel("h_" + rdmId);
+	var tfHour = UiUtil.CreateTextFieldNoLabel(dtElementId);
 	tfHour.setAttribute("size", 2);
 	tfHour.setAttribute("class", CLS_DATE_PICKER);
 	tfHour.setAttribute("data-mask", "00");
@@ -1121,8 +1122,9 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 	slashHour.setAttribute("class", "symbol");
 	slashHour.innerHTML = "/";
 
+	dtElementId = UiUtil.GenElementId(undefined, aFieldFqn, "di_"); 
 	var spanMin = document.createElement("span");
-	var tfMin = UiUtil.CreateTextFieldNoLabel("mt_"+ rdmId);
+	var tfMin = UiUtil.CreateTextFieldNoLabel(dtElementId);
 	tfMin.setAttribute("size", 2);
 	tfMin.setAttribute("class", CLS_DATE_PICKER);
 	tfMin.setAttribute("data-mask", "00");
@@ -1132,8 +1134,9 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 	slashMin.setAttribute("class", "symbol");
 	slashMin.innerHTML = "/";
 
+	dtElementId = UiUtil.GenElementId(undefined, aFieldFqn, "ds_"); 
 	var spanSec = document.createElement("span");
-	var tfSec = UiUtil.CreateTextFieldNoLabel("s_" + rdmId);
+	var tfSec = UiUtil.CreateTextFieldNoLabel(dtElementId);
 	tfSec.setAttribute("size", 4);
 	tfSec.setAttribute("class", CLS_DATE_PICKER);
 	tfSec.setAttribute("data-mask", "00");
@@ -1141,8 +1144,9 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 
 	UiUtil.SetDatePicker(fieldVar.data, tfDay, tfMth, tfYear, tfHour, tfMin, tfSec);
 
+	dtElementId = UiUtil.GenElementId(undefined, aFieldFqn); 
 	var spanPicker= document.createElement("span");
-	spanPicker.setAttribute("id", "dpk_" + rdmId);
+	spanPicker.setAttribute("id", dtElementId);
 	$(spanPicker).css("margin", "auto");
 
 	var jsPicker = document.createElement("script");
@@ -1152,13 +1156,11 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 	if (aUseSpanPicker === true) {
 		jsPicker.innerHTML = "\n" + "//<![CDATA[  " + "\n"
 		+ " var opts = {" + dpkId + ", formElements:{'" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false, positioned: '" + spanPicker.id + "'};"
-		//+ "	var opts = {formElements:{'" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false, positioned: '" + spanPicker.id + "'};"
 		+ "	datePickerController.createDatePicker(opts);"
 		+ "\n" + "//]]>" + "\n";
 	} else {
 		jsPicker.innerHTML = "\n" + "//<![CDATA[  " + "\n"
 		+ "	var opts = {" + dpkId + ", formElements:{'" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false};"
-		//+ "	var opts = {formElements:{'" + tfYear.id + "':'%Y','" + tfMth.id + "':'%m','" + tfDay.id + "':'%d'}, showWeeks:false};"
 		+ "	datePickerController.createDatePicker(opts);"
 		+ "\n" + "//]]>" + "\n";
 	}
@@ -1681,6 +1683,14 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, aFieldFqn) {
 
 	return(result);
 };
+UiUtil.SetValueNoBr = function(aElementId, aWidget) { 
+	if (aWidget.value !== "<br>") { // ignore this damn <br> html element place in by HtmlEditor widget
+		$("#" + aElementId).val(aWidget.value);
+	}
+};
+UiUtil.SetValue = function(aObj2Edit, aFqn, aWidget) { 
+	UiUtil.JsonAssignment(aObj2Edit, aFqn, aWidget.value);
+};
 UiUtil.CreateHtmlField = function(displayLabel, aValue, aFieldFqn) {
 	var inputTxt = document.createElement("textarea");
 	var genId = UiUtil.GenElementId(undefined, aFieldFqn);
@@ -1695,7 +1705,7 @@ UiUtil.CreateHtmlField = function(displayLabel, aValue, aFieldFqn) {
 	var result = document.createElement("div");
 	result.appendChild(divArea);
 
-	var fieldId = UiUtil.GetFieldId(genId);
+	//var fieldId = UiUtil.GetFieldId(genId);
 	var jsNicE = document.createElement("script");
 	jsNicE.setAttribute("type", "text/javascript");
 	jsNicE.innerHTML = "\n" + "//<![CDATA[  "
@@ -1703,9 +1713,7 @@ UiUtil.CreateHtmlField = function(displayLabel, aValue, aFieldFqn) {
 	+ "\n" + "htmlEditor.addEvent('blur', function() {"
 	+ "\n" + "var jsVar = {};"
 	+ "\n" + "jsVar.value = this.nicInstances[0].getContent();"
-	+ "\n" + "if (" + this.myName + " !== undefined) {"
-	+ "\n" + "\t" + this.myName + ".setValueNoBr('" + fieldId + "', jsVar);"
-	+ "\n" + "}"
+	+ "\n" + "UiUtil.SetValueNoBr('" + genId + "', jsVar);"
 	+ "\n" + "});"
 	+ "\n" + "//]]>" + "\n";
 	var jsexe = document.createElement("jsnice"); // cannot append directly on the body, the script will not execute, why?

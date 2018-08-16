@@ -38,6 +38,9 @@ fieldset {
 parentwrapper {
 	display: inline-flex;
 }
+.nicEdit-main {
+	font-weight: normal;
+}
 .loadersmall {
 	border: 5px solid #f3f3f3;
 	-webkit-animation: spin 1s linear infinite;
