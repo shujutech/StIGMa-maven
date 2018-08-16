@@ -1,5 +1,4 @@
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
 		<title>Adhoc Payslip</title>
@@ -238,6 +237,7 @@
 		<script type="text/javascript" src="lib/UiGrid.js"></script>   
 	</head>
 	<body>
+	<article>
 		<div style="width: 100%; float: left; text-align: center">
 			<h1 style="margin-bottom:2px;font-size:2.1rem">Malaysia Payroll, Payslip, PCB, EPF, SOCSO Calculator</h1>
 			<h2 style="margin-bottom:10px;font-size:1.6rem">Monthly Statutory Deductions for Malaysia Payslip</h2>
@@ -264,11 +264,7 @@
 									</select>
 								</span>
 								<span>
-									<input class="form-control" type="text" value="" id="68464_dl" 
-									style="text-align:right" 
-									autofocus 
-									data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" 
-									onkeyup="UiUtil.HandleDollar(this, event, '68464_ct')">
+									<input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" autofocus data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, '68464_ct')">
 								</span>
 								<span class="st-symbol">.</span>
 								<span>
@@ -488,9 +484,9 @@
 			<div id="dialogPayslip"></div>
 		</div>
 
-		<div class="footer" style="display:flex;align-items:center;bottom:0;float:left;width:100%;text-align:center;margin-top:100px;height:280px;font-size:12px;background-image:url(img/blue-wave-footer.png)"> 
+		<div style="display:flex;align-items:center;bottom:0;float:left;width:100%;text-align:center;margin-top:100px;height:600px;font-size:12px;background-image:url(img/blue-wave-footer.png);background-size:100% 100%"> 
 			<div style="width:100%;">
-				<div style="width:100%;color:white;font-size:xx-large">Need to Do Payroll on Regular Basis?</div>
+				<div style="width:100%;color:white;font-size:2.1rem;font-weight:500">Need to Do Payroll on Regular Basis?</div>
 				<div style="width:100%;color:white;font-size:small;font-weight:100">
 					<a href="http://shujutech.mywire.org/StEMS/Main?goto=SignUp" style="color:white;">Sign up</a>
 					to easily process payroll for all your employees or contact us by clicking 
@@ -503,13 +499,9 @@
 			</div>
 		</div>
 
-		<div class="footer" style="bottom:0;float:left;width:100%;text-align:center;margin:0;font-size:12px;background:#03072f;"> 
-			<!--  
-			<div style="float:left;border-bottom:1px dotted #ccc;width:100%;padding:0;"></div> 
-			-->
-			<p style="padding-top:5px;color:gray">Copyright &copy; 2005-2018 Shujutech Inc. All rights reserved.</p>
+		<div style="bottom:0;float:left;width:100%;text-align:center;margin:0;font-size:12px;background:#03072f;"> 
+			<p style="padding:0;margin:0;color:gray">Copyright &copy; 2005-2018 Shujutech Inc. All rights reserved.</p>
 		</div>
-
 		
 		<script type='text/javascript'>
 			var genPayslip = function() {
