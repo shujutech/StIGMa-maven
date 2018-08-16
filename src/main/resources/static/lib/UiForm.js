@@ -20,8 +20,8 @@ UiForm.prototype.myName = '';
 UiForm.prototype.baseUrl = '';
 UiForm.prototype.sourceToBeRemove = [];
 
-var bxSliderMode = 'fade';
-var bxSliderMasterName = 0;
+var sliderAnimationMode = 'fade';
+var sliderMasterName = 0;
 if (typeof UiUtil === 'undefined' || UiUtil === null) {
 	UiUtil = {}; // to avoid nb warning
 }
@@ -160,7 +160,7 @@ UiForm.prototype.displayUiForm = function(aLocationId, aObj2Edit, aIdx, aBaseUrl
 			var slideNxt = '';
 			if (thisUiForm.allSlider[eachSlider].getSlideCount() > 1) slideNxt = 'Next>>';
 			var nextId = thisUiForm.allSlider[eachSlider].nextBtnId;
-			thisUiForm.allSlider[eachSlider].reloadSlider({mode:bxSliderMode, pager: false, nextSelector:"#" + nextId, controls: true, prevText:'', nextText: slideNxt}); 
+			thisUiForm.allSlider[eachSlider].reloadSlider({mode: sliderAnimationMode, pager: false, nextSelector:"#" + nextId, controls: true, prevText:'', nextText: slideNxt}); 
 		}
 		thisUiForm.objBeforeEdit = jQuery.extend(true, {}, thisUiForm.obj2Edit);
 	};
@@ -489,7 +489,7 @@ UiForm.prototype.setupAryCtrl = function(cntrObj, newbtn, deletebtn, nxtbtn, str
 
 	var idxSlider = -1;
 	for (var cntr = 0; cntr < this.allSlider.length; cntr++) {
-		if (this.allSlider[cntr][bxSliderMasterName].id === slideId) {
+		if (this.allSlider[cntr][sliderMasterName].id === slideId) {
 			idxSlider = cntr;
 			break;
 		}
@@ -516,7 +516,7 @@ UiForm.prototype.setupAryCtrl = function(cntrObj, newbtn, deletebtn, nxtbtn, str
 
 		slideSet.appendChild(slideScript);
 	} else {
-		this.allSlider[idxSlider].reloadSlider({mode:bxSliderMode, controls:true, pager:false, nextSelector:'#' + slideNxt, nextText:strNext});
+		this.allSlider[idxSlider].reloadSlider({mode: sliderAnimationMode, controls:true, pager:false, nextSelector:'#' + slideNxt, nextText:strNext});
 	} 
 };
 UiForm.prototype.doHref = function(innerLabel, strClsz, titleStr, basePath, fieldName) {
@@ -626,7 +626,7 @@ UiForm.changePhone = function(jsonPath, aThis) {
 	var slideId = aThis.UiForm.createIdStr(parentLgnd.text(), '_slide');
 	var idxSlide;
 	for (var cntr = 0; cntr < aThis.UiForm.allSlider.length; cntr++) {
-		if (aThis.UiForm.allSlider[cntr][bxSliderMasterName].id === slideId) {
+		if (aThis.UiForm.allSlider[cntr][sliderMasterName].id === slideId) {
 			idxSlide = cntr;
 			break;
 		}
@@ -848,7 +848,7 @@ UiForm.prototype.newFieldObject = function(fieldClasz, fieldsetTitle, basePath, 
 
 				var idxSlide; // find the slide in allSlider, i.e. its index
 				for (var cntr = 0; cntr < thisUiForm.allSlider.length; cntr++) {
-					if (thisUiForm.allSlider[cntr][bxSliderMasterName].id === slideId) {
+					if (thisUiForm.allSlider[cntr][sliderMasterName].id === slideId) {
 						idxSlide = cntr;
 						break;
 					}
@@ -857,7 +857,7 @@ UiForm.prototype.newFieldObject = function(fieldClasz, fieldsetTitle, basePath, 
 				// create the div for the new child field and append to allSlider
 				var cntr = targetField.dataset.length - 1;
 				var divForSlideChild = document.createElement('div');
-				thisUiForm.allSlider[idxSlide][bxSliderMasterName].appendChild(divForSlideChild);
+				thisUiForm.allSlider[idxSlide][sliderMasterName].appendChild(divForSlideChild);
 				var avoidRecursive = new Array();
 				avoidRecursive.push({clasz: thisUiForm.rawObj.meta.ParentClass, Oid: thisUiForm.rawObj.meta.ParentOid});
 				targetField.dataset[cntr].slideNo = thisUiForm.allSlider[idxSlide].getSlideCount();
@@ -890,7 +890,7 @@ UiForm.prototype.deleteFieldObject = function(fieldsetTitle, basePath, fieldName
 		var idxSlide;
 		var idxObject;
 		for (var cntr = 0; cntr < this.allSlider.length; cntr++) {
-			if (this.allSlider[cntr][bxSliderMasterName].id === slideId) {
+			if (this.allSlider[cntr][sliderMasterName].id === slideId) {
 				idxSlide = cntr;
 				idxObject = this.allSlider[cntr].getCurrentSlide();
 				break;
@@ -957,7 +957,7 @@ UiForm.prototype.sendDeleteFieldObject = function(aThis, fieldsetTitle, basePath
 			var idxSlide;
 			var currSlide;
 			for (var cntr = 0; cntr < thisUiForm.allSlider.length; cntr++) {
-				if (thisUiForm.allSlider[cntr][bxSliderMasterName].id === slideId) {
+				if (thisUiForm.allSlider[cntr][sliderMasterName].id === slideId) {
 					idxSlide = cntr;
 					currSlide = thisUiForm.allSlider[cntr].getCurrentSlide();
 					break;
@@ -974,7 +974,7 @@ UiForm.prototype.sendDeleteFieldObject = function(aThis, fieldsetTitle, basePath
 				}
 			}
 
-			thisUiForm.removeNode(thisUiForm.allSlider[idxSlide][bxSliderMasterName]); // remove all existing member of the dataset from the slider, below will redraw the slider again
+			thisUiForm.removeNode(thisUiForm.allSlider[idxSlide][sliderMasterName]); // remove all existing member of the dataset from the slider, below will redraw the slider again
 			if (targetField.dataset[idxObject].objectId === -1) {
 				targetField.dataset.splice(idxObject, 1);
 			} else {
@@ -985,7 +985,7 @@ UiForm.prototype.sendDeleteFieldObject = function(aThis, fieldsetTitle, basePath
 			for (var cntr = 0; cntr < targetField.dataset.length; cntr++) {
 				if (targetField.dataset[cntr].delete !== undefined) continue;
 				var divForSlideChild = document.createElement('div');
-				thisUiForm.allSlider[idxSlide][bxSliderMasterName].appendChild(divForSlideChild);
+				thisUiForm.allSlider[idxSlide][sliderMasterName].appendChild(divForSlideChild);
 				var avoidRecursive = new Array();
 				//avoidRecursive.push({clasz: thisUiForm.rawObj.meta.ParentClass, Oid: thisUiForm.rawObj.meta.ParentOid});
 				avoidRecursive.push({clasz: thisUiForm.obj2Edit.clasz, Oid: thisUiForm.obj2Edit.cbjectId});
