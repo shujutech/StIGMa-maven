@@ -12,6 +12,42 @@ body {
 }
 label {
 	font-weight: bold;
+	margin-bottom: 0px;
+}
+button {
+	min-width: 120px;
+	font-size: 11.50px !important;
+	font-weight: 600 !important;
+	letter-spacing: 0.1em !important;
+	line-height: 3.75em !important;
+	color: #555;
+	border-radius: .25em;
+	border: 0;
+	border-style: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	-ms-appearance: none;
+	appearance: none;
+	-moz-transition: background-color 0.2s ease-in-out;
+	-webkit-transition: background-color 0.2s ease-in-out;
+	-ms-transition: background-color 0.2s ease-in-out;
+	transition: background-color 0.2s ease-in-out;
+	background-color: lightgray !important;
+	cursor: pointer;
+	padding: 0 2.25em !important;
+	text-decoration: none;
+	text-transform: none;
+	white-space: nowrap;
+	text-align: center;
+	display: inline-block;
+	/*
+	display: inline-flex;
+	align-items: center;
+	*/
+}
+button:hover {
+	background-color: grey !important;
+	color: white; 
 }
 input {
 	width: auto !important;
@@ -145,18 +181,17 @@ a.st-crud-menu {
 .swal2-popup .swal2-actions {
     justify-content: flex-end !important;
     margin: 0 !important;
+	padding-top: 2.25em;
 }
 button.swal2-styled:hover {
 	background-color: grey !important;
 	color: white !important;
 }
 button.swal2-styled {
-	padding: 0px !important;
-	line-height: 2.25em !important;
     color: #555 !important;
 }
 button.swal2-confirm {
-	background-color: grey !important;
+	background-color: lightgrey !important;
 }
 .swal2-button--cancel {
     color: #555;

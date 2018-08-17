@@ -286,6 +286,28 @@ UiUtil.GetJsonPath = function(aBasePath, fieldName) {
 	aBasePath += fieldName;
 	return(aBasePath);
 };
+UiUtil.DialogMaxLen = function(aMsg) {
+	var result = "";
+	var strAry = aMsg.match(/(.{1,70})/g);	
+	var eachStr;
+	for(eachStr of strAry) {
+		if (result !== "") {
+			result += "<br>" + eachStr;
+		} else {
+			result += eachStr;
+		}
+	}
+
+	return(result);
+};
+UiUtil.DialogStr2Html = function(msgHtml) {
+	if (typeof msgHtml === "string") {
+		var properLenStr = UiUtil.DialogMaxLen(msgHtml);
+		msgHtml = "<div style='display: block'>" + properLenStr + "</div>";
+	}
+
+	return(msgHtml)
+};
 UiUtil.DialogWaitStart = function(aWaitMsg) {
 	var waitMsg = "<div style='margin-top: 20px; min-width: 500px'></div>" 
 	+ "<div style='margin: auto' class='loadersmall'></div>" 
@@ -310,7 +332,7 @@ UiUtil.DialogWaitStop = function() {
 UiUtil.DialogYesNo = function(titleHtml, msgHtml, jsYes, jsNo) {
 	var strType = undefined;
 	if (typeof msgHtml === "string") {
-		msgHtml = "<div style='display: block; margin-bottom: 30px'>" + msgHtml + "</div>";
+		msgHtml = UiUtil.DialogStr2Html(msgHtml);
 		strType = 'question';
 	}
 	swal({
@@ -339,7 +361,7 @@ UiUtil.DialogYesNo = function(titleHtml, msgHtml, jsYes, jsNo) {
 UiUtil.DialogOkCancel = function(titleHtml, msgHtml, jsOk, jsCancel) {
 	var strType = undefined;
 	if (typeof msgHtml === "string") {
-		msgHtml = "<div style='display: block; margin-bottom: 30px'>" + msgHtml + "</div>";
+		msgHtml = UiUtil.DialogStr2Html(msgHtml);
 		strType = 'question';
 	}
 	swal({
@@ -364,9 +386,7 @@ UiUtil.DialogOkCancel = function(titleHtml, msgHtml, jsOk, jsCancel) {
 	});
 };
 UiUtil.DialogInfo = function(titleHtml, msgHtml, jsAction) {
-	if (typeof msgHtml === "string") {
-		msgHtml = "<div style='display: block; margin-bottom: 30px'>" + msgHtml + "</div>";
-	}
+	msgHtml = UiUtil.DialogStr2Html(msgHtml);
 	swal({
 		title: titleHtml
 		, html: msgHtml
@@ -1402,7 +1422,6 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 		divPeriod.appendChild(divTitle);
 	}
 	$(divPeriod).css('float', 'left');
-	$(divPeriod).css('margin-bottom', '30px');
 	divPeriod.appendChild(divCol);
 
 	var jsFunc = new Function();
@@ -2043,7 +2062,7 @@ UiUtil.IsSystemField = function(aName) {
 	}
 	return(result);
 };
-UiUtil.isCustomWidget = function(aValue) {
+UiUtil.IsCustomWidget = function(aValue) {
 	var result = true;
 	if (aValue.type === "mobilephone" ) {
 	} else if (aValue.type === 'telephone' ) {
@@ -2059,7 +2078,26 @@ UiUtil.isCustomWidget = function(aValue) {
 
 	return(result);
 };
-UiUtil.PopulateData = function(aJsonObj, aParentFqnName, aObjName, aAvoidRecursive) {
+UiUtil.ComposeFqn = function(aParent, aChild) {
+	var result;
+	if (UiUtil.NotUndefineNotNullNotBlank(aParent)) {
+		if (UiUtil.NotUndefineNotNullNotBlank(aChild)) {
+			result = aParent + "." + aChild;
+		} else {
+			result = aParent;
+		}
+	} else {
+		result = aChild;
+	}
+
+	return(result);
+};
+UiUtil.PopulateData = function(aJsonObj) {
+	var avoidRecursive = [];
+	avoidRecursive.push({clasz: aJsonObj.clasz, Oid: aJsonObj.objectId});
+	UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive);
+}
+UiUtil.PopulateDataRecursion = function(aJsonObj, aParentFqnName, aObjName, aAvoidRecursive) {
 	aParentFqnName = UiUtil.GetJsonPath(aParentFqnName, aObjName);
 	for (var cntr in aAvoidRecursive) {
 		if (aAvoidRecursive[cntr].Oid === String(aJsonObj.objectId) && aAvoidRecursive[cntr].clasz === aJsonObj.clasz) {
@@ -2071,13 +2109,14 @@ UiUtil.PopulateData = function(aJsonObj, aParentFqnName, aObjName, aAvoidRecursi
 		if (aJsonObj.data[key].dontDisplay !== undefined) continue;
 		var fieldName = key;
 		var fieldValue  = aJsonObj.data[fieldName];
-		if (UiUtil.isSystemField(fieldName) === false) {
+		if (UiUtil.IsSystemField(fieldName) === false) {
 
-			if (UiUtil.isCustomWidget(fieldValue)) {
+			if (UiUtil.IsCustomWidget(fieldValue)) {
 				// custom widget values probably cannot be assign directly
 			} else if ((fieldValue.data !== undefined && typeof(fieldValue.data) !== 'object') || fieldValue.lookup === true) { // atomic fields
-				var valueToPrint = aJsonObj.data;
-				console.log("Found field: " + fieldName + ", value: " + valueToPrint);
+				var valueToPrint = fieldValue.data;
+				var fieldFqn = UiUtil.ComposeFqn(aParentFqnName, fieldName);
+				console.log("Found field: " + fieldFqn + ", value: " + valueToPrint);
 			} else { // handle object fields i.e. fieldobject and fieldobjectbox
 				if ((fieldValue.dataset !== undefined || typeof(fieldValue.data) === 'object') && (fieldValue.lookup === undefined || fieldValue.lookup === false)) {
 					if ($.isArray(fieldValue.dataset)) { // its fieldobjectbox
@@ -2085,22 +2124,22 @@ UiUtil.PopulateData = function(aJsonObj, aParentFqnName, aObjName, aAvoidRecursi
 							var aryIdx = "[" + cntrObj + "]";
 							if (UiUtil.IsUiMaster(fieldValue.dataset[cntrObj])) {
 								aAvoidRecursive.push({clasz: fieldValue.dataset[cntrObj].clasz, Oid: fieldValue.dataset[cntrObj].objectId});
-								UiUtil.PopulateData(fieldValue.dataset[cntrObj], aParentFqnName, fieldName + aryIdx, aAvoidRecursive, cntrObj);
+								UiUtil.PopulateDataRecursion(fieldValue.dataset[cntrObj], aParentFqnName, fieldName + aryIdx, aAvoidRecursive, cntrObj);
 								aAvoidRecursive.pop();
-							} else if (UiUtil.isCustomWidget(fieldValue.dataset[cntrObj])) {
+							} else if (UiUtil.IsCustomWidget(fieldValue.dataset[cntrObj])) {
 								// do nothing
 							} else {
 								aAvoidRecursive.push({clasz: fieldValue.dataset[cntrObj].clasz, Oid: fieldValue.dataset[cntrObj].objectId});
-								UiUtil.PopulateData(fieldValue.dataset[cntrObj], aParentFqnName, fieldName + aryIdx, aAvoidRecursive, cntrObj);
+								UiUtil.PopulateDataRecursion(fieldValue.dataset[cntrObj], aParentFqnName, fieldName + aryIdx, aAvoidRecursive, cntrObj);
 								aAvoidRecursive.pop();
 							}
 						}
 					} else { // its fieldobject
-						if (UiUtil.isCustomWidget(fieldValue)) {
+						if (UiUtil.IsCustomWidget(fieldValue)) {
 							// do nothing
 						} else {
 							aAvoidRecursive.push({clasz: fieldValue.data.clasz, Oid: fieldValue.data.objectId});
-							UiUtil.PopulateData(fieldValue, aParentFqnName, fieldName, aAvoidRecursive, 0);
+							UiUtil.PopulateDataRecursion(fieldValue, aParentFqnName, fieldName, aAvoidRecursive, 0);
 							aAvoidRecursive.pop();
 						}
 					}

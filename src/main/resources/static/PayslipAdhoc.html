@@ -141,36 +141,6 @@
 				padding-bottom: 0px;
 				padding-top: 0px;
 			}
-			button {
-				min-width: 120px;
-				font-weight: 600;
-				border-style: none;
-				-moz-appearance: none;
-				-webkit-appearance: none;
-				-ms-appearance: none;
-				appearance: none;
-				-moz-transition: background-color 0.2s ease-in-out;
-				-webkit-transition: background-color 0.2s ease-in-out;
-				-ms-transition: background-color 0.2s ease-in-out;
-				transition: background-color 0.2s ease-in-out;
-				background-color: #e0e0e0;
-				border-radius: 0px;
-				border: 0;
-				cursor: pointer;
-				display: inline-block;
-				font-size: 0.8em;
-				letter-spacing: 0.1em;
-				line-height: 3.75em;
-				padding: 0 2.25em;
-				text-align: center;
-				text-decoration: none;
-				text-transform: none;
-				white-space: nowrap;
-			}
-			button:hover {
-				background-color: grey;
-				color: white; 
-			}
 			.st-eachfield.st-row {
 				display: inline-flex !important;
 				margin-top: 7px;
@@ -328,8 +298,8 @@
 					</div>
 					<div id="divPayslip" style="display: none">
 						<fieldset class="fs-btn">
-							<button id="btnPrintTop" onclick="printSalarySlip();">Print...</button>
-							<button id="btnRecomputeTop" onclick="recomputeSalarySlip();">Recompute</button>
+							<button id="btnPrintTop" onclick="printSalarySlip();" style="display:inline-flex;align-items:center"><i class="fa fa-print" aria-hidden="true"></i>Print...</button>
+							<button id="btnRecomputeTop" onclick="recomputeSalarySlip();" style="display:inline-flex;align-items:center">Recompute</button>
 						</fieldset>
 						<div id="divPayslipFull" style="float:left;width:100%">
 							<div id="divPayslipInfo" style="display:none;float:left;width:100%;margin-top:20px">
@@ -486,7 +456,7 @@
 			</div>
 		
 			<div style="display:table-row;height:25%">
-				<div style="display:flex;align-items:center;bottom:0;float:left;width:100%;text-align:center;margin-top:100px;height:280px;font-size:12px;background-image:url(img/blue-wave-footer.png);background-size:100% 100%"> 
+				<div style="display:flex;align-items:center;bottom:0;float:left;width:100%;text-align:center;margin-top:100px;height:200px;font-size:12px;background-image:url(img/blue-wave-footer.png);background-size:100% 100%"> 
 					<div style="width:100%;">
 						<div style="width:100%;color:white;font-size:2.1rem;font-weight:500">Need to Do Payroll on Regular Basis?</div>
 						<div style="width:100%;color:white;font-size:small;font-weight:100">
