@@ -176,14 +176,14 @@ UiForm.prototype.editAreaRecursion = function(aObj2Display, aMasterSet, aChildSe
 		var fieldValue  = aObj2Display.data[fieldName];
 		var titleStr = $(aChildSet.getElementsByTagName('legend')).text();
 		if (this.isSystemField(fieldName) === false) {
-			if (this.useCustomWidget(fieldName, fieldValue, aChildSet, aParentFqnName)) {
-				// do nothing
+			if (UiUtil.IsCustomWidget(fieldValue)) {
+				this.createCustomWidget(fieldName, fieldValue, aChildSet, aParentFqnName);
 				cntrField++;
 			} else if ((fieldValue.data !== undefined && typeof(fieldValue.data) !== 'object') || fieldValue.lookup === true) { // atomic fields
 				var fieldType = fieldValue.type;
 				var fieldMask = fieldValue.mask;
 				var labelName = fieldName;
-				var inputField = this.createWidget(aObjIdx, labelName, fieldValue, aParentFqnName, fieldType, fieldMask);
+				var inputField = this.createWidget(labelName, fieldValue, aParentFqnName, fieldType, fieldMask);
 				if (inputField !== null) {
 					if (aChildSet === null && rootSet === null && aNoChildSet === false) { // create new rootSet when order sequence grouping changes i.e. displayPosition 
 						if (aUnestedFeel === true)	
@@ -236,8 +236,8 @@ UiForm.prototype.editAreaRecursion = function(aObj2Display, aMasterSet, aChildSe
 								aAvoidRecursive.push({clasz: fieldValue.dataset[cntrObj].clasz, Oid: fieldValue.dataset[cntrObj].objectId});
 								this.editAreaRecursion(fieldValue.dataset[cntrObj], aMasterSet, newSet, aParentFqnName, fieldName + aryIdx, cntrObj, nextUnestedFeel, aAvoidRecursive, nextNum, false);
 								aAvoidRecursive.pop();
-							} else if (this.useCustomWidget(fieldName, fieldValue.dataset[cntrObj], divForSlideMaster, aParentFqnName)) {
-								// do nothing
+							} else if (UiUtil.IsCustomWidget(fieldValue)) {
+								this.createCustomWidget(fieldName, fieldValue.dataset[cntrObj], divForSlideMaster, aParentFqnName);
 							} else {
 								var divForSlideChild = document.createElement('div');
 								divForSlideMaster.appendChild(divForSlideChild);
@@ -263,8 +263,8 @@ UiForm.prototype.editAreaRecursion = function(aObj2Display, aMasterSet, aChildSe
 							titleStr = $(newSet.getElementsByTagName('legend')).text();
 						}
 	
-						if (this.useCustomWidget(fieldName, fieldValue, newSet, aParentFqnName)) {
-							// do nothing
+						if (UiUtil.IsCustomWidget(fieldValue)) {
+							this.createCustomWidget(fieldName, fieldValue, newSet, aParentFqnName);
 						} else {
 							aAvoidRecursive.push({clasz: fieldValue.data.clasz, Oid: fieldValue.data.objectId});
 							this.editAreaRecursion(fieldValue, aChildSet, newSet, aParentFqnName, fieldName, 0, nextUnestedFeel, aAvoidRecursive, nextNum, false);
@@ -296,8 +296,9 @@ UiForm.prototype.editAreaRecursion = function(aObj2Display, aMasterSet, aChildSe
 		}
 	}
 };
-UiForm.prototype.useCustomWidget = function(aName, aValue, aSet, aBasePath) {
+UiForm.prototype.createCustomWidget = function(aName, aValue, aSet, aBasePath) {
 	var result = true;
+	var widgetGrp;
 	if (this.forPrint === false) {
 		var fieldFqn = UiUtil.GetJsonPath(aBasePath, aName);
 		if (aValue.type === "mobilephone" ) {
@@ -305,6 +306,12 @@ UiForm.prototype.useCustomWidget = function(aName, aValue, aSet, aBasePath) {
 			if (mbl !== undefined) {
 				aSet.appendChild(mbl);
 			}
+		} else if (aValue.type === "datetime" || aValue.type === "date" ) {
+			widgetGrp = UiUtil.CreateDatePicker(aName, aValue, fieldFqn, this.myName, true, false, fieldFqn);
+			aSet.appendChild(widgetGrp);
+		} else if (aValue.type === "html" ) {
+			widgetGrp = UiUtil.CreateHtmlField(aName, aValue, fieldFqn);
+			aSet.appendChild(widgetGrp);
 		} else if (aValue.type === 'telephone' ) {
 			var tel = UiUtil.CreateTelephone(aName, aValue, fieldFqn);
 			if (tel !== undefined) {
@@ -366,7 +373,7 @@ UiForm.prototype.useCustomWidget = function(aName, aValue, aSet, aBasePath) {
 	}
 	return(result);
 };
-UiForm.prototype.createWidget = function(aObjIdx, fieldName, fieldValue, aBasePath, fieldType, fieldMask) {
+UiForm.prototype.createWidget = function(fieldName, fieldValue, aBasePath, fieldType, fieldMask) {
 	var widgetGrp = null;
 	if (this.forPrint === false) {
 		var fieldFqn = UiUtil.GetJsonPath(aBasePath, fieldName);
@@ -375,12 +382,8 @@ UiForm.prototype.createWidget = function(aObjIdx, fieldName, fieldValue, aBasePa
 			var cmb = widgetGrp.getElementsByTagName("select")[0];
 			UiForm.populateComboBoxWithName(cmb, fieldValue.option, fieldValue.data);
 			cmb.UiForm = this;
-		} else if (fieldValue.type === "datetime" ||fieldValue.type === "date" ) {
-			widgetGrp = UiUtil.CreateDatePicker(fieldName, fieldValue, fieldFqn, this.myName, true, false, aObjIdx, fieldFqn);
-		} else if (fieldValue.type === "html" ) {
-			widgetGrp = UiUtil.CreateHtmlField(fieldName, fieldValue, fieldFqn);
 		} else {
-			widgetGrp = UiUtil.CreateTextField(fieldName, fieldValue.data, fieldValue.size, aObjIdx, undefined, fieldType, fieldMask, fieldFqn);
+			widgetGrp = UiUtil.CreateTextField(fieldName, fieldValue.data, fieldValue.size, undefined, fieldType, fieldMask, fieldFqn);
 			var txtField = widgetGrp.getElementsByTagName("input")[0];
 			txtField.UiForm = this;
 		}
@@ -611,45 +614,6 @@ UiForm.changeHtmlField = function(aFqn, aWidget) {
 	if (aWidget.value !== "<br>") {
 		UiForm.changeValue(aFqn, aWidget);
 	}
-};
-UiForm.changePhone = function(jsonPath, aThis) {
-	if (UiUtil.NotUndefineNotNull(aThis.UiForm) === false) {
-		return;
-	}
-	var parentLgnd = $($(aThis).parents('fieldset')[0]).children('legend');
-	var slideId = aThis.UiForm.createIdStr(parentLgnd.text(), '_slide');
-	var idxSlide;
-	for (var cntr = 0; cntr < aThis.UiForm.allSlider.length; cntr++) {
-		if (aThis.UiForm.allSlider[cntr][sliderMasterName].id === slideId) {
-			idxSlide = cntr;
-			break;
-		}
-	}
-
-	var nmBase = aThis.id.substr(0, aThis.id.indexOf('_'));
-	if (idxSlide !== undefined) {
-		var kidi;
-		var kids = aThis.UiForm.allSlider[idxSlide].children();
-		for (var cntr = 0; cntr < kids.length; cntr++) {
-			if ($(kids[cntr]).find(aThis).length !== 0) {
-				kidi = $(kids[cntr]);
-				break;
-			}
-		}
-		var ctryNm = kidi.find('#' + nmBase + '_ctry')[0];
-		var NdcNm = kidi.find('#' + nmBase + '_mid')[0];
-		var NoNm = kidi.find('#' + nmBase + '_mn')[0];
-		aThis.UiForm.changePhoneAsgn(jsonPath, ctryNm, NdcNm, NoNm);
-	} else {
-		var nmCtry = UiUtil.GetActiveSlideElement(nmBase + "_ctry");
-		var nmNdc = UiUtil.GetActiveSlideElement(nmBase + "_mid");
-		var nmNo = UiUtil.GetActiveSlideElement(nmBase + "_mn");
-		aThis.UiForm.changePhoneAsgn(jsonPath, nmCtry, nmNdc, nmNo);
-	}
-};
-UiForm.prototype.changePhoneAsgn = function(jsonPath, nmCtry, nmNdc, nmNo) { 
-	var strMobileNo = nmCtry.value+ "-" + nmNdc.value + "-" + nmNo.value; 
-	UiUtil.JsonAssignment(this.obj2Edit, jsonPath, strMobileNo); 
 };
 UiForm.changeMoney = function(jsonPath, aThis) { 
 	if (UiUtil.NotUndefineNotNull(aThis.UiForm) === false) {

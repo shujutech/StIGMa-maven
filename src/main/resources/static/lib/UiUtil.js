@@ -555,7 +555,7 @@ UiUtil.MaskNumberWithWidth = function(aSize) {
 	}
 	return(theMask);
 };
-UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aSlideIdx, aId, aFieldType, aFieldMask, aFieldFqn) {
+UiUtil.CreateTextField = function(displayLabel, aValue, aSize, aId, aFieldType, aFieldMask, aFieldFqn) {
 	var inputTxt = UiUtil.CreateTextFieldNoLabel(aId, aValue);
 
 	var elementId = UiUtil.GenElementId(aId, aFieldFqn);
@@ -1115,7 +1115,7 @@ UiUtil.CreateTextFieldNoLabel = function(id, aValue) {
 	}
 	return(inputTxt);
 };
-UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName, aUseSpanPicker, aShowTime, aSlideIdx, aFieldFqn) {
+UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName, aUseSpanPicker, aShowTime, aFieldFqn) {
 	var spanDay = document.createElement("span");
 	var dtElementId = UiUtil.GenElementId(undefined, aFieldFqn);
 
@@ -1372,14 +1372,14 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 		dateStart = UiUtil.DateForDisplay(UiUtil.DateMonthStart(new Date()));
 	else
 		dateStart = UiUtil.DateForDisplay(UiUtil.DateMonthStart(aDateStart));
-	var divDateStart = UiUtil.CreateDatePicker('From', dateStart, dateStart, "UiUtil", true , false, undefined);
+	var divDateStart = UiUtil.CreateDatePicker('From', dateStart, dateStart, "UiUtil", true , false);
 
 	var dateEnd;
 	if (aDateEnd === undefined) 
 		dateEnd = UiUtil.DateForDisplay(UiUtil.DateMonthEnd(new Date()));
 	else 
 		dateEnd = UiUtil.DateForDisplay(UiUtil.DateMonthEnd(aDateEnd));
-	var divDateEnd = UiUtil.CreateDatePicker('To', dateEnd, dateEnd, "UiUtil", true , false, undefined);
+	var divDateEnd = UiUtil.CreateDatePicker('To', dateEnd, dateEnd, "UiUtil", true , false);
 
 	$(divDateStart).attr('id', 'st-dp-dateFrom');
 	$(divDateStart).css('cssText', 'float: left: width: 40%; display: inline-block !important; text-align: left; margin-right: 20px');
@@ -1451,6 +1451,18 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	UiUtil.DialogOkCancel(aTitleHeader, divPeriod, onOk, onCancel, jsFunc);
 	UiUtil.NavigateMonth('static', UiUtil.DisplayDateToDate(dateStart), 'monthAbbrv');
 	UiUtil.DialogWaitStop();
+};
+UiUtil.GetDatePickerData = function(aParentName, aChildName) { 
+	var fieldFqn = UiUtil.ComposeFqn(aParentFqnName, aChildName);
+	var nmDay = UiUtil.GenElementId(undefined, fieldFqn, "dd_");
+	var nmMth = UiUtil.GenElementId(undefined, fieldFqn, "dm_");
+	var nmMth = UiUtil.GenElementId(undefined, fieldFqn, "dy_");
+	var nmHour = UiUtil.GenElementId(undefined, fieldFqn, "dh_");
+	var nmMin = UiUtil.GenElementId(undefined, fieldFqn, "di_");
+	var nmSec = UiUtil.GenElementId(undefined, fieldFqn, "ds_");
+	var strDate = UiUtil.AssignDatePicker(nmDay, nmMth, nmYer, nmHour, nmMin, nmSec);
+
+	return(strDate);
 };
 UiUtil.NumberWithComma = function(aNum) {
 	return aNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -1799,6 +1811,15 @@ UiUtil.PopulateComboBoxWithValue = function(cmb, choices, chosen) {
 		});
 	}
 };
+UiUtil.GetPhoneData = function(aParentName, aChildName) {
+	var fieldFqn = UiUtil.ComposeFqn(aParentFqnName, aChildName);
+	var idCountry = UiUtil.GenElementId(undefined, fieldFqn, "pc_"); // prefix with telephone country code
+	var idNdc = UiUtil.GenElementId(undefined, fieldFqn, "pa_");
+	var idNo = UiUtil.GenElementId(undefined, fieldFqn, "pn_"); // prefix with telephone number
+
+	var phoneData = idCountry.value + "-" + idNdc.value + "-" + idNo.value; 
+	return(phoneData);
+};
 UiUtil.CreateTelephone = function(displayLabel, jsonTelephone, aFieldFqn) {
 	var listAreaCode = UiUtil.CreateComboBox(undefined);
 	var tpBase = UiUtil.GenElementId(undefined, aFieldFqn, "pa_"); // prefix with phone area code
@@ -2060,11 +2081,16 @@ UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 	return(newSlider);
 };
 UiUtil.FlipUpDown = function(aElemId) {
+	var result;
 	if ($("#" + aElemId).css("display") !== "none") {
 		$("#" + aElemId).slideUp("slow");
+		result = "up";
 	} else {
 		$("#" + aElemId).slideDown("slow");
+		result = "down";
 	}
+
+	return(result);
 };
 UiUtil.IsUiMaster = function(each) {
 	var result = false;
@@ -2087,6 +2113,8 @@ UiUtil.IsSystemField = function(aName) {
 UiUtil.IsCustomWidget = function(aValue) {
 	var result = true;
 	if (aValue.type === "mobilephone" ) {
+	} else if (aValue.type === "datetime" || aValue.type === "date" ) {
+	} else if (aValue.type === "html" ) {
 	} else if (aValue.type === 'telephone' ) {
 	} else if (aValue.type === 'money' ) {
 	} else if (aValue.type === 'boolean' ) {
@@ -2114,12 +2142,30 @@ UiUtil.ComposeFqn = function(aParent, aChild) {
 
 	return(result);
 };
+UiUtil.AssignData = function(aPopulateTarget, aParentFqnName, fieldName, fieldValue) {
+	var fieldFqn = UiUtil.ComposeFqn(aParentFqnName, fieldName);
+	var elementId = UiUtil.GenElementId(undefined, fieldFqn);
+	var theElement = $("#" + elementId);
+	if (UiUtil.NotUndefineNotNullNotBlank(theElement) && UiUtil.NotUndefineNotNullNotBlank(theElement.val())) {
+		if (aPopulateTarget === "toScreen") {
+			fieldValue.data = theElement.val();
+		} else {
+			if (UiUtil.NotUndefineNotNullNotBlank(fieldValue.data)) {
+				theElement.val(fieldValue.data);
+			}
+		}
+	}
+
+	var valueToPrint = fieldValue.data;
+	console.log("Found field: " + fieldFqn + ", element id: " + elementId + ", value: " + valueToPrint);
+};
 UiUtil.PopulateData = function(aJsonObj) {
 	var avoidRecursive = [];
 	avoidRecursive.push({clasz: aJsonObj.clasz, Oid: aJsonObj.objectId});
-	UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive);
+	//UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive, "toScreen");
+	UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive, "toJsonObj");
 }
-UiUtil.PopulateDataRecursion = function(aJsonObj, aParentFqnName, aObjName, aAvoidRecursive) {
+UiUtil.PopulateDataRecursion = function(aJsonObj, aParentFqnName, aObjName, aAvoidRecursive, aPopulateTarget) {
 	aParentFqnName = UiUtil.GetJsonPath(aParentFqnName, aObjName);
 	for (var cntr in aAvoidRecursive) {
 		if (aAvoidRecursive[cntr].Oid === String(aJsonObj.objectId) && aAvoidRecursive[cntr].clasz === aJsonObj.clasz) {
@@ -2132,13 +2178,26 @@ UiUtil.PopulateDataRecursion = function(aJsonObj, aParentFqnName, aObjName, aAvo
 		var fieldName = key;
 		var fieldValue  = aJsonObj.data[fieldName];
 		if (UiUtil.IsSystemField(fieldName) === false) {
-
-			if (UiUtil.IsCustomWidget(fieldValue)) {
-				// custom widget values probably cannot be assign directly
+			if (UiUtil.IsCustomWidget(fieldValue)) { // custom widget values probably cannot be assign directly
+				if (fieldValue.type === "mobilephone" ) {
+					var phoneData = UiUtil.GetPhoneData(aParentFqnName, fieldName);
+					UiUtil.AssignData(aPopulateTarget, aParentFqnName, fieldName, {data: phoneData});
+				} else if (fieldValue.type === 'telephone' ) {
+					var phoneData = UiUtil.GetPhoneData(aParentFqnName, fieldName);
+					UiUtil.AssignData(aPopulateTarget, aParentFqnName, fieldName, {data: phoneData});
+				} else if (fieldValue.type === "datetime" || fieldValue.type === "date" ) {
+					var dateData = UiUtil.GetDatePickerData(aParentName, fieldName);
+					UiUtil.AssignData(aPopulateTarget, aParentFqnName, fieldName, {data: dateData});
+				} else if (fieldValue.type === "html" ) {
+				} else if (fieldValue.type === 'money' ) {
+				} else if (fieldValue.type === 'boolean' ) {
+				} else if (fieldValue.type === 'salary' ) {
+				} else if (fieldValue.type === 'country' ) {
+				} else if (fieldValue.type === 'state' ) {
+				} else if (fieldValue.type === 'city' ) {
+				}
 			} else if ((fieldValue.data !== undefined && typeof(fieldValue.data) !== 'object') || fieldValue.lookup === true) { // atomic fields
-				var valueToPrint = fieldValue.data;
-				var fieldFqn = UiUtil.ComposeFqn(aParentFqnName, fieldName);
-				console.log("Found field: " + fieldFqn + ", value: " + valueToPrint);
+				UiUtil.AssignData(aPopulateTarget, aParentFqnName, fieldName, fieldValue);
 			} else { // handle object fields i.e. fieldobject and fieldobjectbox
 				if ((fieldValue.dataset !== undefined || typeof(fieldValue.data) === 'object') && (fieldValue.lookup === undefined || fieldValue.lookup === false)) {
 					if ($.isArray(fieldValue.dataset)) { // its fieldobjectbox

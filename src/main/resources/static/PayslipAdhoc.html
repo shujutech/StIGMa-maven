@@ -200,7 +200,6 @@
 		<script type="text/javascript" src="lib/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
 		<script type="text/javascript" src="lib/datePicker-master/js/datepicker.js"></script>
 		<script type="text/javascript" src="lib/sweetalert2.all.min.js"></script>
-		<script type="text/javascript" src="lib/vue.js"></script>
 
 		<script type='text/javascript' src='js/editablegrid-master/editablegrid.js'></script>
 		<script type='text/javascript' src='js/editablegrid-master/editablegrid_charts.js'></script>
@@ -228,7 +227,7 @@
 					</div>
 					<div id="divEmpInfo">
 						<fieldset class="fs-btn">
-							<button id="btnGenPayslip" onclick="genPayslip();" style="margin-right: 2px">Generate Payslip</button>
+							<button id="btnGenPayslip" onclick="genPayslip();" style="margin-right:2px;width:150px">Show Payslip</button>
 						</fieldset>
 						<fieldset class="st-fs01" style="padding-top:35px;padding-bottom:45px;padding-left:1%;padding-right:1%">
 							<div class="st-eachfield st-row">
@@ -243,11 +242,11 @@
 											</select>
 										</span>
 										<span>
-											<input class="form-control" type="text" value="" id="68464_dl" style="text-align:right" autofocus data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, '68464_ct')">
+											<input class="form-control" type="text" value="0" id="68464_dl" style="text-align:right" autofocus data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, '68464_ct')">
 										</span>
 										<span class="st-symbol">.</span>
 										<span>
-											<input class="form-control" type="text" value="" id="68464_ct" style="text-align:right" size="2" data-mask="00">
+											<input class="form-control" type="text" value="00" id="68464_ct" style="text-align:right" size="2" data-mask="00">
 										</span>
 									</div>
 								</div>
@@ -290,7 +289,7 @@
 									<span class="st-error-msg" style="display: none"></span>
 								</div>
 								<div class="st-input-area">
-									<input class="form-control" type="text" value="" size="2" data-mask="00">
+									<input class="form-control" type="text" value="0" size="2" data-mask="00">
 								</div>
 							</div>
 						</fieldset>
@@ -321,7 +320,7 @@
 												<span class="st-error-msg" style="display:none"></span>
 											</div>
 											<div class="st-input-area">
-												<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd" size="50" style="text-align:center" v-model="dt_company" />
+												<input id="wt_Company" class="print-field form-control" type="text" value="" placeholder="Shujutech Inc." size="50" style="text-align:center" />
 											</div>
 										</div>
 									</div>
@@ -364,7 +363,7 @@
 														<span class="st-error-msg" style="display:none"></span>
 													</div>
 													<div class="st-input-area">
-														<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates" size="50" v-model="dt_employee" />
+														<input id="wt_Employee" class="print-field form-control" type="text" value="" placeholder="E.g. Willam Henry Gates" size="50" />
 													</div>
 												</div>
 											</div>
@@ -391,7 +390,7 @@
 														<span class="st-error-msg" style="display:none"></span>
 													</div>
 													<div class="st-input-area">
-														<input id="headerDesignation" class="print-field form-control" type="text" value="" placeholder="Programmer" size="30" />
+														<input id="wt_Designation" class="print-field form-control" type="text" value="" placeholder="E.g. Programmer" size="30" />
 													</div>
 												</div>
 											</div>
@@ -483,7 +482,12 @@
 
 		<script type='text/javascript'>
 			var genPayslip = function() {
-				UiUtil.FlipUpDown('divPayslip');
+				var flipDirection = UiUtil.FlipUpDown('divPayslip');
+				if (flipDirection === "up") {
+					$("#btnGenPayslip").text("Show Payslip");
+				} else if (flipDirection === "down") {
+					$("#btnGenPayslip").text("Hide Payslip");
+				}
 			};
 			var drawSalarySlipScreen = function() {
 					UiUtil.StorePrevObj("salarySlipFormPrevObj", oneSlip);
@@ -501,11 +505,11 @@
 					var strDesignation = UiUtil.GetVarByJsonPath(oneSlip, 'Designation').data;
 					var strTitle = $('title').html() + ' - ' + strEmployee + '';
 
-					$('#headerCompany').text(strCompany);
+					$('#wt_Company').text(strCompany);
 					$('#headerPeriodFrom').text(strPeriodFrom);
 					$('#headerPeriodTo').text(strPeriodTo);
-					$('#headerEmployee').text(strEmployee);
-					$('#headerDesignation').text(strDesignation);
+					$('#wt_Employee').text(strEmployee);
+					$('#wt_Designation').text(strDesignation);
 					$('title').html(strTitle);
 
 					var earnings = UiUtil.GetVarByJsonPath(oneSlip, "Earnings");
@@ -559,17 +563,6 @@
 
 				oneEmployee = {};
 				oneSlip = {"objectId":-1,"clasz":"biz.shujutech.o2rm.SalarySlipMalaysia","data":{"Batch Id":{"data":"","size":"32"},"Status":{"clasz":"biz.shujutech.o2rm.SalarySlipStatus","dataset":[]},"Company Alias":{"data":"","updateable":"false","size":"32"},"Company":{"data":"","updateable":"false","size":"32"},"Employee":{"data":"","updateable":"false","size":"32"},"Employee Alias":{"data":"","updateable":"false","size":"32"},"Designation":{"data":"","updateable":"false","size":"32"},"Salary Period":{"data":"","updateable":"false","size":"32"},"Employer Cost":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period From":{"data":"","type":"date"},"Net Pay":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period To":{"data":"","type":"date"},"Earnings":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[{"clasz":"biz.shujutech.o2rm.SalaryTransactionMalaysia","objectId":-1,"data":{"Sequence":{"data":"6","dontDisplay":true},"Descr":{"data":"Basic Salary","size":"50"},"Amount":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"System Generated":{"data":"true","type":"boolean","dontDisplay":true}}}]},"Deductions":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]},"Others":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]}}};
-
-var dt_employee = "William B. Gates";
-var dt_company = "Shujutech Incoporation";
-vueAdhocPayslip = new Vue({
-	el: '#body_payslip',
-	data: {
-		dt_employee: dt_employee
-		, dt_company
-	}
-});
-
 				drawSalarySlipScreen();
 				UiUtil.DialogWaitStop();
 			};
@@ -880,7 +873,9 @@ vueAdhocPayslip = new Vue({
 					var newDateFrom = UiUtil.DisplayDateToDate(UiUtil.DatePickerToStrDate('st-dp-dateFrom'));
 					var newDateTo = UiUtil.DisplayDateToDate(UiUtil.DatePickerToStrDate('st-dp-dateEnd'));
 					if (newDateFrom > newDateTo) {
-						UiUtil.DialogError("'To' date must be later then 'From' date!");
+						UiUtil.DialogError("'To' date must be later then 'From' date!", function() {
+							showCalendarPeriod();
+						});
 	 				} else {
 						var dateFrom = UiUtil.DatePickerToStrDate('st-dp-dateFrom');
 						var dateTo = UiUtil.DatePickerToStrDate('st-dp-dateEnd');
