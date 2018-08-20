@@ -182,6 +182,15 @@
 				font-weight: 700;
 				text-shadow: 1px 1px 1px rgba(0,0,0,0.75);
 			}
+			.st-eachfield.st-row.st-vertical-row {
+				width: 100%;
+				margin: 0;
+				padding: 5px;
+				display: flex !important;
+			}
+			.st-eachfield.st-row.st-vertical-row .st-label-area {
+				text-align: right;
+			}
 		</style>
 
 		<script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
@@ -312,9 +321,7 @@
 												<span class="st-error-msg" style="display:none"></span>
 											</div>
 											<div class="st-input-area">
-												<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd" size="50" style="text-align:center" 
-												v-model="dt_company"
-												>
+												<input id="headerCompany" class="print-field form-control" type="text" value="" placeholder="Shujutech Sdn Bhd" size="50" style="text-align:center" v-model="dt_company" />
 											</div>
 										</div>
 									</div>
@@ -327,7 +334,7 @@
 												<span class="st-error-msg" style="display:none"></span>
 											</div>
 											<div class="st-input-area">
-												<input id="headerPeriodFrom" class="print-field form-control" type="text" value="" placeholder="01-Dec-2018" style="text-align:center">
+												<input id="headerPeriodFrom" class="print-field form-control" type="text" value="" style="text-align:center">
 											</div>
 										</div>
 										<div class="st-eachfield st-row" style="float:left">
@@ -337,7 +344,7 @@
 												<span class="st-error-msg" style="display:none"></span>
 											</div>
 											<div class="st-input-area">
-												<input id="headerPeriodTo" class="print-field form-control" type="text" value="" placeholder="31-Dec-2018" style="text-align:center">
+												<input id="headerPeriodTo" class="print-field form-control" type="text" value="" style="text-align:center">
 											</div>
 											<span id="mth-period-popup" onclick="showCalendarPeriod(); return false" style="cursor:pointer">
 												<img src="img/imgCalendar.png" alt="">
@@ -357,9 +364,7 @@
 														<span class="st-error-msg" style="display:none"></span>
 													</div>
 													<div class="st-input-area">
-														<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates" size="50"
-														v-model="dt_employee"
-														>
+														<input id="headerEmployee" class="print-field form-control" type="text" value="" placeholder="Willam Henry Gates" size="50" v-model="dt_employee" />
 													</div>
 												</div>
 											</div>
@@ -371,7 +376,7 @@
 														<span class="st-error-msg" style="display:none"></span>
 													</div>
 													<div class="st-input-area">
-														<input class="print-field form-control" id="grossPay" readonly value="MYR 0.00" style="text-align:right"></input>
+														<input class="print-field form-control" id="grossPay" readonly value="MYR 0.00" style="text-align:right" />
 													</div>
 												</div>
 											</div>
@@ -386,7 +391,7 @@
 														<span class="st-error-msg" style="display:none"></span>
 													</div>
 													<div class="st-input-area">
-														<input id="headerDesignation" class="print-field form-control" type="text" value="" placeholder="Programmer" size="30">
+														<input id="headerDesignation" class="print-field form-control" type="text" value="" placeholder="Programmer" size="30" />
 													</div>
 												</div>
 											</div>
@@ -398,7 +403,7 @@
 														<span class="st-error-msg" style="display:none"></span>
 													</div>
 													<div class="st-input-area">
-														<input class="print-field form-control" id="totalDeduction" readonly value="MYR 0.00" style="text-align:right"></input>
+														<input class="print-field form-control" id="totalDeduction" readonly value="MYR 0.00" style="text-align:right" />
 														<span style="display:none" id="totalOther" readonly value="MYR 0.00"></span>
 													</div>
 												</div>
@@ -414,7 +419,7 @@
 														<span class="st-error-msg" style="display:none"></span>
 													</div>
 													<div class="st-input-area">
-														<input class="print-field form-control" id="netPay" readonly value="MYR 0.00" style="text-align:right"></input>
+														<input class="print-field form-control" id="netPay" readonly value="MYR 0.00" style="text-align:right" />
 													</div>
 												</div>
 											</div>
@@ -786,16 +791,29 @@ vueAdhocPayslip = new Vue({
 				};
 			};
 			var processSalaryTrx = function(newObject, aType, okNewRq, cancelRq, netTitle) {
+				var strLabelWidth = "25%";
+				if (aType === 'Earnings') {
+					strLabelWidth = "20%";
+				}
 				$("#dialogPayslip").empty();
 				dialogArea.displayObject("dialogPayslip", newObject);
 				$($("#dialogPayslip").find('fieldset')[2]).remove();
 				$($("#dialogPayslip").find('fieldset')[0]).remove();
 				$($("#dialogPayslip").find('legend')[0]).remove();
 				$("#dialogPayslip").find("[id$=_dl]").css('width', '150px');
-				$("#dialogPayslip").find(".st-label-area").css('width', '20%');
+				$("#dialogPayslip").find(".st-label-area").css('width', strLabelWidth);
 				$("#dialogPayslip").find("label:contains('Descr')").text(aType);
 				dlgWidget = $('<div></div>').append($($('#' + "dialogPayslip").find('.st-fs01')[0]).children());
-				UiUtil.DialogOkCancel(netTitle, dlgWidget, okNewRq, cancelRq);
+				dlgWidget.css("width", "770px");
+				var firstInput;
+				if (UiUtil.NotUndefineNotNull(dlgWidget.find("div").find("input")[0])) {
+					firstInput = dlgWidget.find("div").find("input")[0];
+				}
+				var eachDiv;
+				for(eachDiv of dlgWidget.children("div")) { 
+					$(eachDiv).addClass("st-vertical-row"); 
+				}
+				UiUtil.DialogOkCancel(netTitle, dlgWidget, okNewRq, cancelRq, firstInput);
 			};
 			var getEarningOrDeduction = function(aType, aAction) {
 				var netEdtbg;
@@ -856,11 +874,19 @@ vueAdhocPayslip = new Vue({
 				}
 			};
 			var showCalendarPeriod = function() {
-				UiUtil.DialogPeriodRange("Select Payslip Period", "", undefined, undefined, function(){
-					var dateFrom = UiUtil.DatePickerForBE('st-dp-dateFrom');
-					var dateTo = UiUtil.DatePickerForBE('st-dp-dateEnd');
-					$("#headerPeriodFrom").val(dateFrom);
-					$("#headerPeriodTo").val(dateTo);
+				var currentDateFrom = UiUtil.DisplayDateToDate($("#headerPeriodFrom").val()); 
+				var currentDateTo = UiUtil.DisplayDateToDate($("#headerPeriodTo").val()); 
+				UiUtil.DialogPeriodRange("Select Payslip Period", "", currentDateFrom, currentDateTo, function(){
+					var newDateFrom = UiUtil.DisplayDateToDate(UiUtil.DatePickerToStrDate('st-dp-dateFrom'));
+					var newDateTo = UiUtil.DisplayDateToDate(UiUtil.DatePickerToStrDate('st-dp-dateEnd'));
+					if (newDateFrom > newDateTo) {
+						UiUtil.DialogError("'To' date must be later then 'From' date!");
+	 				} else {
+						var dateFrom = UiUtil.DatePickerToStrDate('st-dp-dateFrom');
+						var dateTo = UiUtil.DatePickerToStrDate('st-dp-dateEnd');
+						$("#headerPeriodFrom").val(dateFrom);
+						$("#headerPeriodTo").val(dateTo);
+					}
 				}, function() {
 				});
 			};
@@ -906,6 +932,11 @@ vueAdhocPayslip = new Vue({
 				employeeInfoArea = new UiForm('divEmpInfo');
 				createSalarySlipScreen(function() {});
 				dialogArea = new UiForm('dialogArea');
+
+				var nowDateFrom = UiUtil.DateMonthStart(new Date());
+				var nowDateTo = UiUtil.DateMonthEnd(new Date());
+				$("#headerPeriodFrom").val(UiUtil.DateForDisplay(nowDateFrom));
+				$("#headerPeriodTo").val(UiUtil.DateForDisplay(nowDateTo));
 			} ;
 
 		</script>

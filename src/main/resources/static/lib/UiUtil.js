@@ -288,7 +288,7 @@ UiUtil.GetJsonPath = function(aBasePath, fieldName) {
 };
 UiUtil.DialogMaxLen = function(aMsg) {
 	var result = "";
-	var strAry = aMsg.match(/(.{1,70})/g);	
+	var strAry = aMsg.match(/\b(.{1,70})/g);	
 	var eachStr;
 	for(eachStr of strAry) {
 		if (result !== "") {
@@ -325,7 +325,7 @@ UiUtil.DialogWaitStart = function(aWaitMsg) {
 	});
 };
 UiUtil.DialogWaitStop = function() {
-	if ($("#st-swal-dialog-wait").length != 0) {
+	if ($("#st-swal-dialog-wait").length !== 0) {
 		swal.close();
 	}
 };
@@ -347,7 +347,7 @@ UiUtil.DialogYesNo = function(titleHtml, msgHtml, jsYes, jsNo) {
 		, allowOutsideClick: false
 	})
 	.then((value) => {
-		if (value) {
+		if (UiUtil.DialogAnswerOk(value)) {
 			if (UiUtil.NotUndefineNotNullNotBlank(jsYes)) {
 				jsYes();
 			}
@@ -358,7 +358,17 @@ UiUtil.DialogYesNo = function(titleHtml, msgHtml, jsYes, jsNo) {
 		}
 	});
 };
-UiUtil.DialogOkCancel = function(titleHtml, msgHtml, jsOk, jsCancel) {
+UiUtil.DialogAnswerOk = function(value) {
+	var result = false;
+	if (UiUtil.NotUndefineNotNullNotBlank(value.value)) {
+		if (value.value === true) {
+			result = true;
+		}
+	}
+
+	return(result);	
+};
+UiUtil.DialogOkCancel = function(titleHtml, msgHtml, jsOk, jsCancel, firstInput) {
 	var strType = undefined;
 	if (typeof msgHtml === "string") {
 		msgHtml = UiUtil.DialogStr2Html(msgHtml);
@@ -370,11 +380,16 @@ UiUtil.DialogOkCancel = function(titleHtml, msgHtml, jsOk, jsCancel) {
 		, type: strType
 		, showConfirmButton: true
 		, showCancelButton: true
-		, focusConfirm: true
+		, focusConfirm: false 
 		, allowOutsideClick: false
+		, onOpen: function() {
+			if (UiUtil.NotUndefineNotNullNotBlank(firstInput)) {
+				$(firstInput).focus();
+			}
+		}
 	})
 	.then((value) => {
-		if (value) {
+		if (UiUtil.DialogAnswerOk(value)) {
 			if (UiUtil.NotUndefineNotNullNotBlank(jsOk)) {
 				jsOk();
 			}
@@ -384,6 +399,9 @@ UiUtil.DialogOkCancel = function(titleHtml, msgHtml, jsOk, jsCancel) {
 			}
 		}
 	});
+};
+UiUtil.DialogError = function(msgHtml, jsAction) {
+	UiUtil.DialogInfo("Error", msgHtml, jsAction);
 };
 UiUtil.DialogInfo = function(titleHtml, msgHtml, jsAction) {
 	msgHtml = UiUtil.DialogStr2Html(msgHtml);
@@ -436,14 +454,18 @@ UiUtil.PadZero = function(num, size) {
 	while (s.length < size) s = "0" + s;
 	return s;
 };
-UiUtil.DateBEToDateJs = function(aStrDate) {
-	var aryDate = aStrDate.split("-");
-	var day = aryDate[0];
-	var mth = aryDate[1];
-	var yer = aryDate[2];
-	var numMth = UiUtil.MthNum(mth);
-	var dateISO = yer + "-" + UiUtil.PadZero(numMth, 2) + "-" + day;
-	var result = new Date(dateISO);
+UiUtil.DisplayDateToDate = function(aStrDate) {
+	var result = new Date();
+	if (UiUtil.NotUndefineNotNullNotBlank(aStrDate)) {
+		var aryDate = aStrDate.split("-");
+		var day = aryDate[0];
+		var mth = aryDate[1];
+		var yer = aryDate[2];
+		var numMth = UiUtil.MthNum(mth);
+		var dateISO = yer + "-" + UiUtil.PadZero(numMth, 2) + "-" + day;
+		result = new Date(dateISO);
+	}
+
 	return(result);
 };
 UiUtil.DateMonthStart = function(aDate) {
@@ -473,7 +495,7 @@ UiUtil.ComboBoxForBE = function(aDivName) {
 	var input = $($('#' + aDivName).find('select')[0]);
 	return(input.val());
 };
-UiUtil.DatePickerForBE = function(aDivName) {
+UiUtil.DatePickerToStrDate = function(aDivName) {
 	var aryInput = $("#" + aDivName).find("input");
 	var day = aryInput[0].value;
 	var mth = aryInput[1].value; // starts from 1
@@ -1427,7 +1449,7 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	var jsFunc = new Function();
 	
 	UiUtil.DialogOkCancel(aTitleHeader, divPeriod, onOk, onCancel, jsFunc);
-	UiUtil.NavigateMonth('static', UiUtil.DateBEToDateJs(dateStart), 'monthAbbrv');
+	UiUtil.NavigateMonth('static', UiUtil.DisplayDateToDate(dateStart), 'monthAbbrv');
 	UiUtil.DialogWaitStop();
 };
 UiUtil.NumberWithComma = function(aNum) {

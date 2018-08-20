@@ -14,6 +14,9 @@ label {
 	font-weight: bold;
 	margin-bottom: 0px;
 }
+label span {
+	float: none;
+}
 button {
 	min-width: 120px;
 	font-size: 11.50px !important;
