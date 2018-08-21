@@ -1075,29 +1075,18 @@ UiUtil.SetDatePicker = function(aDate, txtDay, txtMth, txtYear, txtHour, txtMin,
 		txtSec.setAttribute("value", sec);
 	}
 };
-UiUtil.changeDatePicker = function(targetVar, aThis) { 
-	var nmBase = aThis.id.substr(0, aThis.id.indexOf('_'));
-	var nmDay = document.getElementById(nmBase + "_d");
-	var nmMth = document.getElementById(nmBase + "_m");
-	var nmYer = document.getElementById(nmBase + "_y");
-	var nmHour = document.getElementById(nmBase + "_h");
-	var nmMin = document.getElementById(nmBase + "_mt");
-	var nmSec = document.getElementById(nmBase + "_s");
-
-	targetVar = UiUtil.AssignDatePicker(nmDay, nmMth, nmYer, nmHour, nmMin, nmSec);
-};
-UiUtil.AssignDatePicker = function(nmDay, nmMth, nmYer, nmHour, nmMin, nmSec) { 
+UiUtil.GetDisplayDate = function(nmDay, nmMth, nmYer, nmHour, nmMin, nmSec) { 
 	var strDate = "";
-	if (UiUtil.IsNum(nmDay.value)
-	&& UiUtil.IsNum(nmMth.value)
-	&& UiUtil.IsNum(nmYer.value)
+	if (UiUtil.IsNum(nmDay)
+	&& UiUtil.IsNum(nmMth)
+	&& UiUtil.IsNum(nmYer)
 	) {
-		strDate = nmDay.value + "-" + UiUtil.MthAbbrv(parseInt(nmMth.value) - 1) + "-" + nmYer.value; 
-		if (UiUtil.IsNum(nmHour.value)
-		&& UiUtil.IsNum(nmMin.value)
-		&& UiUtil.IsNum(nmSec.value)
+		strDate = nmDay + "-" + UiUtil.MthAbbrv(parseInt(nmMth) - 1) + "-" + nmYer; 
+		if (UiUtil.IsNum(nmHour)
+		&& UiUtil.IsNum(nmMin)
+		&& UiUtil.IsNum(nmSec)
 		) {
-			strDate += " "  + nmHour.value + ":" + nmMin.value + ":" + nmSec.value; 
+			strDate += " "  + nmHour + ":" + nmMin + ":" + nmSec; 
 		}
 	}
 	return(strDate);
@@ -1453,14 +1442,14 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	UiUtil.DialogWaitStop();
 };
 UiUtil.GetDatePickerData = function(aParentName, aChildName) { 
-	var fieldFqn = UiUtil.ComposeFqn(aParentFqnName, aChildName);
-	var nmDay = UiUtil.GenElementId(undefined, fieldFqn, "dd_");
-	var nmMth = UiUtil.GenElementId(undefined, fieldFqn, "dm_");
-	var nmMth = UiUtil.GenElementId(undefined, fieldFqn, "dy_");
-	var nmHour = UiUtil.GenElementId(undefined, fieldFqn, "dh_");
-	var nmMin = UiUtil.GenElementId(undefined, fieldFqn, "di_");
-	var nmSec = UiUtil.GenElementId(undefined, fieldFqn, "ds_");
-	var strDate = UiUtil.AssignDatePicker(nmDay, nmMth, nmYer, nmHour, nmMin, nmSec);
+	var fieldFqn = UiUtil.ComposeFqn(aParentName, aChildName);
+	var nmDay = $("#" + UiUtil.GenElementId(undefined, fieldFqn, "dd_")).val();
+	var nmMth = $("#" + UiUtil.GenElementId(undefined, fieldFqn, "dm_")).val();
+	var nmYer = $("#" + UiUtil.GenElementId(undefined, fieldFqn, "dy_")).val();
+	var nmHour = $("#" + UiUtil.GenElementId(undefined, fieldFqn, "dh_")).val();
+	var nmMin = $("#" + UiUtil.GenElementId(undefined, fieldFqn, "di_")).val();
+	var nmSec = $("#" + UiUtil.GenElementId(undefined, fieldFqn, "ds_")).val();
+	var strDate = UiUtil.GetDisplayDate(nmDay, nmMth, nmYer, nmHour, nmMin, nmSec);
 
 	return(strDate);
 };
@@ -2164,7 +2153,7 @@ UiUtil.PopulateData = function(aJsonObj) {
 	avoidRecursive.push({clasz: aJsonObj.clasz, Oid: aJsonObj.objectId});
 	//UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive, "toScreen");
 	UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive, "toJsonObj");
-}
+};
 UiUtil.PopulateDataRecursion = function(aJsonObj, aParentFqnName, aObjName, aAvoidRecursive, aPopulateTarget) {
 	aParentFqnName = UiUtil.GetJsonPath(aParentFqnName, aObjName);
 	for (var cntr in aAvoidRecursive) {
@@ -2186,7 +2175,7 @@ UiUtil.PopulateDataRecursion = function(aJsonObj, aParentFqnName, aObjName, aAvo
 					var phoneData = UiUtil.GetPhoneData(aParentFqnName, fieldName);
 					UiUtil.AssignData(aPopulateTarget, aParentFqnName, fieldName, {data: phoneData});
 				} else if (fieldValue.type === "datetime" || fieldValue.type === "date" ) {
-					var dateData = UiUtil.GetDatePickerData(aParentName, fieldName);
+					var dateData = UiUtil.GetDatePickerData(aParentFqnName, fieldName);
 					UiUtil.AssignData(aPopulateTarget, aParentFqnName, fieldName, {data: dateData});
 				} else if (fieldValue.type === "html" ) {
 				} else if (fieldValue.type === 'money' ) {
