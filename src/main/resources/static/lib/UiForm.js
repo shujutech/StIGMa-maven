@@ -27,17 +27,6 @@ if (typeof UiUtil === 'undefined' || UiUtil === null) {
 }
 function UiForm() {
 };
-UiForm.prototype.setValueBoolean = function(aFqn, aWidget) { 
-	var value = "false";
-	if ($(aWidget).prop("checked") === true) {
-		value = "true";
-	}
-
-	// need the below if to avoid original null value being set to false when nothing actually change, impacted onbeforeunload
-	if (!(UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetValueByJsonPath(this.obj2Edit, aFqn)) === false && value === "false")) { // don't do anything if obj2Edit value is null/blank and checkbox value is false
-		UiUtil.JsonAssignment(this.obj2Edit, aFqn, value); 
-	}
-};
 UiForm.prototype.assignValue = function(aIndex, aWidget, aFqn) { 
 	if (UiUtil.NotUndefineNotNull(this.rawObj)) {
 		if (UiUtil.NotUndefineNotNull(this.rawObj.dataset)) {
@@ -323,11 +312,9 @@ UiForm.prototype.createCustomWidget = function(aName, aValue, aSet, aBasePath) {
 				aSet.appendChild(mny);
 			}
 		} else if (aValue.type === 'boolean' ) {
-			var chkbxArea = UiUtil.CreateCheckBox(aName, aValue);
+			var chkbxArea = UiUtil.CreateCheckBox(aName, aValue, fieldFqn);
 			var chkbx = chkbxArea.getElementsByTagName("input")[0];
-			chkbx.setAttribute("onchange", this.myName + ".setValueBoolean('" + fieldFqn + "', this)");
 			aSet.appendChild(chkbxArea);
-		} else if (aValue.type === 'salary' ) {
 		} else if (aValue.type === 'country' ) {
 			var inputArea = UiUtil.CreateComboBox(aName, fieldFqn);
 			var cmb = inputArea.getElementsByTagName("select")[0];
@@ -613,42 +600,6 @@ UiForm.changeHtmlField = function(aFqn, aWidget) {
 	// ignore this damn <br> html element place in by HtmlEditor widget
 	if (aWidget.value !== "<br>") {
 		UiForm.changeValue(aFqn, aWidget);
-	}
-};
-UiForm.changeMoney = function(jsonPath, aThis) { 
-	if (UiUtil.NotUndefineNotNull(aThis.UiForm) === false) {
-		return;
-	}
-	var nmBase = aThis.id.substr(0, aThis.id.indexOf('_'));
-	var nmCy = UiUtil.GetActiveSlideElement(nmBase + "_cy");
-	var nmDl = UiUtil.GetActiveSlideElement(nmBase + "_dl");
-	var nmCt = UiUtil.GetActiveSlideElement(nmBase + "_ct");
-
-	if (!nmDl.value.trim() && !nmCt.value.trim()) {
-		var strAmt = ""; 
-		UiUtil.JsonAssignment(aThis.UiForm.obj2Edit, jsonPath, strAmt); 
-	} else {
-		var strAmt = nmCy.value + " " + nmDl.value + "." + nmCt.value; 
-		UiUtil.JsonAssignment(aThis.UiForm.obj2Edit, jsonPath, strAmt); 
-	}
-};
-UiForm.prototype.changeDatePicker = function(jsonName, aThis) { 
-	if (UiUtil.NotUndefineNotNull(this.obj2Edit) === false) {
-		return;
-	}
-
-	var nmBase = aThis.id.substr(0, aThis.id.indexOf('_'));
-	var nmDay = UiUtil.GetActiveSlideElement(nmBase + "_d");
-	var nmMth = UiUtil.GetActiveSlideElement(nmBase + "_m");
-	var nmYer = UiUtil.GetActiveSlideElement(nmBase + "_y");
-	var nmHour = UiUtil.GetActiveSlideElement(nmBase + "_h");
-	var nmMin = UiUtil.GetActiveSlideElement(nmBase + "_mt");
-	var nmSec = UiUtil.GetActiveSlideElement(nmBase + "_s");
-
-	var strDate = UiUtil.AssignDatePicker(nmDay, nmMth, nmYer, nmHour, nmMin, nmSec);
-
-	if (this.obj2Edit !== undefined) {
-		UiUtil.JsonAssignment(this.obj2Edit, jsonName, strDate); 
 	}
 };
 UiForm.prototype.addStyle = function(cssStr) {

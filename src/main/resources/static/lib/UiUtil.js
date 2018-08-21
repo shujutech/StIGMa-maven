@@ -626,13 +626,6 @@ UiUtil.IsFunction = function(functionToCheck) {
 	}
 	return(false);
 };
-UiUtil.IsFunction = function(functionToCheck) {
-	if (UiUtil.NotUndefineNotNull(functionToCheck)) {
-		var getType = {};
-		return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-	}
-	return(false);
-};
 UiUtil.NotUndefineNotNull = function(aVar) {
 	if ((typeof aVar !== 'undefined') && (aVar !== null) && aVar !== "undefined") {
 		return(true);
@@ -924,10 +917,6 @@ UiUtil.BackNavi = function(aBeforeEdit, aAfterEdit) {
 	} else {
 		return(null);
 	}
-};
-UiUtil.IsFunction = function(functionToCheck) {
- var getType = {};
- return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 };
 UiUtil.CallFunctionOrGoto = function(aOnCancelGoto) {
 	if (UiUtil.NotUndefineNotNull(aOnCancelGoto)) {
@@ -1228,8 +1217,10 @@ UiUtil.CreateDatePicker = function(displayLabel, fieldVar, aNameOrVar, thisName,
 
 	return(result);
 };
-UiUtil.CreateCheckBox = function(displayLabel, aValue) {
+UiUtil.CreateCheckBox = function(displayLabel, aValue, fieldFqn) {
+	var	inputId = UiUtil.GenElementId(undefined, fieldFqn);
 	var inputTxt = document.createElement("input");
+	inputTxt.setAttribute("id", inputId);
 	inputTxt.setAttribute("class", CLS_CHECKBOX);
 	inputTxt.setAttribute("type", "checkbox");
 	if (aValue.data !== undefined) {
@@ -1441,14 +1432,13 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	UiUtil.NavigateMonth('static', UiUtil.DisplayDateToDate(dateStart), 'monthAbbrv');
 	UiUtil.DialogWaitStop();
 };
-UiUtil.GetDatePickerData = function(aParentName, aChildName) { 
-	var fieldFqn = UiUtil.ComposeFqn(aParentName, aChildName);
-	var nmDay = $("#" + UiUtil.GenElementId(undefined, fieldFqn, "dd_")).val();
-	var nmMth = $("#" + UiUtil.GenElementId(undefined, fieldFqn, "dm_")).val();
-	var nmYer = $("#" + UiUtil.GenElementId(undefined, fieldFqn, "dy_")).val();
-	var nmHour = $("#" + UiUtil.GenElementId(undefined, fieldFqn, "dh_")).val();
-	var nmMin = $("#" + UiUtil.GenElementId(undefined, fieldFqn, "di_")).val();
-	var nmSec = $("#" + UiUtil.GenElementId(undefined, fieldFqn, "ds_")).val();
+UiUtil.GetDatePickerData = function(aFieldFqn) { 
+	var nmDay = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dd_")).val();
+	var nmMth = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dm_")).val();
+	var nmYer = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dy_")).val();
+	var nmHour = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dh_")).val();
+	var nmMin = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "di_")).val();
+	var nmSec = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "ds_")).val();
 	var strDate = UiUtil.GetDisplayDate(nmDay, nmMth, nmYer, nmHour, nmMin, nmSec);
 
 	return(strDate);
@@ -1678,7 +1668,6 @@ UiUtil.HandleCent = function(el, ev, centid) {
 	// do nothing
 };
 UiUtil.CreateMoney = function(displayLabel, jsonMoney, aFieldFqn) {
-	var	mnyName = UiUtil.GenElementId(undefined, aFieldFqn);
 	var mnyValue = {};
 	mnyValue.currency = '';
 	mnyValue.dollar = '';
@@ -1688,7 +1677,8 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, aFieldFqn) {
 
 	var crcy = UiUtil.CreateComboBox(undefined);
 	UiUtil.PopulateComboBoxWithValue(crcy, jsonMoney.currencies, mnyValue.currency);
-	crcy.setAttribute("id", mnyName);
+	var	mnyCurrency = UiUtil.GenElementId(undefined, aFieldFqn, "mr_");
+	crcy.setAttribute("id", mnyCurrency);
 
 	var spCrcy = document.createElement("span");
 	spCrcy.setAttribute("class", "symbol");
@@ -1696,7 +1686,8 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, aFieldFqn) {
 
 	var theMask = UiUtil.MaskNumberWithWidth();
 	var spDlr = document.createElement("span");
-	var tfDlr = UiUtil.CreateTextFieldNoLabel(mnyName + "_dl", mnyValue.dollar);
+	var	mnyDollar = UiUtil.GenElementId(undefined, aFieldFqn, "md_");
+	var tfDlr = UiUtil.CreateTextFieldNoLabel(mnyDollar, mnyValue.dollar);
 	tfDlr.setAttribute("style", "text-align:right");
 	tfDlr.setAttribute("data-mask", theMask);
 	tfDlr.setAttribute("data-mask-reverse", "true");
@@ -1707,7 +1698,8 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, aFieldFqn) {
 	decPoint.innerHTML = ".";
 
 	var spCnt = document.createElement("span");
-	var tfCnt = UiUtil.CreateTextFieldNoLabel(mnyName + "_ct", mnyValue.cent);
+	var	mnyCent = UiUtil.GenElementId(undefined, aFieldFqn, "mc_");
+	var tfCnt = UiUtil.CreateTextFieldNoLabel(mnyCent, mnyValue.cent);
 	tfCnt.setAttribute("style", "text-align:right");
 	tfCnt.setAttribute("data-mask", "00");
 	tfCnt.setAttribute("size", 2);
@@ -1722,6 +1714,8 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, aFieldFqn) {
 	parent.appendChild(decPoint);
 	parent.appendChild(spCnt);
 	var result = UiUtil.CreateTextFieldWithLabel(displayLabel, parent);
+	var	mnyId = UiUtil.GenElementId(undefined, aFieldFqn);
+	result.setAttribute("id", mnyId);
 
 	return(result);
 };
@@ -1800,11 +1794,10 @@ UiUtil.PopulateComboBoxWithValue = function(cmb, choices, chosen) {
 		});
 	}
 };
-UiUtil.GetPhoneData = function(aParentName, aChildName) {
-	var fieldFqn = UiUtil.ComposeFqn(aParentFqnName, aChildName);
-	var idCountry = UiUtil.GenElementId(undefined, fieldFqn, "pc_"); // prefix with telephone country code
-	var idNdc = UiUtil.GenElementId(undefined, fieldFqn, "pa_");
-	var idNo = UiUtil.GenElementId(undefined, fieldFqn, "pn_"); // prefix with telephone number
+UiUtil.GetPhoneData = function(aFieldFqn) {
+	var idCountry = UiUtil.GenElementId(undefined, aFieldFqn, "pc_"); // prefix with telephone country code
+	var idNdc = UiUtil.GenElementId(undefined, aFieldFqn, "pa_");
+	var idNo = UiUtil.GenElementId(undefined, aFieldFqn, "pn_"); // prefix with telephone number
 
 	var phoneData = idCountry.value + "-" + idNdc.value + "-" + idNo.value; 
 	return(phoneData);
@@ -2069,6 +2062,35 @@ UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 
 	return(newSlider);
 };
+UiUtil.GetMoneyData = function(aFieldFqn) { 
+	var nmCy = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "mr_")).val();
+	var nmDl = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "md_")).val();
+	var nmCt = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "mc_")).val();
+
+	var strAmt = "";
+	if (!nmDl.trim() && !nmCt.trim()) {
+		strAmt = ""; 
+	} else {
+		strAmt = nmCy + " " + nmDl + "." + nmCt; 
+	}
+	
+	return(strAmt);
+};
+UiUtil.GetCheckBoxData = function(aFieldFqn, aObj2Edit) { 
+	var value = "false";
+	var elementId = UiUtil.GenElementId(undefined, aFieldFqn);
+	if ($("#" + elementId).prop("checked") === true) {
+		value = "true";
+	}
+
+	// need the below if to avoid original null value being set to false when nothing actually change, impacted onbeforeunload
+	var fieldName = aFieldFqn.substring(aFieldFqn.lastIndexOf(".") + 1);
+	if ((UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetValueByJsonPath(aObj2Edit, fieldName)) === false && value === "false")) { // don't do anything if obj2Edit value is null/blank and checkbox value is false
+		value = undefined; // this shows, no data from db and checkbox is false, so let db data as undefine / no data
+	}
+	
+	return(value);
+};
 UiUtil.FlipUpDown = function(aElemId) {
 	var result;
 	if ($("#" + aElemId).css("display") !== "none") {
@@ -2101,16 +2123,15 @@ UiUtil.IsSystemField = function(aName) {
 };
 UiUtil.IsCustomWidget = function(aValue) {
 	var result = true;
-	if (aValue.type === "mobilephone" ) {
-	} else if (aValue.type === "datetime" || aValue.type === "date" ) {
-	} else if (aValue.type === "html" ) {
-	} else if (aValue.type === 'telephone' ) {
-	} else if (aValue.type === 'money' ) {
-	} else if (aValue.type === 'boolean' ) {
-	} else if (aValue.type === 'salary' ) {
-	} else if (aValue.type === 'country' ) {
-	} else if (aValue.type === 'state' ) {
-	} else if (aValue.type === 'city' ) {
+	if (aValue.type === "mobilephone") {
+	} else if (aValue.type === "datetime" || aValue.type === "date") {
+	} else if (aValue.type === "html") {
+	} else if (aValue.type === 'telephone') {
+	} else if (aValue.type === 'money') {
+	} else if (aValue.type === 'boolean') {
+	} else if (aValue.type === 'country') {
+	} else if (aValue.type === 'state') {
+	} else if (aValue.type === 'city') {
 	} else {
 		result = false;
 	}
@@ -2131,87 +2152,100 @@ UiUtil.ComposeFqn = function(aParent, aChild) {
 
 	return(result);
 };
-UiUtil.AssignData = function(aPopulateTarget, aParentFqnName, fieldName, fieldValue) {
-	var fieldFqn = UiUtil.ComposeFqn(aParentFqnName, fieldName);
-	var elementId = UiUtil.GenElementId(undefined, fieldFqn);
+UiUtil.SetWidgetValue = function(aObj2Edit, aFieldFqn, aFieldValue) {
+	var populateDirection = "toWidget";
+	UiUtil.SetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aFieldValue, populateDirection);
+};
+UiUtil.SetJsonValue = function(aObj2Edit, aFieldFqn, aFieldValue) {
+	var populateDirection = "toJsonObj";
+	UiUtil.SetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aFieldValue, populateDirection);
+};
+UiUtil.SetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aFieldValue, aPopulateDirection) {
+	if (aFieldValue.type === "mobilephone" || aFieldValue.type === "telephone") {
+		var phoneData = UiUtil.GetPhoneData(aFieldFqn);
+		UiUtil.AssignData(aPopulateDirection, aFieldFqn, {data: phoneData});
+	} else if (aFieldValue.type === "datetime" || aFieldValue.type === "date" ) {
+		var dateData = UiUtil.GetDatePickerData(aFieldFqn);
+		UiUtil.AssignData(aPopulateDirection, aFieldFqn, {data: dateData});
+	} else if (aFieldValue.type === "html") {
+		UiUtil.AssignData(aPopulateDirection, aFieldFqn, aFieldValue);
+	} else if (aFieldValue.type === 'money') {
+		var moneyData = UiUtil.GetMoneyData(aFieldFqn);
+		UiUtil.AssignData(aPopulateDirection, aFieldFqn, {data: moneyData});
+	} else if (aFieldValue.type === 'boolean') {
+		var booleanData = UiUtil.GetCheckBoxData(aFieldFqn, aObj2Edit);
+		UiUtil.AssignData(aPopulateDirection, aFieldFqn, {data: booleanData});
+	} else if (aFieldValue.type === 'country') {
+		UiUtil.AssignData(aPopulateDirection, aFieldFqn, aFieldValue);
+	} else if (aFieldValue.type === 'state') {
+		UiUtil.AssignData(aPopulateDirection, aFieldFqn, aFieldValue);
+	} else if (aFieldValue.type === 'city') {
+		UiUtil.AssignData(aPopulateDirection, aFieldFqn, aFieldValue);
+	} else {
+		UiUtil.AssignData(aPopulateDirection, aFieldFqn, aFieldValue);
+	}
+};
+UiUtil.AssignData = function(aPopulateDirection, aFieldFqn, aFieldValue) {
+	var elementId = UiUtil.GenElementId(undefined, aFieldFqn);
 	var theElement = $("#" + elementId);
 	if (UiUtil.NotUndefineNotNullNotBlank(theElement) && UiUtil.NotUndefineNotNullNotBlank(theElement.val())) {
-		if (aPopulateTarget === "toScreen") {
-			fieldValue.data = theElement.val();
+		if (aPopulateDirection === "toWidget") {
+			aFieldValue.data = theElement.val();
 		} else {
-			if (UiUtil.NotUndefineNotNullNotBlank(fieldValue.data)) {
-				theElement.val(fieldValue.data);
+			if (UiUtil.NotUndefineNotNullNotBlank(aFieldValue.data)) {
+				theElement.val(aFieldValue.data);
 			}
 		}
 	}
 
-	var valueToPrint = fieldValue.data;
-	console.log("Found field: " + fieldFqn + ", element id: " + elementId + ", value: " + valueToPrint);
+	var valueToPrint = aFieldValue.data;
+	console.log("Found field: " + aFieldFqn + ", element id: " + elementId + ", value: " + valueToPrint);
+};
+UiUtil.PopulateWidget = function(aJsonObj) {
+	var avoidRecursive = [];
+	avoidRecursive.push({clasz: aJsonObj.clasz, Oid: aJsonObj.objectId});
+	UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive, function(aObj2Edit, aFieldFqn, aFieldValue) {
+		UiUtil.SetWidgetValue(aObj2Edit, aFieldFqn, aFieldValue);
+	});
 };
 UiUtil.PopulateData = function(aJsonObj) {
 	var avoidRecursive = [];
 	avoidRecursive.push({clasz: aJsonObj.clasz, Oid: aJsonObj.objectId});
-	//UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive, "toScreen");
-	UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive, "toJsonObj");
+	UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive, function(aObj2Edit, aFieldFqn, aFieldValue) {
+		UiUtil.SetJsonValue(aObj2Edit, aFieldFqn, aFieldValue);
+	});
 };
-UiUtil.PopulateDataRecursion = function(aJsonObj, aParentFqnName, aObjName, aAvoidRecursive, aPopulateTarget) {
+UiUtil.PopulateDataRecursion = function(aObj2Edit, aParentFqnName, aObjName, aAvoidRecursive, aTraversedFunc) {
 	aParentFqnName = UiUtil.GetJsonPath(aParentFqnName, aObjName);
 	for (var cntr in aAvoidRecursive) {
-		if (aAvoidRecursive[cntr].Oid === String(aJsonObj.objectId) && aAvoidRecursive[cntr].clasz === aJsonObj.clasz) {
+		if (aAvoidRecursive[cntr].Oid === String(aObj2Edit.objectId) && aAvoidRecursive[cntr].clasz === aObj2Edit.clasz) {
 			return;
 		}
 	}
 
-	for(var key in aJsonObj.data) {
-		if (aJsonObj.data[key].dontDisplay !== undefined) continue;
+	for(var key in aObj2Edit.data) {
+		if (aObj2Edit.data[key].dontDisplay !== undefined) continue;
 		var fieldName = key;
-		var fieldValue  = aJsonObj.data[fieldName];
+		var fieldValue  = aObj2Edit.data[fieldName];
+		var fieldFqn = UiUtil.ComposeFqn(aParentFqnName, fieldName);
 		if (UiUtil.IsSystemField(fieldName) === false) {
 			if (UiUtil.IsCustomWidget(fieldValue)) { // custom widget values probably cannot be assign directly
-				if (fieldValue.type === "mobilephone" ) {
-					var phoneData = UiUtil.GetPhoneData(aParentFqnName, fieldName);
-					UiUtil.AssignData(aPopulateTarget, aParentFqnName, fieldName, {data: phoneData});
-				} else if (fieldValue.type === 'telephone' ) {
-					var phoneData = UiUtil.GetPhoneData(aParentFqnName, fieldName);
-					UiUtil.AssignData(aPopulateTarget, aParentFqnName, fieldName, {data: phoneData});
-				} else if (fieldValue.type === "datetime" || fieldValue.type === "date" ) {
-					var dateData = UiUtil.GetDatePickerData(aParentFqnName, fieldName);
-					UiUtil.AssignData(aPopulateTarget, aParentFqnName, fieldName, {data: dateData});
-				} else if (fieldValue.type === "html" ) {
-				} else if (fieldValue.type === 'money' ) {
-				} else if (fieldValue.type === 'boolean' ) {
-				} else if (fieldValue.type === 'salary' ) {
-				} else if (fieldValue.type === 'country' ) {
-				} else if (fieldValue.type === 'state' ) {
-				} else if (fieldValue.type === 'city' ) {
-				}
+				aTraversedFunc(aObj2Edit, fieldFqn, fieldValue);
 			} else if ((fieldValue.data !== undefined && typeof(fieldValue.data) !== 'object') || fieldValue.lookup === true) { // atomic fields
-				UiUtil.AssignData(aPopulateTarget, aParentFqnName, fieldName, fieldValue);
+				aTraversedFunc(aObj2Edit, fieldFqn, fieldValue);
 			} else { // handle object fields i.e. fieldobject and fieldobjectbox
 				if ((fieldValue.dataset !== undefined || typeof(fieldValue.data) === 'object') && (fieldValue.lookup === undefined || fieldValue.lookup === false)) {
 					if ($.isArray(fieldValue.dataset)) { // its fieldobjectbox
 						for (cntrObj = 0; cntrObj < fieldValue.dataset.length; cntrObj++) {
 							var aryIdx = "[" + cntrObj + "]";
-							if (UiUtil.IsUiMaster(fieldValue.dataset[cntrObj])) {
-								aAvoidRecursive.push({clasz: fieldValue.dataset[cntrObj].clasz, Oid: fieldValue.dataset[cntrObj].objectId});
-								UiUtil.PopulateDataRecursion(fieldValue.dataset[cntrObj], aParentFqnName, fieldName + aryIdx, aAvoidRecursive, cntrObj);
-								aAvoidRecursive.pop();
-							} else if (UiUtil.IsCustomWidget(fieldValue.dataset[cntrObj])) {
-								// do nothing
-							} else {
-								aAvoidRecursive.push({clasz: fieldValue.dataset[cntrObj].clasz, Oid: fieldValue.dataset[cntrObj].objectId});
-								UiUtil.PopulateDataRecursion(fieldValue.dataset[cntrObj], aParentFqnName, fieldName + aryIdx, aAvoidRecursive, cntrObj);
-								aAvoidRecursive.pop();
-							}
-						}
-					} else { // its fieldobject
-						if (UiUtil.IsCustomWidget(fieldValue)) {
-							// do nothing
-						} else {
-							aAvoidRecursive.push({clasz: fieldValue.data.clasz, Oid: fieldValue.data.objectId});
-							UiUtil.PopulateDataRecursion(fieldValue, aParentFqnName, fieldName, aAvoidRecursive, 0);
+							aAvoidRecursive.push({clasz: fieldValue.dataset[cntrObj].clasz, Oid: fieldValue.dataset[cntrObj].objectId});
+							UiUtil.PopulateDataRecursion(fieldValue.dataset[cntrObj], aParentFqnName, fieldName + aryIdx, aAvoidRecursive, aTraversedFunc);
 							aAvoidRecursive.pop();
 						}
+					} else { // its fieldobject
+						aAvoidRecursive.push({clasz: fieldValue.data.clasz, Oid: fieldValue.data.objectId});
+						UiUtil.PopulateDataRecursion(fieldValue, aParentFqnName, fieldName, aAvoidRecursive, aTraversedFunc);
+						aAvoidRecursive.pop();
 					}
 				}
 			}
