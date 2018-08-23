@@ -2063,6 +2063,15 @@ UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 	return(newSlider);
 };
 UiUtil.GetMoneyData = function(aFieldFqn) { 
+	if (!(UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "mr_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "md_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "mc_")))
+	)
+	) {
+		console.log("Mssing widget: " + UiUtil.GenElementId(undefined, aFieldFqn));
+		return;
+	}
+
 	var nmCy = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "mr_")).val();
 	var nmDl = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "md_")).val();
 	var nmCt = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "mc_")).val();
