@@ -968,6 +968,11 @@ UiUtil.GetVarByJsonPath = function(aJsnVar, aFqn) {
 	}
 	return(result);
 };
+UiUtil.GetValueByFieldName = function(aFieldVar, aFieldFqn) {
+	var fieldName = aFieldFqn.substring(aFieldFqn.lastIndexOf(".") + 1);
+	var result = UiUtil.GetValueByJsonPath(aFieldVar, fieldName);
+	return(result);
+};
 UiUtil.GetValueByJsonPath = function(aJsnVar, aFqn) {
 	if (aFqn === 'objectId') {
 		return(aJsnVar.objectId);
@@ -1020,26 +1025,6 @@ UiUtil.RemoveArrayElement = function(array, element) {
     return array.filter(e => e !== element);
 };
 UiUtil.GetActiveSlideElement = function(aElementId ) {
-	/*
-	var normJqVar = aElementId.replace('[', '\\[').replace(']', '\\]').replace('.', '\\.');
-	var escJqVar = "[id='" + normJqVar + "']";
-	var dupSlider = $(escJqVar);
-	for(var cntr = 0; cntr < dupSlider.length; cntr++) {
-		var parentTop = $(dupSlider[cntr]).offsetParent().position().top;
-		var wkStyle = $(dupSlider[cntr]).offsetParent().offsetParent()[0].style;
-		if (typeof WebKitCSSMatrix !== 'undefined') {
-			var matrix = new WebKitCSSMatrix(wkStyle.webkitTransform);
-			var masterSliderTop = matrix.m42;
-		
-			if (Math.floor(parentTop) !== 0 && Math.floor(masterSliderTop) !== 0) {
-				var delta = (Math.floor(parentTop) + Math.floor(masterSliderTop));
-				if (delta < 5 && delta > -5) {
-					return(dupSlider[cntr]);
-				}
-			}
-		}
-	}
-	*/
 	return(document.getElementById(aElementId));
 };
 UiUtil.SetDatePicker = function(aDate, txtDay, txtMth, txtYear, txtHour, txtMin, txtSec) {
@@ -1433,13 +1418,25 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	UiUtil.DialogWaitStop();
 };
 UiUtil.GetDatePickerData = function(aFieldFqn) { 
-	var nmDay = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dd_")).val();
-	var nmMth = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dm_")).val();
-	var nmYer = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dy_")).val();
-	var nmHour = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dh_")).val();
-	var nmMin = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "di_")).val();
-	var nmSec = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "ds_")).val();
-	var strDate = UiUtil.GetDisplayDate(nmDay, nmMth, nmYer, nmHour, nmMin, nmSec);
+	var strDate;
+	if ((UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "dd_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "dm_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "dy_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "dh_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "di_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "ds_")))
+	)
+	) {
+		var nmDay = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dd_")).val();
+		var nmMth = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dm_")).val();
+		var nmYer = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dy_")).val();
+		var nmHour = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dh_")).val();
+		var nmMin = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "di_")).val();
+		var nmSec = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "ds_")).val();
+		strDate = UiUtil.GetDisplayDate(nmDay, nmMth, nmYer, nmHour, nmMin, nmSec);
+	} else {
+		strDate = UiUtil.GetWidgetData(aFieldFqn, "Missing datepicker widget [dd_, dm_, dy_, dh_, di_, ds_]: ");
+	}
 
 	return(strDate);
 };
@@ -1795,11 +1792,21 @@ UiUtil.PopulateComboBoxWithValue = function(cmb, choices, chosen) {
 	}
 };
 UiUtil.GetPhoneData = function(aFieldFqn) {
-	var idCountry = UiUtil.GenElementId(undefined, aFieldFqn, "pc_"); // prefix with telephone country code
-	var idNdc = UiUtil.GenElementId(undefined, aFieldFqn, "pa_");
-	var idNo = UiUtil.GenElementId(undefined, aFieldFqn, "pn_"); // prefix with telephone number
+	var phoneData;
+	if ((UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "pc_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "pa_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "pn_")))
+	)
+	) {
+		var idCountry = UiUtil.GenElementId(undefined, aFieldFqn, "pc_"); // prefix with telephone country code
+		var idNdc = UiUtil.GenElementId(undefined, aFieldFqn, "pa_");
+		var idNo = UiUtil.GenElementId(undefined, aFieldFqn, "pn_"); // prefix with telephone number
 
-	var phoneData = idCountry.value + "-" + idNdc.value + "-" + idNo.value; 
+		phoneData = idCountry.value + "-" + idNdc.value + "-" + idNo.value; 
+	} else {
+		phoneData = UiUtil.GetWidgetData(aFieldFqn, "Missing phone widget [pc_, pa_, pn_]: ");
+	}
+
 	return(phoneData);
 };
 UiUtil.CreateTelephone = function(displayLabel, jsonTelephone, aFieldFqn) {
@@ -2062,42 +2069,59 @@ UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 
 	return(newSlider);
 };
+UiUtil.GetWidgetData = function(aFieldFqn, aMissingMsg) {
+	var result;
+	var inputElement = document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn)); // uses one input field to represent the data
+	if (UiUtil.NotUndefineNotNullNotBlank(inputElement)) {
+		result = $(inputElement).val();
+	} else {
+		console.log(aMissingMsg + UiUtil.GenElementId(undefined, aFieldFqn));
+	}
+	
+	return(result)
+};
 UiUtil.GetMoneyData = function(aFieldFqn) { 
-	if (!(UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "mr_")))
+	var strAmt;
+
+	if ((UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "mr_")))
 	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "md_")))
 	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "mc_")))
 	)
 	) {
-		console.log("Mssing widget: " + UiUtil.GenElementId(undefined, aFieldFqn));
-		return;
-	}
+		var nmCy = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "mr_")).val();
+		var nmDl = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "md_")).val();
+		var nmCt = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "mc_")).val();
 
-	var nmCy = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "mr_")).val();
-	var nmDl = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "md_")).val();
-	var nmCt = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "mc_")).val();
-
-	var strAmt = "";
-	if (!nmDl.trim() && !nmCt.trim()) {
-		strAmt = ""; 
+		strAmt = "";
+		if (!nmDl.trim() && !nmCt.trim()) {
+			strAmt = ""; 
+		} else {
+			strAmt = nmCy + " " + nmDl + "." + nmCt; 
+		}
 	} else {
-		strAmt = nmCy + " " + nmDl + "." + nmCt; 
+		strAmt = UiUtil.GetWidgetData(aFieldFqn, "Missing money widget [mr_, md_, mc_]: ");
 	}
-	
+
 	return(strAmt);
 };
 UiUtil.GetCheckBoxData = function(aFieldFqn, aObj2Edit) { 
 	var value = "false";
-	var elementId = UiUtil.GenElementId(undefined, aFieldFqn);
-	if ($("#" + elementId).prop("checked") === true) {
-		value = "true";
+	if ((UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn))))
+	) {
+		var elementId = UiUtil.GenElementId(undefined, aFieldFqn);
+		if ($("#" + elementId).prop("checked") === true) {
+			value = "true";
+		}
+
+		// need the below if to avoid original null value being set to false when nothing actually change, impacted onbeforeunload
+		var fieldName = aFieldFqn.substring(aFieldFqn.lastIndexOf(".") + 1);
+		if ((UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetValueByJsonPath(aObj2Edit, fieldName)) === false && value === "false")) { // don't do anything if obj2Edit value is null/blank and checkbox value is false
+			value = undefined; // this shows, no data from db and checkbox is false, so let db data as undefine / no data
+		}
+	} else {
+		value = UiUtil.GetWidgetData(aFieldFqn, "Missing checkbox widget: ");
 	}
 
-	// need the below if to avoid original null value being set to false when nothing actually change, impacted onbeforeunload
-	var fieldName = aFieldFqn.substring(aFieldFqn.lastIndexOf(".") + 1);
-	if ((UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetValueByJsonPath(aObj2Edit, fieldName)) === false && value === "false")) { // don't do anything if obj2Edit value is null/blank and checkbox value is false
-		value = undefined; // this shows, no data from db and checkbox is false, so let db data as undefine / no data
-	}
-	
 	return(value);
 };
 UiUtil.FlipUpDown = function(aElemId) {
@@ -2169,20 +2193,29 @@ UiUtil.SetJsonValue = function(aObj2Edit, aFieldFqn, aFieldValue) {
 	var populateDirection = "toJsonObj";
 	UiUtil.SetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aFieldValue, populateDirection);
 };
+UiUtil.GetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aPopulateDirection, aFuncGetFromWidget) {
+	var result;
+	if (aPopulateDirection === "toWidget") {
+		result = UiUtil.GetValueByFieldName(aObj2Edit, aFieldFqn);
+	} else {
+		result = aFuncGetFromWidget();
+	}
+	return(result);
+};
 UiUtil.SetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aFieldValue, aPopulateDirection) {
 	if (aFieldValue.type === "mobilephone" || aFieldValue.type === "telephone") {
-		var phoneData = UiUtil.GetPhoneData(aFieldFqn);
+		var phoneData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { UiUtil.GetPhoneData(aFieldFqn); });
 		UiUtil.AssignData(aPopulateDirection, aFieldFqn, {data: phoneData});
 	} else if (aFieldValue.type === "datetime" || aFieldValue.type === "date" ) {
-		var dateData = UiUtil.GetDatePickerData(aFieldFqn);
+		var dateData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { UiUtil.GetDatePickerData(aFieldFqn); });
 		UiUtil.AssignData(aPopulateDirection, aFieldFqn, {data: dateData});
 	} else if (aFieldValue.type === "html") {
 		UiUtil.AssignData(aPopulateDirection, aFieldFqn, aFieldValue);
 	} else if (aFieldValue.type === 'money') {
-		var moneyData = UiUtil.GetMoneyData(aFieldFqn);
+		var moneyData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { UiUtil.GetMoneyData(aFieldFqn); });
 		UiUtil.AssignData(aPopulateDirection, aFieldFqn, {data: moneyData});
 	} else if (aFieldValue.type === 'boolean') {
-		var booleanData = UiUtil.GetCheckBoxData(aFieldFqn, aObj2Edit);
+		var booleanData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { UiUtil.GetCheckBoxData(aFieldFqn, aObj2Edit); });
 		UiUtil.AssignData(aPopulateDirection, aFieldFqn, {data: booleanData});
 	} else if (aFieldValue.type === 'country') {
 		UiUtil.AssignData(aPopulateDirection, aFieldFqn, aFieldValue);
@@ -2195,14 +2228,26 @@ UiUtil.SetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aFieldValue, aPopul
 	}
 };
 UiUtil.AssignData = function(aPopulateDirection, aFieldFqn, aFieldValue) {
+	if (!(UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn))))
+	) {
+		console.log("Missing widget: " + UiUtil.GenElementId(undefined, aFieldFqn));
+		return;
+	}
+
 	var elementId = UiUtil.GenElementId(undefined, aFieldFqn);
 	var theElement = $("#" + elementId);
 	if (UiUtil.NotUndefineNotNullNotBlank(theElement) && UiUtil.NotUndefineNotNullNotBlank(theElement.val())) {
 		if (aPopulateDirection === "toWidget") {
-			aFieldValue.data = theElement.val();
-		} else {
 			if (UiUtil.NotUndefineNotNullNotBlank(aFieldValue.data)) {
 				theElement.val(aFieldValue.data);
+			} else {
+				theElement.val("");
+			}
+		} else {
+			if (UiUtil.NotUndefineNotNullNotBlank(theElement.val())) {
+				aFieldValue.data = theElement.val();
+			} else {
+				aFieldValue.data = "";
 			}
 		}
 	}

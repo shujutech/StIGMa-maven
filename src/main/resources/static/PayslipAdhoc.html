@@ -333,7 +333,7 @@
 												<span class="st-error-msg" style="display:none"></span>
 											</div>
 											<div class="st-input-area">
-												<input id="headerPeriodFrom" class="print-field form-control" type="text" value="" style="text-align:center">
+												<input id="wt_Period_From" class="print-field form-control" type="text" value="" style="text-align:center">
 											</div>
 										</div>
 										<div class="st-eachfield st-row" style="float:left">
@@ -343,7 +343,7 @@
 												<span class="st-error-msg" style="display:none"></span>
 											</div>
 											<div class="st-input-area">
-												<input id="headerPeriodTo" class="print-field form-control" type="text" value="" style="text-align:center">
+												<input id="wt_Period_To" class="print-field form-control" type="text" value="" style="text-align:center">
 											</div>
 											<span id="mth-period-popup" onclick="showCalendarPeriod(); return false" style="cursor:pointer">
 												<img src="img/imgCalendar.png" alt="">
@@ -418,7 +418,7 @@
 														<span class="st-error-msg" style="display:none"></span>
 													</div>
 													<div class="st-input-area">
-														<input class="print-field form-control" id="netPay" readonly value="MYR 0.00" style="text-align:right" />
+														<input class="print-field form-control" id="wt_Net_Pay" readonly value="MYR 0.00" style="text-align:right" />
 													</div>
 												</div>
 											</div>
@@ -506,8 +506,8 @@
 					var strTitle = $('title').html() + ' - ' + strEmployee + '';
 
 					$('#wt_Company').text(strCompany);
-					$('#headerPeriodFrom').text(strPeriodFrom);
-					$('#headerPeriodTo').text(strPeriodTo);
+					$('#wt_Period_From').text(strPeriodFrom);
+					$('#wt_Period_To').text(strPeriodTo);
 					$('#wt_Employee').text(strEmployee);
 					$('#wt_Designation').text(strDesignation);
 					$('title').html(strTitle);
@@ -867,8 +867,8 @@
 				}
 			};
 			var showCalendarPeriod = function() {
-				var currentDateFrom = UiUtil.DisplayDateToDate($("#headerPeriodFrom").val()); 
-				var currentDateTo = UiUtil.DisplayDateToDate($("#headerPeriodTo").val()); 
+				var currentDateFrom = UiUtil.DisplayDateToDate($("#wt_Period_From").val()); 
+				var currentDateTo = UiUtil.DisplayDateToDate($("#wt_Period_To").val()); 
 				UiUtil.DialogPeriodRange("Select Payslip Period", "", currentDateFrom, currentDateTo, function(){
 					var newDateFrom = UiUtil.DisplayDateToDate(UiUtil.DatePickerToStrDate('st-dp-dateFrom'));
 					var newDateTo = UiUtil.DisplayDateToDate(UiUtil.DatePickerToStrDate('st-dp-dateEnd'));
@@ -879,8 +879,8 @@
 	 				} else {
 						var dateFrom = UiUtil.DatePickerToStrDate('st-dp-dateFrom');
 						var dateTo = UiUtil.DatePickerToStrDate('st-dp-dateEnd');
-						$("#headerPeriodFrom").val(dateFrom);
-						$("#headerPeriodTo").val(dateTo);
+						$("#wt_Period_From").val(dateFrom);
+						$("#wt_Period_To").val(dateTo);
 					}
 				}, function() {
 				});
@@ -930,8 +930,8 @@
 
 				var nowDateFrom = UiUtil.DateMonthStart(new Date());
 				var nowDateTo = UiUtil.DateMonthEnd(new Date());
-				$("#headerPeriodFrom").val(UiUtil.DateForDisplay(nowDateFrom));
-				$("#headerPeriodTo").val(UiUtil.DateForDisplay(nowDateTo));
+				$("#wt_Period_From").val(UiUtil.DateForDisplay(nowDateFrom));
+				$("#wt_Period_To").val(UiUtil.DateForDisplay(nowDateTo));
 			} ;
 
 		</script>
