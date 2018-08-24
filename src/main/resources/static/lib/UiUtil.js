@@ -289,8 +289,8 @@ UiUtil.GetJsonPath = function(aBasePath, fieldName) {
 UiUtil.DialogMaxLen = function(aMsg) {
 	var result = "";
 	var strAry = aMsg.match(/\b(.{1,70})/g);	
-	var eachStr;
-	for(eachStr of strAry) {
+	for(var cntr = 0; cntr < strAry.length; cntr++) {
+		var eachStr = strAry[cntr];
 		if (result !== "") {
 			result += "<br>" + eachStr;
 		} else {
@@ -2232,30 +2232,53 @@ UiUtil.SetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aFieldValue, aPopul
 		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue.data);
 	}
 };
+UiUtil.IsWidget = function(aElement) {
+	if (aElement.is("input") || aElement.is("select") || aElement.is("textarea")) {
+		return true;
+	} else {
+		return false;
+	}
+};
+UiUtil.SetElementValue = function(aElement, aValue) {
+	if (UiUtil.IsWidget(aElement)) {
+		aElement.val(aValue);
+	} else {
+		aElement.text(aValue);
+	}
+};
+UiUtil.GetElementValue = function(aElement) {
+	var result;
+	if (UiUtil.IsWidget(aElement)) {
+		result = aElement.val();
+	} else {
+		result = aElement.text();
+	}
+	
+	return(result);
+};
 UiUtil.AssignData = function(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue) {
-	if (!(UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn))))
-	) {
+	var elementId = UiUtil.GenElementId(undefined, aFieldFqn);
+	if (UiUtil.NotUndefineNotNullNotBlank(elementId)) {
+		var theElement = $("#" + elementId);
+		if (UiUtil.NotUndefineNotNullNotBlank(theElement)) {
+		} else {
+			console.log("Missing widget for FQN: " + aFieldFqn);
+			return;
+		}
+	} else {
 		console.log("Missing widget: " + UiUtil.GenElementId(undefined, aFieldFqn));
 		return;
 	}
 
-	var elementId = UiUtil.GenElementId(undefined, aFieldFqn);
-	var theElement = $("#" + elementId);
-	if (UiUtil.NotUndefineNotNullNotBlank(theElement) && UiUtil.NotUndefineNotNullNotBlank(theElement.val())) {
-		if (aPopulateDirection === "toWidget") {
-			if (UiUtil.NotUndefineNotNullNotBlank(aFieldValue)) {
-				theElement.val(aFieldValue);
-			} else {
-				theElement.val("");
-			}
+	if (aPopulateDirection === "toWidget") {
+		if (UiUtil.NotUndefineNotNullNotBlank(aFieldValue)) {
+			UiUtil.SetElementValue(theElement, aFieldValue);
 		} else {
-			var fieldObject = UiUtil.GetVarByFieldName(aObj2Edit, aFieldFqn);
-			if (UiUtil.NotUndefineNotNullNotBlank(theElement.val())) {
-				fieldObject.data = theElement.val();
-			} else {
-				fieldObject.data = "";
-			}
+			UiUtil.SetElementValue(theElement, "");
 		}
+	} else {
+		var fieldObject = UiUtil.GetVarByFieldName(aObj2Edit, aFieldFqn);
+		fieldObject.data = UiUtil.GetElementValue(theElement);
 	}
 
 	var valueToPrint = aFieldValue;
@@ -2268,7 +2291,7 @@ UiUtil.PopulateWidget = function(aJsonObj) {
 		UiUtil.SetWidgetValue(aObj2Edit, aFieldFqn, aFieldValue);
 	});
 };
-UiUtil.PopulateData = function(aJsonObj) {
+UiUtil.PopulateJson = function(aJsonObj) {
 	var avoidRecursive = [];
 	avoidRecursive.push({clasz: aJsonObj.clasz, Oid: aJsonObj.objectId});
 	UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive, function(aObj2Edit, aFieldFqn, aFieldValue) {
@@ -2314,4 +2337,4 @@ UiUtil.PopulateDataRecursion = function(aObj2Edit, aParentFqnName, aObjName, aAv
 		}
 	}
 };
-UiUtil.doNothing = function() {}; 
+UiUtil.DoNothing = function() {}; 

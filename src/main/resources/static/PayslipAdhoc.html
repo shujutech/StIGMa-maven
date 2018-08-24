@@ -515,7 +515,7 @@
 					var earnings = UiUtil.GetVarByJsonPath(oneSlip, "Earnings");
 					var deductions = UiUtil.GetVarByJsonPath(oneSlip, "Deductions");
 					var others = UiUtil.GetVarByJsonPath(oneSlip, "Others");
-					edtbgEarning = createSalaryTrxGrid('Earnings', earnings, 'divMasterEarn', 'divEarning', 'tableEarning');
+					edtbgEarning = createSalaryTrxGrid('Earnings', earnings, 'divMasterEarn', 'divEarning', 'wt_Earnings');
 					edtbgDeduction = createSalaryTrxGrid('Deductions', deductions, 'divMasterDeduct', 'divDeduction', 'tableDeduction');
 					edtbgOther = createSalaryTrxGrid('Others', others, 'divMasterOther', 'divOther', 'tableOther');
 					totalUpSalaryTrx(edtbgEarning.inputObj, "Earnings");
@@ -577,11 +577,11 @@
 			};
 			var createSalaryTrxGrid = function(aType, aData, aMasterDiv, aDiv, aTableId) {
 				var colDisplay = [];
-				UiGrid.defineGridHeader(colDisplay, 'checkbox', 'Chose', undefined, undefined, undefined);
-				UiGrid.defineGridHeader(colDisplay, 'string', 'objectId', 'objectId', function(jsObj) { return(MakeObjData(jsObj.objectId)); }, undefined);
-				UiGrid.defineGridHeader(colDisplay, 'string', 'clasz', 'clasz', function(jsObj) { return(MakeObjData(jsObj.clasz)); }, undefined);
-				UiGrid.defineGridHeader(colDisplay, 'string', aType, 'Descr', undefined, undefined);
-				UiGrid.defineGridHeader(colDisplay, 'string', 'Amount', 'Amount', undefined, function(aData) { return(FormatMoney(aData));});
+				UiGrid.DefineGridHeader(colDisplay, 'checkbox', 'Chose', undefined, undefined, undefined);
+				UiGrid.DefineGridHeader(colDisplay, 'string', 'objectId', 'objectId', function(jsObj) { return(MakeObjData(jsObj.objectId)); }, undefined);
+				UiGrid.DefineGridHeader(colDisplay, 'string', 'clasz', 'clasz', function(jsObj) { return(MakeObjData(jsObj.clasz)); }, undefined);
+				UiGrid.DefineGridHeader(colDisplay, 'string', aType, 'Descr', undefined, undefined);
+				UiGrid.DefineGridHeader(colDisplay, 'string', 'Amount', 'Amount', undefined, function(aData) { return(FormatMoney(aData));});
 
 				var gridSalaryTrx = new EditableGrid("trId" + aType);
 				gridSalaryTrx.inputObj = aData;
@@ -600,7 +600,7 @@
 					return seqLeft > seqRight;
 				});
 
-				UiGrid.populateGrid(gridSalaryTrx, colDisplay, aDiv, aData, aTableId);
+				UiGrid.PopulateGrid(gridSalaryTrx, colDisplay, aDiv, aData, aTableId);
 				$(gridSalaryTrx.table).on("dblclick", "tr", function(event) {
 					if (this.rowIndex === 0) {
 						return;
@@ -614,7 +614,7 @@
 					var clickIdx = $(event.currentTarget.parentElement.parentElement.rows).index(event.currentTarget); // in row array, return the index with value of currentTarget
 					UiGrid.CheckAllRow(gridSalaryTrx, false);
 					UiGrid.CheckAtRow(gridSalaryTrx, clickIdx, true);
-					if (event.currentTarget.parentElement.parentElement.id === 'tableEarning') {
+					if (event.currentTarget.parentElement.parentElement.id === 'wt_Earnings') {
 						editSalaryTrx('Earnings');
 					} else if (event.currentTarget.parentElement.parentElement.id === 'tableDeduction') {
 						editSalaryTrx('Deductions');
@@ -802,8 +802,10 @@
 				if (UiUtil.NotUndefineNotNull(dlgWidget.find("div").find("input")[0])) {
 					firstInput = dlgWidget.find("div").find("input")[0];
 				}
-				var eachDiv;
-				for(eachDiv of dlgWidget.children("div")) { 
+				//for(eachDiv of dlgWidget.children("div")) { 
+				var divChild = dlgWidget.children("div");
+				for(var cntr = 0; cntr < divChild.length; cntr++) {
+					var eachDiv = divChild[cntr];
 					$(eachDiv).addClass("st-vertical-row"); 
 				}
 				UiUtil.DialogOkCancel(netTitle, dlgWidget, okNewRq, cancelRq, firstInput);

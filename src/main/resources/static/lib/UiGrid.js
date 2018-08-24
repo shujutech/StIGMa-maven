@@ -10,7 +10,6 @@ UiGrid.GridHeight = 5;
 function UiGrid() {
 	alert("The UiGrid is a collection of static functions, it cannot be prototyped!");
 };
-UiGrid.doNothing = function() {}; 
 UiGrid.getJsonObj = function(chosenId, aryObj) {
 	var result;
 	for(var cntr = 0; cntr < aryObj.length; cntr++) {
@@ -129,7 +128,7 @@ UiGrid.CheckTotalRow = function(aGrid) {
 UiGrid.onEdit = function(aGrid) {
 	var idxToEdit = UiGrid.getFirstCheckRow(aGrid);
 	if (idxToEdit === undefined) {
-		startDialogInfo('Error', "There is no record selected, please tick the checkbox at the table first!", UiGrid.doNothing);
+		startDialogInfo('Error', "There is no record selected, please tick the checkbox at the table first!", UiUtil.DoNothing);
 	} else {
 		$($(aGrid.table)[0].rows[idxToEdit]).dblclick();
 	}
@@ -162,17 +161,17 @@ UiGrid.onDelete = function(aGrid, aTheUrl, sendDelRq, cancelDelRq) {
 			sendDelRq = UiGrid.sendDeleteRequest(aGrid, tbl, aTheUrl, rwi, jsn);
 		} 
 		if (cancelDelRq === undefined) {
-			cancelDelRq = function() {UiGrid.doNothing();};
+			cancelDelRq = function() {UiUtil.DoNothing();};
 		} 
 		var confirmMsg = 'Confirm to delete record of: ' + desc + ', total record to delete: ' + rwi.length + '?';
 		showDialogOkCancel('Confirmation', confirmMsg, sendDelRq, cancelDelRq);
 	} else {
-		startDialogInfo('Error', "There is no record selected, please tick the checkbox at the table first!", UiGrid.doNothing);
+		startDialogInfo('Error', "There is no record selected, please tick the checkbox at the table first!", UiUtil.DoNothing);
 	}
 }; 
-UiGrid.populateGrid = function(aGrid, aWantedCol, aGridDiv, aJson, aTableId) {
-	var headerMeta = UiGrid.createGridHeader(aWantedCol);
-	var bodyData = UiGrid.createGridBody(aJson.dataset, aWantedCol);
+UiGrid.PopulateGrid = function(aGrid, aWantedCol, aGridDiv, aJson, aTableId) {
+	var headerMeta = UiGrid.CreateGridHeader(aWantedCol);
+	var bodyData = UiGrid.CreateGridBody(aJson.dataset, aWantedCol);
 	aGrid.load({"metadata":headerMeta, "data":bodyData});
 	if (aWantedCol[0].type === 'checkbox') {
 		aGrid.setHeaderRenderer(aWantedCol[0].name, new RenderHdrCbx(aGrid));
@@ -189,8 +188,9 @@ UiGrid.populateGrid = function(aGrid, aWantedCol, aGridDiv, aJson, aTableId) {
 		}
 	}
 	aGrid.renderGrid(aGridDiv, "stdGrid", aTableId);
+	UiGrid.SetCellId(aGrid, bodyData, aWantedCol);
 };
-UiGrid.createGridHeader = function(aWantedCol) {
+UiGrid.CreateGridHeader = function(aWantedCol) {
 	var defHeader = [];
 	for(var cntr = 0; cntr < aWantedCol.length; cntr++) {
 		var defCol = {};
@@ -215,7 +215,7 @@ UiGrid.createGridHeader = function(aWantedCol) {
 	}
 	return(defHeader);
 };
-UiGrid.createGridBody = function(aDataList, aWantedCol) {
+UiGrid.CreateGridBody = function(aDataList, aWantedCol) {
 	var data = [];
 	for(var cntrRow = 0; cntrRow < aDataList.length; cntrRow++) {
 		var row = {};
@@ -261,7 +261,7 @@ UiGrid.createGridBody = function(aDataList, aWantedCol) {
 	}
 	return(data);
 };
-UiGrid.defineGridHeader = function(aryResult, aType, aField, aPath, aFuncGetField, aFuncFormat, aEditable) {
+UiGrid.DefineGridHeader = function(aryResult, aType, aField, aPath, aFuncGetField, aFuncFormat, aEditable) {
 	var result = {};
 	if (aType.toLowerCase() === 'checkbox') {
 		result.name= aField;
@@ -280,6 +280,31 @@ UiGrid.defineGridHeader = function(aryResult, aType, aField, aPath, aFuncGetFiel
 		aryResult.push(result);
 	}
 	return(result);
+};
+UiGrid.SetCellId = function(aEditable, aBodyData, aWantedCol) {
+	var cellRow;
+	var cellCol;
+	var cellPath;
+	var tableName = aEditable.table.id.substring(3);
+	for(var cntrRow = 0; cntrRow < aBodyData.length; cntrRow++) {
+		cellRow = cntrRow;
+		var eachRow = aBodyData[cntrRow];
+		for(var eachColName in eachRow.values) {
+			for(var cntrCol = 0; cntrCol < aWantedCol.length; cntrCol++) {
+				if (aWantedCol[cntrCol].name === eachColName) {
+					cellCol = cntrCol;
+					cellPath = aWantedCol[cntrCol].path;
+					break;
+				}
+			}
+			var theCell = aEditable.getCell(cellRow, cellCol);
+			var cellFqn = tableName + "[" + cntrRow + "]" + "." + cellPath;
+			var theId = UiUtil.GenElementId(undefined, cellFqn);
+			if (UiUtil.NotUndefineNotNullNotBlank(theCell)) {
+				theCell.setAttribute("id", theId);
+			}
+		}
+	}
 };
 UiGrid.applyRowSelectedStyle = function(aEvent, aGrid) {
 	$(aGrid.table).find('.rowSelected').removeClass('rowSelected');
@@ -482,29 +507,6 @@ UiGrid.GetSelection = function(aGrid, aColOid1, aColClasz1, aColOid2, aColClasz2
 	}
 	return(selectedList);
 };
-/*
-UiGrid.GetSelection = function(aGrid, aColOid, aColClasz) {
-	var selectedList = undefined;
-	if (UiGrid.IsAllRowChecked(aGrid)) {
-		selectedList = []; // mean select all
-	} else {
-		var allCheckRow = UiGrid.getAllCheckRow(aGrid);
-		for(var cntr = 0; cntr < allCheckRow.length; cntr++) {
-			var idxChecked = allCheckRow[cntr];
-			var colNameOid = aGrid.table.rows[0].cells[aColOid].innerText;
-			var colNameClasz = aGrid.table.rows[0].cells[aColClasz].innerText;
-			var colValueOid = aGrid.table.rows[idxChecked].cells[aColOid].innerText;
-			var colValueClasz = aGrid.table.rows[idxChecked].cells[aColClasz].innerText;
-			var strObj = '{"' + colNameOid + '": "' + colValueOid + '", "' +  colNameClasz + '": "' + colValueClasz + '"}';
-			var selectedObj = JSON.parse(strObj);
-			if (selectedList === undefined) selectedList = [];
-			selectedList.push(selectedObj);
-		}
-	}
-
-	return(selectedList);
-};
-*/
 
 
 
