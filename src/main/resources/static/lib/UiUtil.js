@@ -968,6 +968,11 @@ UiUtil.GetVarByJsonPath = function(aJsnVar, aFqn) {
 	}
 	return(result);
 };
+UiUtil.GetVarByFieldName = function(aFieldVar, aFieldFqn) {
+	var fieldName = aFieldFqn.substring(aFieldFqn.lastIndexOf(".") + 1);
+	var result = UiUtil.GetVarByJsonPath(aFieldVar, fieldName);
+	return(result);
+};
 UiUtil.GetValueByFieldName = function(aFieldVar, aFieldFqn) {
 	var fieldName = aFieldFqn.substring(aFieldFqn.lastIndexOf(".") + 1);
 	var result = UiUtil.GetValueByJsonPath(aFieldVar, fieldName);
@@ -2033,7 +2038,7 @@ UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 	$(aSliderList).each(function() {
 		var eachSlider = this;
 		$(this).find(':input:last').bind('keydown', function(evt) {
-			if (evt.keyCode == 9){
+			if (evt.keyCode === 9){
 				if (eachSlider === lastSlider) {
 					// do nothing, tab to the next element
 				} else {
@@ -2078,7 +2083,7 @@ UiUtil.GetWidgetData = function(aFieldFqn, aMissingMsg) {
 		console.log(aMissingMsg + UiUtil.GenElementId(undefined, aFieldFqn));
 	}
 	
-	return(result)
+	return(result);
 };
 UiUtil.GetMoneyData = function(aFieldFqn) { 
 	var strAmt;
@@ -2204,30 +2209,30 @@ UiUtil.GetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aPopulateDirection,
 };
 UiUtil.SetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aFieldValue, aPopulateDirection) {
 	if (aFieldValue.type === "mobilephone" || aFieldValue.type === "telephone") {
-		var phoneData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { UiUtil.GetPhoneData(aFieldFqn); });
-		UiUtil.AssignData(aPopulateDirection, aFieldFqn, {data: phoneData});
+		var phoneData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetPhoneData(aFieldFqn); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, phoneData);
 	} else if (aFieldValue.type === "datetime" || aFieldValue.type === "date" ) {
-		var dateData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { UiUtil.GetDatePickerData(aFieldFqn); });
-		UiUtil.AssignData(aPopulateDirection, aFieldFqn, {data: dateData});
+		var dateData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetDatePickerData(aFieldFqn); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, dateData);
 	} else if (aFieldValue.type === "html") {
-		UiUtil.AssignData(aPopulateDirection, aFieldFqn, aFieldValue);
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue.data);
 	} else if (aFieldValue.type === 'money') {
-		var moneyData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { UiUtil.GetMoneyData(aFieldFqn); });
-		UiUtil.AssignData(aPopulateDirection, aFieldFqn, {data: moneyData});
+		var moneyData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetMoneyData(aFieldFqn); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, moneyData);
 	} else if (aFieldValue.type === 'boolean') {
-		var booleanData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { UiUtil.GetCheckBoxData(aFieldFqn, aObj2Edit); });
-		UiUtil.AssignData(aPopulateDirection, aFieldFqn, {data: booleanData});
+		var booleanData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetCheckBoxData(aFieldFqn, aObj2Edit); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, booleanData);
 	} else if (aFieldValue.type === 'country') {
-		UiUtil.AssignData(aPopulateDirection, aFieldFqn, aFieldValue);
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue.data);
 	} else if (aFieldValue.type === 'state') {
-		UiUtil.AssignData(aPopulateDirection, aFieldFqn, aFieldValue);
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue.data);
 	} else if (aFieldValue.type === 'city') {
-		UiUtil.AssignData(aPopulateDirection, aFieldFqn, aFieldValue);
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue.data);
 	} else {
-		UiUtil.AssignData(aPopulateDirection, aFieldFqn, aFieldValue);
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue.data);
 	}
 };
-UiUtil.AssignData = function(aPopulateDirection, aFieldFqn, aFieldValue) {
+UiUtil.AssignData = function(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue) {
 	if (!(UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn))))
 	) {
 		console.log("Missing widget: " + UiUtil.GenElementId(undefined, aFieldFqn));
@@ -2238,21 +2243,22 @@ UiUtil.AssignData = function(aPopulateDirection, aFieldFqn, aFieldValue) {
 	var theElement = $("#" + elementId);
 	if (UiUtil.NotUndefineNotNullNotBlank(theElement) && UiUtil.NotUndefineNotNullNotBlank(theElement.val())) {
 		if (aPopulateDirection === "toWidget") {
-			if (UiUtil.NotUndefineNotNullNotBlank(aFieldValue.data)) {
-				theElement.val(aFieldValue.data);
+			if (UiUtil.NotUndefineNotNullNotBlank(aFieldValue)) {
+				theElement.val(aFieldValue);
 			} else {
 				theElement.val("");
 			}
 		} else {
+			var fieldObject = UiUtil.GetVarByFieldName(aObj2Edit, aFieldFqn);
 			if (UiUtil.NotUndefineNotNullNotBlank(theElement.val())) {
-				aFieldValue.data = theElement.val();
+				fieldObject.data = theElement.val();
 			} else {
-				aFieldValue.data = "";
+				fieldObject.data = "";
 			}
 		}
 	}
 
-	var valueToPrint = aFieldValue.data;
+	var valueToPrint = aFieldValue;
 	console.log("Found field: " + aFieldFqn + ", element id: " + elementId + ", value: " + valueToPrint);
 };
 UiUtil.PopulateWidget = function(aJsonObj) {
