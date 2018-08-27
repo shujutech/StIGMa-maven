@@ -1422,14 +1422,14 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	UiUtil.NavigateMonth('static', UiUtil.DisplayDateToDate(dateStart), 'monthAbbrv');
 	UiUtil.DialogWaitStop();
 };
-UiUtil.GetDatePickerData = function(aFieldFqn) { 
+UiUtil.GetDatePickerData = function(aParentId, aFieldFqn) { 
 	var strDate;
-	if ((UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "dd_")))
-	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "dm_")))
-	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "dy_")))
-	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "dh_")))
-	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "di_")))
-	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "ds_")))
+	if ((UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn, "dd_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn, "dm_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn, "dy_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn, "dh_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn, "di_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn, "ds_")))
 	)
 	) {
 		var nmDay = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "dd_")).val();
@@ -1440,7 +1440,7 @@ UiUtil.GetDatePickerData = function(aFieldFqn) {
 		var nmSec = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "ds_")).val();
 		strDate = UiUtil.GetDisplayDate(nmDay, nmMth, nmYer, nmHour, nmMin, nmSec);
 	} else {
-		strDate = UiUtil.GetWidgetData(aFieldFqn, "Missing datepicker widget [dd_, dm_, dy_, dh_, di_, ds_]: ");
+		strDate = UiUtil.GetWidgetData(aParentId, aFieldFqn, "Missing datepicker widget [dd_, dm_, dy_, dh_, di_, ds_]: ");
 	}
 
 	return(strDate);
@@ -1796,11 +1796,20 @@ UiUtil.PopulateComboBoxWithValue = function(cmb, choices, chosen) {
 		});
 	}
 };
-UiUtil.GetPhoneData = function(aFieldFqn) {
+UiUtil.GetElementById = function(aParentId, aElementId) {
+	var result;
+	if (UiUtil.NotUndefineNotNullNotBlank(aParentId)) {
+		result = $("#" + aParentId).find("#" + aElementId)[0];
+	} else {
+		result = document.getElementById(aElementId);
+	}
+	return(result);
+};
+UiUtil.GetPhoneData = function(aParentId, aFieldFqn) {
 	var phoneData;
-	if ((UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "pc_")))
-	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "pa_")))
-	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "pn_")))
+	if ((UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn, "pc_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn, "pa_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn, "pn_")))
 	)
 	) {
 		var idCountry = UiUtil.GenElementId(undefined, aFieldFqn, "pc_"); // prefix with telephone country code
@@ -1809,7 +1818,7 @@ UiUtil.GetPhoneData = function(aFieldFqn) {
 
 		phoneData = idCountry.value + "-" + idNdc.value + "-" + idNo.value; 
 	} else {
-		phoneData = UiUtil.GetWidgetData(aFieldFqn, "Missing phone widget [pc_, pa_, pn_]: ");
+		phoneData = UiUtil.GetWidgetData(aParentId, aFieldFqn, "Missing phone widget [pc_, pa_, pn_]: ");
 	}
 
 	return(phoneData);
@@ -2074,9 +2083,9 @@ UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 
 	return(newSlider);
 };
-UiUtil.GetWidgetData = function(aFieldFqn, aMissingMsg) {
+UiUtil.GetWidgetData = function(aParentId, aFieldFqn, aMissingMsg) {
 	var result;
-	var inputElement = document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn)); // uses one input field to represent the data
+	var inputElement = UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn)); // uses one input field to represent the data
 	if (UiUtil.NotUndefineNotNullNotBlank(inputElement)) {
 		result = $(inputElement).val();
 	} else {
@@ -2085,12 +2094,12 @@ UiUtil.GetWidgetData = function(aFieldFqn, aMissingMsg) {
 	
 	return(result);
 };
-UiUtil.GetMoneyData = function(aFieldFqn) { 
+UiUtil.GetMoneyData = function(aParentId, aFieldFqn) { 
 	var strAmt;
 
-	if ((UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "mr_")))
-	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "md_")))
-	&& UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn, "mc_")))
+	if ((UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn, "mr_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn, "md_")))
+	&& UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn, "mc_")))
 	)
 	) {
 		var nmCy = $("#" + UiUtil.GenElementId(undefined, aFieldFqn, "mr_")).val();
@@ -2104,17 +2113,17 @@ UiUtil.GetMoneyData = function(aFieldFqn) {
 			strAmt = nmCy + " " + nmDl + "." + nmCt; 
 		}
 	} else {
-		strAmt = UiUtil.GetWidgetData(aFieldFqn, "Missing money widget [mr_, md_, mc_]: ");
+		strAmt = UiUtil.GetWidgetData(aParentId, aFieldFqn, "Missing money widget [mr_, md_, mc_]: ");
 	}
 
 	return(strAmt);
 };
-UiUtil.GetCheckBoxData = function(aFieldFqn, aObj2Edit) { 
+UiUtil.GetCheckBoxData = function(aParentId, aFieldFqn, aObj2Edit) { 
 	var value = "false";
-	if ((UiUtil.NotUndefineNotNullNotBlank(document.getElementById(UiUtil.GenElementId(undefined, aFieldFqn))))
+	if ((UiUtil.NotUndefineNotNullNotBlank(UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn))))
 	) {
 		var elementId = UiUtil.GenElementId(undefined, aFieldFqn);
-		if ($("#" + elementId).prop("checked") === true) {
+		if ($(UiUtil.GetElementById(aParentId, elementId)).prop("checked") === true) {
 			value = "true";
 		}
 
@@ -2124,7 +2133,7 @@ UiUtil.GetCheckBoxData = function(aFieldFqn, aObj2Edit) {
 			value = undefined; // this shows, no data from db and checkbox is false, so let db data as undefine / no data
 		}
 	} else {
-		value = UiUtil.GetWidgetData(aFieldFqn, "Missing checkbox widget: ");
+		value = UiUtil.GetWidgetData(aParentId, aFieldFqn, "Missing checkbox widget: ");
 	}
 
 	return(value);
@@ -2190,13 +2199,13 @@ UiUtil.ComposeFqn = function(aParent, aChild) {
 
 	return(result);
 };
-UiUtil.SetWidgetValue = function(aObj2Edit, aFieldFqn, aFieldValue) {
+UiUtil.SetWidgetValue = function(aObj2Edit, aParentId, aFieldFqn, aFieldValue) {
 	var populateDirection = "toWidget";
-	UiUtil.SetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aFieldValue, populateDirection);
+	UiUtil.SetWidgetOrJsonValue(aObj2Edit, aParentId, aFieldFqn, aFieldValue, populateDirection);
 };
-UiUtil.SetJsonValue = function(aObj2Edit, aFieldFqn, aFieldValue) {
+UiUtil.SetJsonValue = function(aObj2Edit, aParentId, aFieldFqn, aFieldValue) {
 	var populateDirection = "toJsonObj";
-	UiUtil.SetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aFieldValue, populateDirection);
+	UiUtil.SetWidgetOrJsonValue(aObj2Edit, aParentId, aFieldFqn, aFieldValue, populateDirection);
 };
 UiUtil.GetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aPopulateDirection, aFuncGetFromWidget) {
 	var result;
@@ -2207,29 +2216,29 @@ UiUtil.GetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aPopulateDirection,
 	}
 	return(result);
 };
-UiUtil.SetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aFieldValue, aPopulateDirection) {
+UiUtil.SetWidgetOrJsonValue = function(aObj2Edit, aParentId, aFieldFqn, aFieldValue, aPopulateDirection) {
 	if (aFieldValue.type === "mobilephone" || aFieldValue.type === "telephone") {
-		var phoneData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetPhoneData(aFieldFqn); });
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, phoneData);
+		var phoneData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetPhoneData(aParentId, aFieldFqn); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, phoneData);
 	} else if (aFieldValue.type === "datetime" || aFieldValue.type === "date" ) {
-		var dateData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetDatePickerData(aFieldFqn); });
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, dateData);
-	} else if (aFieldValue.type === "html") {
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue.data);
+		var dateData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetDatePickerData(aParentId, aFieldFqn); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, dateData);
 	} else if (aFieldValue.type === 'money') {
-		var moneyData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetMoneyData(aFieldFqn); });
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, moneyData);
+		var moneyData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetMoneyData(aParentId, aFieldFqn); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, moneyData);
 	} else if (aFieldValue.type === 'boolean') {
-		var booleanData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetCheckBoxData(aFieldFqn, aObj2Edit); });
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, booleanData);
+		var booleanData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetCheckBoxData(aParentId, aFieldFqn, aObj2Edit); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, booleanData);
+	} else if (aFieldValue.type === "html") {
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, aFieldValue.data);
 	} else if (aFieldValue.type === 'country') {
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue.data);
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, aFieldValue.data);
 	} else if (aFieldValue.type === 'state') {
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue.data);
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, aFieldValue.data);
 	} else if (aFieldValue.type === 'city') {
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue.data);
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, aFieldValue.data);
 	} else {
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue.data);
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, aFieldValue.data);
 	}
 };
 UiUtil.IsWidget = function(aElement) {
@@ -2256,11 +2265,11 @@ UiUtil.GetElementValue = function(aElement) {
 	
 	return(result);
 };
-UiUtil.AssignData = function(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldValue) {
+UiUtil.AssignData = function(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, aFieldValue) {
 	var elementId = UiUtil.GenElementId(undefined, aFieldFqn);
 	if (UiUtil.NotUndefineNotNullNotBlank(elementId)) {
-		var theElement = $("#" + elementId);
-		if (UiUtil.NotUndefineNotNullNotBlank(theElement)) {
+		var theElement = $(UiUtil.GetElementById(aParentId, elementId));
+		if (UiUtil.NotUndefineNotNullNotBlank(theElement[0])) {
 		} else {
 			console.log("Missing widget for FQN: " + aFieldFqn);
 			return;
@@ -2278,24 +2287,24 @@ UiUtil.AssignData = function(aPopulateDirection, aObj2Edit, aFieldFqn, aFieldVal
 		}
 	} else {
 		var fieldObject = UiUtil.GetVarByFieldName(aObj2Edit, aFieldFqn);
-		fieldObject.data = UiUtil.GetElementValue(theElement);
+		fieldObject.data = aFieldValue;
 	}
 
 	var valueToPrint = aFieldValue;
 	console.log("Found field: " + aFieldFqn + ", element id: " + elementId + ", value: " + valueToPrint);
 };
-UiUtil.PopulateWidget = function(aJsonObj) {
+UiUtil.PopulateWidget = function(aParentId, aJsonObj) {
 	var avoidRecursive = [];
 	avoidRecursive.push({clasz: aJsonObj.clasz, Oid: aJsonObj.objectId});
 	UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive, function(aObj2Edit, aFieldFqn, aFieldValue) {
-		UiUtil.SetWidgetValue(aObj2Edit, aFieldFqn, aFieldValue);
+		UiUtil.SetWidgetValue(aObj2Edit, aParentId, aFieldFqn, aFieldValue);
 	});
 };
-UiUtil.PopulateJson = function(aJsonObj) {
+UiUtil.PopulateJson = function(aParentId, aJsonObj) {
 	var avoidRecursive = [];
 	avoidRecursive.push({clasz: aJsonObj.clasz, Oid: aJsonObj.objectId});
 	UiUtil.PopulateDataRecursion(aJsonObj, "", "", avoidRecursive, function(aObj2Edit, aFieldFqn, aFieldValue) {
-		UiUtil.SetJsonValue(aObj2Edit, aFieldFqn, aFieldValue);
+		UiUtil.SetJsonValue(aObj2Edit, aParentId, aFieldFqn, aFieldValue);
 	});
 };
 UiUtil.PopulateDataRecursion = function(aObj2Edit, aParentFqnName, aObjName, aAvoidRecursive, aTraversedFunc) {

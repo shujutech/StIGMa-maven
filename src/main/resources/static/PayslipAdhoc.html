@@ -738,6 +738,7 @@
 			};
 			var okCreateSalaryTrx = function(newObject, aType, aEdtbg) {
 				return function() {
+					UiUtil.PopulateJson("swal2-content", newObject);
 					aEdtbg.inputObj.dataset.push(newObject);
 					setupSalaryTrxGrid(aEdtbg, aEdtbg.colDisplay, aEdtbg.inputObj, aEdtbg.currentContainerid, aEdtbg.table.id);
 					totalUpSalaryTrx(aEdtbg.inputObj, aType);
