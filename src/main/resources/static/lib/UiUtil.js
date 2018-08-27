@@ -368,7 +368,7 @@ UiUtil.DialogAnswerOk = function(value) {
 
 	return(result);	
 };
-UiUtil.DialogOkCancel = function(titleHtml, msgHtml, jsOk, jsCancel, firstInput) {
+UiUtil.DialogOkCancel = function(titleHtml, msgHtml, jsOk, jsCancel, onOpenFunc) {
 	var strType = undefined;
 	if (typeof msgHtml === "string") {
 		msgHtml = UiUtil.DialogStr2Html(msgHtml);
@@ -383,8 +383,8 @@ UiUtil.DialogOkCancel = function(titleHtml, msgHtml, jsOk, jsCancel, firstInput)
 		, focusConfirm: false 
 		, allowOutsideClick: false
 		, onOpen: function() {
-			if (UiUtil.NotUndefineNotNullNotBlank(firstInput)) {
-				$(firstInput).focus();
+			if (UiUtil.NotUndefineNotNullNotBlank(onOpenFunc)) {
+				onOpenFunc();
 			}
 		}
 	})
@@ -647,15 +647,23 @@ UiUtil.NotUndefineNotNullNotBlank = function(aVar) {
 	return(false);
 };
 UiUtil.DisplayMsgHide = function() {
+	if (UiUtil.NotUndefineNotNull($("#msgImage"))) {
+		$("#msgImage").css("display", "none");
+	}
+	if (UiUtil.NotUndefineNotNull($("#msgArea"))) {
+		$("#msgArea").css("display", "none");
+	}
+};
+UiUtil.DisplayMsgUnHide = function() {
 	if (UiUtil.NotUndefineNotNull($("#msgArea"))) {
 		if (UiUtil.NotUndefineNotNullNotBlank($("#msgArea").html())) {
-			$("#msgImage").css("display", "");
-			$("#msgArea").css("display", "");
-		} else {
-			$("#msgImage").css("display", "none");
-			$("#msgArea").css("display", "none");
+			$("#msgImage").css("display", "inline-flex");
+			$("#msgArea").css("display", "inline-flex");
 		}
 	}
+};
+UiUtil.DisplayInfo = function(aMsg) {
+	UiUtil.DisplayMsg("info", aMsg);
 };
 UiUtil.DisplayMsg = function(type, mesg) {
 	if (UiUtil.NotUndefineNotNull(mesg) === false) return;
@@ -673,7 +681,7 @@ UiUtil.DisplayMsg = function(type, mesg) {
 			msgIcon.setAttribute('src', 'img/exclamation.gif');
 		}
 	}
-	UiUtil.DisplayMsgHide();
+	UiUtil.DisplayMsgUnHide();
 };
 UiUtil.DialogReport2Us = function(aMsg, aAfterAck) {
 	UiUtil.DialogBlink(aMsg, aAfterAck);
@@ -2199,13 +2207,13 @@ UiUtil.ComposeFqn = function(aParent, aChild) {
 
 	return(result);
 };
-UiUtil.SetWidgetValue = function(aObj2Edit, aParentId, aFieldFqn, aFieldValue) {
+UiUtil.SetWidgetValue = function(aObj2Edit, aParentId, aFieldFqn) {
 	var populateDirection = "toWidget";
-	UiUtil.SetWidgetOrJsonValue(aObj2Edit, aParentId, aFieldFqn, aFieldValue, populateDirection);
+	UiUtil.SetWidgetOrJsonValue(aObj2Edit, aParentId, aFieldFqn, populateDirection);
 };
-UiUtil.SetJsonValue = function(aObj2Edit, aParentId, aFieldFqn, aFieldValue) {
+UiUtil.SetJsonValue = function(aObj2Edit, aParentId, aFieldFqn) {
 	var populateDirection = "toJsonObj";
-	UiUtil.SetWidgetOrJsonValue(aObj2Edit, aParentId, aFieldFqn, aFieldValue, populateDirection);
+	UiUtil.SetWidgetOrJsonValue(aObj2Edit, aParentId, aFieldFqn, populateDirection);
 };
 UiUtil.GetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aPopulateDirection, aFuncGetFromWidget) {
 	var result;
@@ -2216,29 +2224,36 @@ UiUtil.GetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aPopulateDirection,
 	}
 	return(result);
 };
-UiUtil.SetWidgetOrJsonValue = function(aObj2Edit, aParentId, aFieldFqn, aFieldValue, aPopulateDirection) {
-	if (aFieldValue.type === "mobilephone" || aFieldValue.type === "telephone") {
+UiUtil.SetWidgetOrJsonValue = function(aObj2Edit, aParentId, aFieldFqn, aPopulateDirection) {
+	var missingWidgetMsg = "Missing widget: ";
+	var fieldData = UiUtil.GetValueByFieldName(aObj2Edit, aFieldFqn);
+	if (fieldData.type === "mobilephone" || fieldData.type === "telephone") {
 		var phoneData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetPhoneData(aParentId, aFieldFqn); });
 		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, phoneData);
-	} else if (aFieldValue.type === "datetime" || aFieldValue.type === "date" ) {
+	} else if (fieldData.type === "datetime" || fieldData.type === "date" ) {
 		var dateData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetDatePickerData(aParentId, aFieldFqn); });
 		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, dateData);
-	} else if (aFieldValue.type === 'money') {
+	} else if (fieldData.type === 'money') {
 		var moneyData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetMoneyData(aParentId, aFieldFqn); });
 		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, moneyData);
-	} else if (aFieldValue.type === 'boolean') {
+	} else if (fieldData.type === 'boolean') {
 		var booleanData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetCheckBoxData(aParentId, aFieldFqn, aObj2Edit); });
 		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, booleanData);
-	} else if (aFieldValue.type === "html") {
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, aFieldValue.data);
-	} else if (aFieldValue.type === 'country') {
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, aFieldValue.data);
-	} else if (aFieldValue.type === 'state') {
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, aFieldValue.data);
-	} else if (aFieldValue.type === 'city') {
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, aFieldValue.data);
+	} else if (fieldData.type === "html") {
+		var elementData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetWidgetData(aParentId, aFieldFqn, missingWidgetMsg); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, elementData);
+	} else if (fieldData.type === 'country') {
+		var elementData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetWidgetData(aParentId, aFieldFqn, missingWidgetMsg); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, elementData);
+	} else if (fieldData.type === 'state') {
+		var elementData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetWidgetData(aParentId, aFieldFqn, missingWidgetMsg); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, elementData);
+	} else if (fieldData.type === 'city') {
+		var elementData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetWidgetData(aParentId, aFieldFqn, missingWidgetMsg); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, elementData);
 	} else {
-		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, aFieldValue.data);
+		var elementData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetWidgetData(aParentId, aFieldFqn, missingWidgetMsg); });
+		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, elementData);
 	}
 };
 UiUtil.IsWidget = function(aElement) {

@@ -1,4 +1,3 @@
-
 <html>
 	<head>
 		<title>Adhoc Payslip</title>
@@ -21,7 +20,7 @@
 			table.stdGrid {border-collapse:collapse;border:2px solid #c7c7c7;;width:100%} 
 			table.stdGrid td,table.stdGrid th {padding:5px}
 			table.stdGrid th {text-align:left;border-bottom:1px solid #c7c7c7;}
-			table.stdGrid tr {line-height: 2.00; font-weight: 300;}
+			table.stdGrid tr {line-height: 2.00;border-bottom:1px solid #e6e6e6;font-weight: 300;}
 			table.stdGrid>tbody tr:hover{cursor:pointer;background:#E5E5E5;color:black}
 			table.stdGrid tbody {-webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; }
 			table.stdGrid .rowSelected {color:blue} 
@@ -227,7 +226,7 @@
 					</div>
 					<div id="divEmpInfo">
 						<fieldset class="fs-btn">
-							<button id="btnGenPayslip" onclick="genPayslip();" style="margin-right:2px;width:150px">Show Payslip</button>
+							<button id="btnGenPayslip" onclick="togglePayslip();" style="margin-right:2px;width:150px">Show Payslip</button>
 						</fieldset>
 						<fieldset class="st-fs01" style="padding-top:35px;padding-bottom:45px;padding-left:1%;padding-right:1%">
 							<div class="st-eachfield st-row">
@@ -242,11 +241,11 @@
 											</select>
 										</span>
 										<span>
-											<input class="form-control" type="text" value="0" id="md_Earningsbracketo0bracketcdotAmount" style="text-align:right" autofocus data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, '68464_ct')">
+											<input class="form-control" type="text" value="0" id="md_Earningsbracketo0bracketcdotAmount" style="text-align:right" data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, '68464_ct'); updateBasicSalary();" onfocus="this.select()" onchange="checkRecompute();">
 										</span>
 										<span class="st-symbol">.</span>
 										<span>
-											<input class="form-control" type="text" value="00" id="mc_Earningsbracketo0bracketcdotAmount" style="text-align:right" size="2" data-mask="00">
+											<input class="form-control" type="text" value="00" id="mc_Earningsbracketo0bracketcdotAmount" style="text-align:right" size="2" data-mask="00" onkeyup="updateBasicSalary();" onfocus="this.select()" onchange="checkRecompute();">
 										</span>
 									</div>
 								</div>
@@ -256,7 +255,7 @@
 									<label>Tax Resident</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
 								</div>
 								<div class="st-input-area">
-									<select class="custom-select" style="min-width:70px">
+									<select class="custom-select" style="min-width:70px" onchange="checkRecompute();">
 										<option value="Citizen">Citizen</option>
 										<option value="Permanent Resident">Permanent Resident</option>
 										<option value="Foreigner">Foreigner</option>
@@ -268,7 +267,7 @@
 									<label>Is Spouse Working</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
 								</div>
 								<div class="st-input-area">
-									<input class="" type="checkbox">
+									<input class="" type="checkbox" onchange="checkRecompute();">
 								</div>
 							</div>
 							<div class="st-eachfield st-row">
@@ -276,7 +275,7 @@
 									<label>Marital Status</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
 								</div>
 								<div class="st-input-area">
-									<select class="custom-select" style="min-width:70px">
+									<select class="custom-select" style="min-width:70px" onchange="checkRecompute();">
 										<option value="Single">Single</option>
 										<option value="Married">Married</option>
 									</select>
@@ -289,7 +288,7 @@
 									<span class="st-error-msg" style="display: none"></span>
 								</div>
 								<div class="st-input-area">
-									<input class="form-control" type="text" value="0" size="2" data-mask="00">
+									<input class="form-control" type="text" value="0" size="2" data-mask="00" onfocus="this.select()" onchange="checkRecompute();">
 								</div>
 							</div>
 						</fieldset>
@@ -297,11 +296,11 @@
 				</div>
 		
 				<div id="body_payslip" class="each-body">
-					<div id="divFlipSlip" style="float:left;width:100%" onclick="UiUtil.FlipUpDown('divPayslip')">
+					<div id="divFlipSlip" style="float:left;width:100%" onclick="showHidePayslip()">
 						<h2 style="float:left;font-size:1.5rem;padding-left:5px">Payslip</h2>
 						<div style="float:left;font-weight:100;font-size:small;margin-left:10px;margin-top:5px">
 							<img id='msgImage' src='img/imgInfo.gif' style='vertical-align:middle; margin-right:0px;float:left' alt="">
-							<span id='msgArea' style="float:left"></span>
+							<span id='msgArea'></span>
 						</div>
 					</div>
 					<div id="divPayslip" style="display: none">
@@ -481,13 +480,18 @@
 		</div>
 
 		<script type='text/javascript'>
-			var genPayslip = function() {
+			var togglePayslip = function() {
+				UiUtil.DisplayMsgHide();
+				showHidePayslip();
+			}
+			var showHidePayslip = function() {
 				var flipDirection = UiUtil.FlipUpDown('divPayslip');
 				if (flipDirection === "up") {
 					$("#btnGenPayslip").text("Show Payslip");
 				} else if (flipDirection === "down") {
 					$("#btnGenPayslip").text("Hide Payslip");
 				}
+				firstFlip = false;
 			};
 			var drawSalarySlipScreen = function() {
 					UiUtil.StorePrevObj("salarySlipFormPrevObj", oneSlip);
@@ -563,6 +567,7 @@
 
 				oneEmployee = {};
 				oneSlip = {"objectId":-1,"clasz":"biz.shujutech.o2rm.SalarySlipMalaysia","data":{"Batch Id":{"data":"","size":"32"},"Status":{"clasz":"biz.shujutech.o2rm.SalarySlipStatus","dataset":[]},"Company Alias":{"data":"","updateable":"false","size":"32"},"Company":{"data":"","updateable":"false","size":"32"},"Employee":{"data":"","updateable":"false","size":"32"},"Employee Alias":{"data":"","updateable":"false","size":"32"},"Designation":{"data":"","updateable":"false","size":"32"},"Salary Period":{"data":"","updateable":"false","size":"32"},"Employer Cost":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period From":{"data":"","type":"date"},"Net Pay":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period To":{"data":"","type":"date"},"Earnings":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[{"clasz":"biz.shujutech.o2rm.SalaryTransactionMalaysia","objectId":-1,"data":{"Sequence":{"data":"6","dontDisplay":true},"Descr":{"data":"Basic Salary","size":"50"},"Amount":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"System Generated":{"data":"true","type":"boolean","dontDisplay":true}}}]},"Deductions":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]},"Others":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]}}};
+				oneSlipOriginal = jQuery.extend(true, {}, oneSlip);
 				drawSalarySlipScreen();
 				UiUtil.DialogWaitStop();
 			};
@@ -631,7 +636,6 @@
 						var aryInput = row.cells[positionCheckbox].getElementsByTagName('input');
 						if (aryInput.length > 0) {
 							if (aryInput[0].checked) {
-								//aEdtbg.inputObj.dataset.splice(cntrRow - 1, 1);
 								var aryTrx = UiUtil.GetAryByJsonPath(aEdtbg.inputObj);
 								var oneTrx = aryTrx[cntrRow - 1];
 								oneTrx.delete = true;
@@ -803,13 +807,15 @@
 				if (UiUtil.NotUndefineNotNull(dlgWidget.find("div").find("input")[0])) {
 					firstInput = dlgWidget.find("div").find("input")[0];
 				}
-				//for(eachDiv of dlgWidget.children("div")) { 
 				var divChild = dlgWidget.children("div");
 				for(var cntr = 0; cntr < divChild.length; cntr++) {
 					var eachDiv = divChild[cntr];
 					$(eachDiv).addClass("st-vertical-row"); 
 				}
-				UiUtil.DialogOkCancel(netTitle, dlgWidget, okNewRq, cancelRq, firstInput);
+				var onOpenFunc = function() {
+					$(firstInput).focus();
+				}
+				UiUtil.DialogOkCancel(netTitle, dlgWidget, okNewRq, cancelRq, onOpenFunc);
 			};
 			var getEarningOrDeduction = function(aType, aAction) {
 				var netEdtbg;
@@ -902,6 +908,44 @@
 				, undefined
 				);
 			};
+			var checkRecompute = function() {
+				/*
+				var strBasicSalary = UiUtil.GetValueByJsonPath(oneEmployee, "");
+				var strTaxResident = UiUtil.GetValueByJsonPath(oneEmployee, "");
+				var strIsSpouseWorking = UiUtil.GetValueByJsonPath(oneEmployee, "");
+				var strMarital = UiUtil.GetValueByJsonPath(oneEmployee, "");
+				var strNoChildren = UiUtil.GetValueByJsonPath(oneEmployee, "");
+				if (strBasicSalary !== $("#").val()
+				strTaxResident !== $("#").val()
+				|| strIsSpouseWorking !== $("#").val()
+				|| strMarital !== $("#").val()
+				|| strNoOfChildren !== $("#").val()
+				) {
+					UiUtil.DisplayInfo("Please click on the <span style='font-style:italic;font-weight:bold'>&nbsp[RECOMPUTE]&nbsp</span> button to update the payslip");
+				}
+				*/
+
+				UiUtil.DisplayInfo("Please click on the <span style='font-style:italic;font-weight:bold'>&nbsp[RECOMPUTE]&nbsp</span> button to update the payslip");
+				if (firstFlip) {
+					showHidePayslip();
+				}
+			};
+			var updateBasicSalary = function() {
+				var strCurrency = $("#mr_Earningsbracketo0bracketcdotAmount").val();
+				var strDollar = $("#md_Earningsbracketo0bracketcdotAmount").val();
+				var strCent = $("#mc_Earningsbracketo0bracketcdotAmount").val();
+				var strBasicSalary = strCurrency + " " + strDollar + "." + strCent;
+				$("#wt_Earningsbracketo0bracketcdotAmount").text(strBasicSalary);
+
+				var basicSalaryObj;
+				for(var cntr = 0; cntr < edtbgEarning.inputObj.dataset.length; cntr++) {
+					var eachEarning = edtbgEarning.inputObj.dataset[cntr];
+					if (UiUtil.GetValueByJsonPath(eachEarning, "Descr") === "Basic Salary") {
+						UiUtil.JsonAssignment(eachEarning, "Amount", strBasicSalary);
+						break;
+					}
+				}
+			};
 			var APP_TITLE = 'Adhoc Payslip';
 			var LOGIN_ID = localStorage.getItem("loginId");
 			var MODULE_NAME = APP_TITLE;
@@ -911,8 +955,10 @@
 			var payslipOid;
 			var payslipClasz;
 			var oneSlip;
+			var oneSlipOriginal;
 			var oneEmployee;
 
+			var firstFlip = true;
 			var dialogArea;
 			var employeeInfoArea;
 			var edtbgEarning;
@@ -935,6 +981,9 @@
 				var nowDateTo = UiUtil.DateMonthEnd(new Date());
 				$("#wt_Period_From").val(UiUtil.DateForDisplay(nowDateFrom));
 				$("#wt_Period_To").val(UiUtil.DateForDisplay(nowDateTo));
+				$("#md_Earningsbracketo0bracketcdotAmount").focus();
+				var funcSlow = function() { $("#md_Earningsbracketo0bracketcdotAmount").select(); };
+				setTimeout(funcSlow, 500);
 			} ;
 
 		</script>
