@@ -241,7 +241,7 @@
 											</select>
 										</span>
 										<span>
-											<input class="form-control" type="text" value="0" id="md_Earningsbracketo0bracketcdotAmount" style="text-align:right" data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, '68464_ct'); updateBasicSalary(); checkRecompute()" onfocus="this.select()">
+											<input class="form-control" type="text" value="0" id="md_Earningsbracketo0bracketcdotAmount" style="text-align:right" data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, 'mc_Earningsbracketo0bracketcdotAmount'); updateBasicSalary(); checkRecompute()" onfocus="this.select()" onchange="basicSalaryChange();">
 										</span>
 										<span class="st-symbol">.</span>
 										<span>
@@ -532,8 +532,8 @@
 					UiUtil.DisplayMsg('info', statusMsg);
 			};
 			var ComputeNetPay = function() {
-				var strTotalEarning = $('#grossPay').html();
-				var strTotalDeduction = $('#totalDeduction').html();
+				var strTotalEarning = $('#grossPay').val();
+				var strTotalDeduction = $('#totalDeduction').val();
 
 				var numTotalEarning = Str2Num(strTotalEarning);
 				var numTotalDeduction = Str2Num(strTotalDeduction);
@@ -541,17 +541,17 @@
 				var numNetPay = numTotalEarning - numTotalDeduction;
 				numNetPay = DecimalPlace(numNetPay);
 				var strNetPay = strCurrency + " " + NumberWithComma(numNetPay);
-				$('#netPay').html(strNetPay);
+				$('#wt_Net_Pay').val(strNetPay);
 				UiUtil.SetValByJsonPath(oneSlip, "Net Pay", strNetPay);
 
 				var numRoundNetPay = Math.ceil(numNetPay * 10) / 10;
 				numRoundNetPay = DecimalPlace(numNetPay);
 				var strRoundNetPay = strCurrency + " " + NumberWithComma(numRoundNetPay);
-				$('#roundedNetPay').html(strRoundNetPay);
+				$('#roundedNetPay').val(strRoundNetPay);
 			};
 			var ComputeEmployerCost = function() {
-				var strTotalEarning = $('#grossPay').html();
-				var strTotalOther = $('#totalOther').html();
+				var strTotalEarning = $('#grossPay').val();
+				var strTotalOther = $('#totalOther').val();
 
 				var numTotalEarning = Str2Num(strTotalEarning);
 				var numTotalOther = Str2Num(strTotalOther);
@@ -720,8 +720,14 @@
 					setupSalaryTrxGrid(edtbg, edtbg.colDisplay, edtbg.inputObj, edtbg.currentContainerid, edtbg.table.id);
 				}
 			};
+			var basicSalaryChange = function() {
+				totalUpSalaryTrx(edtbgEarning.inputObj, "Earnings");
+				ComputeNetPay();
+				ComputeEmployerCost();
+			}
 			var okEditSalaryTrx = function(paramId, newObject, aType, aEdtbg) {
 				return function() {
+					UiUtil.PopulateJsonFromDialog(newObject);
 					setupSalaryTrxGrid(aEdtbg, aEdtbg.colDisplay, aEdtbg.inputObj, aEdtbg.currentContainerid, aEdtbg.table.id);
 					totalUpSalaryTrx(aEdtbg.inputObj, aType);
 					ComputeNetPay();
@@ -742,7 +748,7 @@
 			};
 			var okCreateSalaryTrx = function(newObject, aType, aEdtbg) {
 				return function() {
-					UiUtil.PopulateJson("swal2-content", newObject);
+					UiUtil.PopulateJsonFromDialog(newObject);
 					aEdtbg.inputObj.dataset.push(newObject);
 					setupSalaryTrxGrid(aEdtbg, aEdtbg.colDisplay, aEdtbg.inputObj, aEdtbg.currentContainerid, aEdtbg.table.id);
 					totalUpSalaryTrx(aEdtbg.inputObj, aType);
@@ -867,11 +873,11 @@
 					result = NumberWithComma(result);
 					var totalAmount = strCurrency + " " + result;
 					if (aType === 'Earnings') {
-						$('#grossPay').html(totalAmount);
+						$('#grossPay').val(totalAmount);
 					} else if (aType === 'Deductions') {
-						$('#totalDeduction').html(totalAmount);
+						$('#totalDeduction').val(totalAmount);
 					} else if (aType === 'Others') {
-						$('#totalOther').html(totalAmount);
+						$('#totalOther').val(totalAmount);
 					}
 				}
 			};

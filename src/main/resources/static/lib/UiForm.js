@@ -27,6 +27,12 @@ if (typeof UiUtil === 'undefined' || UiUtil === null) {
 }
 function UiForm() {
 };
+UiForm.prototype.scrollAndFocus = function() {
+	var masterDiv = document.getElementById(this.locationId);
+	var focusable = masterDiv.querySelectorAll('input, select, textarea');
+	var firstFocusable = focusable[0];
+	$(firstFocusable).focus();
+};
 UiForm.prototype.assignValue = function(aIndex, aWidget, aFqn) { 
 	if (UiUtil.NotUndefineNotNull(this.rawObj)) {
 		if (UiUtil.NotUndefineNotNull(this.rawObj.dataset)) {
@@ -774,7 +780,6 @@ UiForm.prototype.newFieldObject = function(fieldClasz, fieldsetTitle, basePath, 
 				thisUiForm.setupAryCtrlButton(targetField, fieldsetTitle, slideId, slideNxt, basePath, targetName);
 				var funcSlow = function() { thisUiForm.allSlider[idxSlide].goToSlide(thisUiForm.allSlider[idxSlide].getSlideCount() - 1); };
 				setTimeout(funcSlow, 100);
-				//$(divForSlideChild).find(':input:first').focus();
 			} else {
 				jQuery.extend(true, targetField, jsonObject.dataset[0]);
 				var avoidRecursive = new Array();
@@ -1157,7 +1162,7 @@ UiForm.prototype.cancelEdit = function() {
 };
 UiForm.prototype.focusFirstWidget = function() {
 	var editDiv = this.locationId;
-	var allInput = $('#' + editDiv).find('input, select');
+	var allInput = $('#' + editDiv).find('input, select', 'textarea');
 	for (var cntr = 0; cntr < allInput.length; cntr++) {
 		if (allInput[cntr].disabled === false) {
 			allInput[cntr].focus();

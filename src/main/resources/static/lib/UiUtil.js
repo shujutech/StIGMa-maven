@@ -1719,6 +1719,9 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, aFieldFqn) {
 	tfDlr.setAttribute("onkeyup", "UiUtil.HandleDollar(this, event, \"" + tfCnt.id + "\")");
 	tfCnt.setAttribute("onkeyup", "UiUtil.HandleCent(this, event)");
 
+	tfDlr.setAttribute("onfocus", "this.select();");
+	tfCnt.setAttribute("onfocus", "this.select();");
+
 	var parent = document.createElement("parentwrapper");
 	parent.appendChild(spCrcy);
 	parent.appendChild(spDlr);
@@ -2018,7 +2021,7 @@ UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 	$(aMasterDiv).append(fullHeightDiv);
 
 	var current = 0;
-	$($(fullHeightDiv).children()[current]).find(':input:first').focus(); 
+	//$($(fullHeightDiv).children()[current]).find(':input:first').focus(); 
 	$(aNextButton).bind('click', function(evt) {
 		var prev = current;
 		for(var cntrSlider = 0; cntrSlider < aSliderList.length; cntrSlider++) {
@@ -2308,6 +2311,13 @@ UiUtil.AssignData = function(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn
 
 	var valueToPrint = aFieldValue;
 	console.log("Found field: " + aFieldFqn + ", element id: " + elementId + ", value: " + valueToPrint);
+};
+UiUtil.DIALOG_DIV = "swal2-content";
+UiUtil.PopulateJsonFromDialog = function(aJsonObj) {
+	UiUtil.PopulateJson(UiUtil.DIALOG_DIV, aJsonObj);
+};
+UiUtil.PopulateWidgetFromDialog= function(aJsonObj) {
+	UiUtil.PopulateWidget(UiUtil.DIALOG_DIV, aJsonObj);
 };
 UiUtil.PopulateWidget = function(aParentId, aJsonObj) {
 	var avoidRecursive = [];
