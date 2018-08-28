@@ -241,7 +241,7 @@
 											</select>
 										</span>
 										<span>
-											<input class="form-control" type="text" value="0" id="md_Earningsbracketo0bracketcdotAmount" style="text-align:right" data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, '68464_ct'); updateBasicSalary();" onfocus="this.select()" onchange="checkRecompute();">
+											<input class="form-control" type="text" value="0" id="md_Earningsbracketo0bracketcdotAmount" style="text-align:right" data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, '68464_ct'); updateBasicSalary(); checkRecompute()" onfocus="this.select()">
 										</span>
 										<span class="st-symbol">.</span>
 										<span>
@@ -288,7 +288,7 @@
 									<span class="st-error-msg" style="display: none"></span>
 								</div>
 								<div class="st-input-area">
-									<input class="form-control" type="text" value="0" size="2" data-mask="00" onfocus="this.select()" onchange="checkRecompute();">
+									<input class="form-control" type="text" value="0" size="2" data-mask="00" onfocus="this.select()" onkeyup="checkRecompute();">
 								</div>
 							</div>
 						</fieldset>
@@ -483,15 +483,15 @@
 			var togglePayslip = function() {
 				UiUtil.DisplayMsgHide();
 				showHidePayslip();
-			}
+			};
 			var showHidePayslip = function() {
+				firstFlip = false;
 				var flipDirection = UiUtil.FlipUpDown('divPayslip');
 				if (flipDirection === "up") {
 					$("#btnGenPayslip").text("Show Payslip");
 				} else if (flipDirection === "down") {
 					$("#btnGenPayslip").text("Hide Payslip");
 				}
-				firstFlip = false;
 			};
 			var drawSalarySlipScreen = function() {
 					UiUtil.StorePrevObj("salarySlipFormPrevObj", oneSlip);

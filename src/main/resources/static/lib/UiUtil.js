@@ -1407,6 +1407,7 @@ UiUtil.DialogPeriodRange = function(aTitleHeader, aTitleBody, aDateStart, aDateE
 	$(divMonthNavg).css('float', 'left');
 	$(divMonthNavg).css('width', '20%');
 	$(divMonthNavg).css('margin-top', '29px');
+	$(divMonthNavg).css('margin-right', '1em');
 
 	var divCol = document.createElement('div');
 	$(divCol).css('float', 'left');
@@ -2226,7 +2227,7 @@ UiUtil.GetWidgetOrJsonValue = function(aObj2Edit, aFieldFqn, aPopulateDirection,
 };
 UiUtil.SetWidgetOrJsonValue = function(aObj2Edit, aParentId, aFieldFqn, aPopulateDirection) {
 	var missingWidgetMsg = "Missing widget: ";
-	var fieldData = UiUtil.GetValueByFieldName(aObj2Edit, aFieldFqn);
+	var fieldData = UiUtil.GetVarByFieldName(aObj2Edit, aFieldFqn);
 	if (fieldData.type === "mobilephone" || fieldData.type === "telephone") {
 		var phoneData = UiUtil.GetWidgetOrJsonValue(aObj2Edit, aFieldFqn, aPopulateDirection, function() { return UiUtil.GetPhoneData(aParentId, aFieldFqn); });
 		UiUtil.AssignData(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn, phoneData);
