@@ -1675,6 +1675,41 @@ UiUtil.HandleDollar = function(el, ev, centid) {
 		$("#" + centid).focus();
 	}
 };
+UiUtil.HandleBlankMoney = function(dollarId, centId) {
+	var dollarValue = $("#" + dollarId).val();
+	var centValue = $("#" + centId).val();
+	if (!UiUtil.NotUndefineNotNullNotBlank(dollarValue)) { // dollar is blank
+		if (UiUtil.NotUndefineNotNullNotBlank(centValue)) { // cent is not blank
+			if (parseInt(centValue) === 0) {
+				$("#" + centId).val("");
+			} else {
+				$("#" + dollarId).val("0");
+			}
+		}
+	}
+
+	if (!UiUtil.NotUndefineNotNullNotBlank(centValue)) { // cent is blank
+		if (UiUtil.NotUndefineNotNullNotBlank(dollarValue)) { // dollar is not blank
+			if (parseInt(dollarValue) === 0) {
+				//$("#" + dollarId).val("");
+			} else {
+				$("#" + centId).val("00");
+			}
+		} 
+	}
+	
+	if (UiUtil.NotUndefineNotNullNotBlank(dollarValue)) { // dollar is not blank
+		if (parseInt(dollarValue) === 0) {
+			if (!UiUtil.NotUndefineNotNullNotBlank(centValue)) { // cent is blank
+				$("#" + centId).val("00");
+			}
+		}
+	}
+	
+	if (centValue.length === 1) {
+		$("#" + centId).val(centValue + "0");
+	}
+};
 UiUtil.HandleCent = function(el, ev, centid) {
 	// do nothing
 };
@@ -1716,8 +1751,10 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, aFieldFqn) {
 	tfCnt.setAttribute("size", 2);
 	spCnt.appendChild(tfCnt);
 
-	tfDlr.setAttribute("onkeyup", "UiUtil.HandleDollar(this, event, \"" + tfCnt.id + "\")");
-	tfCnt.setAttribute("onkeyup", "UiUtil.HandleCent(this, event)");
+	var blankMoneyParam = "'" + tfDlr.id + "', '" + tfCnt.id + "'";
+	tfDlr.setAttribute("onkeyup", "UiUtil.HandleDollar(this, event, \"" + tfCnt.id + "\");");
+	tfDlr.setAttribute("onblur", "UiUtil.HandleBlankMoney(" + blankMoneyParam + ");");
+	tfCnt.setAttribute("onblur", "UiUtil.HandleBlankMoney(" + blankMoneyParam + ");");
 
 	tfDlr.setAttribute("onfocus", "this.select();");
 	tfCnt.setAttribute("onfocus", "this.select();");
@@ -2092,14 +2129,17 @@ UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 		return(current);
 	};
 	
-
 	return(newSlider);
 };
 UiUtil.GetWidgetData = function(aParentId, aFieldFqn, aMissingMsg) {
 	var result;
 	var inputElement = UiUtil.GetElementById(aParentId, UiUtil.GenElementId(undefined, aFieldFqn)); // uses one input field to represent the data
 	if (UiUtil.NotUndefineNotNullNotBlank(inputElement)) {
-		result = $(inputElement).val();
+		if (UiUtil.IsWidget($(inputElement))) {
+			result = $(inputElement).val();
+		} else {
+			result = $(inputElement).text();
+		}
 	} else {
 		console.log(aMissingMsg + UiUtil.GenElementId(undefined, aFieldFqn));
 	}
@@ -2149,6 +2189,23 @@ UiUtil.GetCheckBoxData = function(aParentId, aFieldFqn, aObj2Edit) {
 	}
 
 	return(value);
+};
+UiUtil.FlipIsDown = function(aElemId) {
+	var result = true;
+	if ($("#" + aElemId).css("display") === "none") {
+		result = false;
+	}
+
+	return(result);
+};
+UiUtil.FlipDown = function(aElemId) {
+	var result = false;
+	if ($("#" + aElemId).css("display") === "none") {
+		$("#" + aElemId).slideDown("slow");
+		result = true;
+	}
+
+	return(result);
 };
 UiUtil.FlipUpDown = function(aElemId) {
 	var result;
@@ -2261,7 +2318,7 @@ UiUtil.SetWidgetOrJsonValue = function(aObj2Edit, aParentId, aFieldFqn, aPopulat
 	}
 };
 UiUtil.IsWidget = function(aElement) {
-	if (aElement.is("input") || aElement.is("select") || aElement.is("textarea")) {
+	if (aElement.is("input") || aElement.is("select") || aElement.is("textarea") || aElement.is("[contenteditable]")) {
 		return true;
 	} else {
 		return false;

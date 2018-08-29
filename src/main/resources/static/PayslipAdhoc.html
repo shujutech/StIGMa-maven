@@ -241,11 +241,11 @@
 											</select>
 										</span>
 										<span>
-											<input class="form-control" type="text" value="0" id="md_Earningsbracketo0bracketcdotAmount" style="text-align:right" data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, 'mc_Earningsbracketo0bracketcdotAmount'); updateBasicSalary(); checkRecompute()" onfocus="this.select()" onchange="basicSalaryChange();">
+											<input class="form-control" type="text" value="0" id="md_Earningsbracketo0bracketcdotAmount" style="text-align:right" data-mask="###,###,###,###,###,###,##0" data-mask-reverse="true" onkeyup="UiUtil.HandleDollar(this, event, 'mc_Earningsbracketo0bracketcdotAmount'); updateBasicSalary(); checkRecompute()" onblur="UiUtil.HandleBlankMoney('md_Earningsbracketo0bracketcdotAmount', 'mc_Earningsbracketo0bracketcdotAmount');" onfocus="this.select()" onchange="basicSalaryChange();">
 										</span>
 										<span class="st-symbol">.</span>
 										<span>
-											<input class="form-control" type="text" value="00" id="mc_Earningsbracketo0bracketcdotAmount" style="text-align:right" size="2" data-mask="00" onkeyup="updateBasicSalary();" onfocus="this.select()" onchange="checkRecompute();">
+											<input class="form-control" type="text" value="00" id="mc_Earningsbracketo0bracketcdotAmount" style="text-align:right" size="2" data-mask="00" onkeyup="updateBasicSalary();" onfocus="this.select()" onchange="checkRecompute();" onblur="UiUtil.HandleBlankMoney('md_Earningsbracketo0bracketcdotAmount', 'mc_Earningsbracketo0bracketcdotAmount');">
 										</span>
 									</div>
 								</div>
@@ -296,7 +296,7 @@
 				</div>
 		
 				<div id="body_payslip" class="each-body">
-					<div id="divFlipSlip" style="float:left;width:100%" onclick="showHidePayslip()">
+					<div id="divFlipSlip" style="float:left;width:100%" onclick="togglePayslip()">
 						<h2 style="float:left;font-size:1.5rem;padding-left:5px">Payslip</h2>
 						<div style="float:left;font-weight:100;font-size:small;margin-left:10px;margin-top:5px">
 							<img id='msgImage' src='img/imgInfo.gif' style='vertical-align:middle; margin-right:0px;float:left' alt="">
@@ -481,16 +481,17 @@
 
 		<script type='text/javascript'>
 			var togglePayslip = function() {
-				UiUtil.DisplayMsgHide();
-				showHidePayslip();
-			};
-			var showHidePayslip = function() {
-				firstFlip = false;
 				var flipDirection = UiUtil.FlipUpDown('divPayslip');
 				if (flipDirection === "up") {
 					$("#btnGenPayslip").text("Show Payslip");
+					UiUtil.DisplayMsgHide();
 				} else if (flipDirection === "down") {
 					$("#btnGenPayslip").text("Hide Payslip");
+					if (needRecompute()) {
+						UiUtil.DisplayInfo("Please click on the <span style='font-style:italic;font-weight:bold'>&nbsp[RECOMPUTE]&nbsp</span> button to update the payslip");
+					} else {
+						UiUtil.DisplayInfo("Payslip is up to date, no recomputation is needed");
+					}
 				}
 			};
 			var drawSalarySlipScreen = function() {
@@ -567,7 +568,6 @@
 
 				oneEmployee = {};
 				oneSlip = {"objectId":-1,"clasz":"biz.shujutech.o2rm.SalarySlipMalaysia","data":{"Batch Id":{"data":"","size":"32"},"Status":{"clasz":"biz.shujutech.o2rm.SalarySlipStatus","dataset":[]},"Company Alias":{"data":"","updateable":"false","size":"32"},"Company":{"data":"","updateable":"false","size":"32"},"Employee":{"data":"","updateable":"false","size":"32"},"Employee Alias":{"data":"","updateable":"false","size":"32"},"Designation":{"data":"","updateable":"false","size":"32"},"Salary Period":{"data":"","updateable":"false","size":"32"},"Employer Cost":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period From":{"data":"","type":"date"},"Net Pay":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period To":{"data":"","type":"date"},"Earnings":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[{"clasz":"biz.shujutech.o2rm.SalaryTransactionMalaysia","objectId":-1,"data":{"Sequence":{"data":"6","dontDisplay":true},"Descr":{"data":"Basic Salary","size":"50"},"Amount":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"System Generated":{"data":"true","type":"boolean","dontDisplay":true}}}]},"Deductions":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]},"Others":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]}}};
-				oneSlipOriginal = jQuery.extend(true, {}, oneSlip);
 				drawSalarySlipScreen();
 				UiUtil.DialogWaitStop();
 			};
@@ -914,26 +914,26 @@
 				, undefined
 				);
 			};
-			var checkRecompute = function() {
-				/*
-				var strBasicSalary = UiUtil.GetValueByJsonPath(oneEmployee, "");
-				var strTaxResident = UiUtil.GetValueByJsonPath(oneEmployee, "");
-				var strIsSpouseWorking = UiUtil.GetValueByJsonPath(oneEmployee, "");
-				var strMarital = UiUtil.GetValueByJsonPath(oneEmployee, "");
-				var strNoChildren = UiUtil.GetValueByJsonPath(oneEmployee, "");
-				if (strBasicSalary !== $("#").val()
-				strTaxResident !== $("#").val()
-				|| strIsSpouseWorking !== $("#").val()
-				|| strMarital !== $("#").val()
-				|| strNoOfChildren !== $("#").val()
-				) {
-					UiUtil.DisplayInfo("Please click on the <span style='font-style:italic;font-weight:bold'>&nbsp[RECOMPUTE]&nbsp</span> button to update the payslip");
+			var needRecompute = function() {
+				var result = true;
+				UiUtil.PopulateJson(undefined, oneSlip);
+				var oneSlipStr = JSON.stringify(oneSlip);
+				if (oneSlipStr === oneSlipOriginalStr) {
+					result = false;
 				}
-				*/
 
-				UiUtil.DisplayInfo("Please click on the <span style='font-style:italic;font-weight:bold'>&nbsp[RECOMPUTE]&nbsp</span> button to update the payslip");
-				if (firstFlip) {
-					showHidePayslip();
+				return(result);
+			};
+			var checkRecompute = function() {
+				if (needRecompute()) {
+					UiUtil.DisplayInfo("Please click on the <span style='font-style:italic;font-weight:bold'>&nbsp[RECOMPUTE]&nbsp</span> button to update the payslip");
+					if (UiUtil.FlipDown('divPayslip')) {
+						$("#btnGenPayslip").text("Hide Payslip");
+					}
+				} else {
+					if (UiUtil.FlipIsDown('divPayslip')) {
+						UiUtil.DisplayInfo("Payslip is up to date, no recomputation is needed");
+					}
 				}
 			};
 			var updateBasicSalary = function() {
@@ -962,9 +962,9 @@
 			var payslipClasz;
 			var oneSlip;
 			var oneSlipOriginal;
+			var oneSlipOriginalStr;
 			var oneEmployee;
 
-			var firstFlip = true;
 			var dialogArea;
 			var employeeInfoArea;
 			var edtbgEarning;
@@ -988,6 +988,9 @@
 				$("#wt_Period_From").val(UiUtil.DateForDisplay(nowDateFrom));
 				$("#wt_Period_To").val(UiUtil.DateForDisplay(nowDateTo));
 				$("#md_Earningsbracketo0bracketcdotAmount").focus();
+				UiUtil.PopulateJson(undefined, oneSlip);
+				oneSlipOriginal = jQuery.extend(true, {}, oneSlip);
+				oneSlipOriginalStr = JSON.stringify(oneSlipOriginal);
 				var funcSlow = function() { $("#md_Earningsbracketo0bracketcdotAmount").select(); };
 				setTimeout(funcSlow, 500);
 			} ;
