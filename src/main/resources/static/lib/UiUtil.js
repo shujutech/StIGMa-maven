@@ -2058,7 +2058,7 @@ UiUtil.CreateVerticalSlider = function(aMasterDiv, aSliderList, aNextButton) {
 	var lastSlider = aSliderList[aSliderList.length - 1];
 	$(aSliderList).each(function() {
 		var eachSlider = this;
-		$(this).find(':input:last').bind('keydown', function(evt) {
+		$(this).find(":input:last, [contenteditable]:last").bind('keydown', function(evt) {
 			if (evt.keyCode === 9){
 				if (eachSlider === lastSlider) {
 					// do nothing, tab to the next element
