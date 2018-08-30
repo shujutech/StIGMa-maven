@@ -662,6 +662,9 @@ UiUtil.DisplayMsgUnHide = function() {
 		}
 	}
 };
+UiUtil.DisplayError = function(aMsg) {
+	UiUtil.DisplayMsg("error", aMsg);
+};
 UiUtil.DisplayInfo = function(aMsg) {
 	UiUtil.DisplayMsg("info", aMsg);
 };
@@ -1556,12 +1559,18 @@ UiUtil.PopulateComboBoxWithName = function(cmb, jsonObj, chosen) {
 	cmb.appendChild(opt); 
 
 	if (jsonObj !== undefined) {
+		var autoDefaultOnOneOption = false;
+		if (jsonObj.length === 1) {
+			autoDefaultOnOneOption = true;
+		}
+
 		$.each(jsonObj, function(name, value)  { 
 			var opt = document.createElement("option"); 
 			opt.value = name; 
 			opt.innerHTML = name; 
-			if (name === chosen) {
+			if (name === chosen && autoDefaultOnOneOption) {
 				opt.setAttribute("selected", '');
+				autoDefaultOnOneOption = false;
 			}
 			cmb.appendChild(opt); 
 		});
@@ -1574,12 +1583,18 @@ UiUtil.PopulateComboBoxWithValue = function(cmb, choices, chosen) {
 	cmb.appendChild(opt); 
 
 	if (choices !== undefined) {
+		var autoDefaultOnOneOption = false;
+		if (choices.length === 1) {
+			autoDefaultOnOneOption = true;
+		}
+
 		$.each(choices, function(name, value)  { 
 			var opt = document.createElement("option"); 
 			opt.value = value; 
 			opt.innerHTML = value; 
-			if (value === chosen) {
+			if (value === chosen && autoDefaultOnOneOption) {
 				opt.setAttribute("selected", '');
+				autoDefaultOnOneOption = false;
 			}
 			cmb.appendChild(opt); 
 		});
@@ -2428,5 +2443,28 @@ UiUtil.PopulateDataRecursion = function(aObj2Edit, aParentFqnName, aObjName, aAv
 			// do nothing to system field
 		}
 	}
+};
+UiUtil.SetAllComboDefaultValue = function() {
+	var defaultValue = undefined;
+	$("select").each(function() { 
+		var thisSelect = this;
+		var allOption = $(thisSelect).find("option");
+		for(var cntr = 0; cntr < allOption.length; cntr++) {
+			var thisOption = allOption[cntr];
+			if (UiUtil.NotUndefineNotNullNotBlank($(thisOption).val())) {
+				if (UiUtil.NotUndefineNotNullNotBlank(defaultValue)) {
+					defaultValue = undefined;
+					break;
+				} else {
+					defaultValue = $(thisOption).val();
+				}
+			}
+		}
+
+		if (UiUtil.NotUndefineNotNullNotBlank(defaultValue)) {
+			$(thisSelect).val(defaultValue);
+			defaultValue = undefined;
+		}
+	});
 };
 UiUtil.DoNothing = function() {}; 

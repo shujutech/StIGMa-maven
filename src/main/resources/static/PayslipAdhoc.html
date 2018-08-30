@@ -488,7 +488,7 @@
 				} else if (flipDirection === "down") {
 					$("#btnGenPayslip").text("Hide Payslip");
 					if (needRecompute()) {
-						UiUtil.DisplayInfo("Please click on the <span style='font-style:italic;font-weight:bold'>&nbsp[RECOMPUTE]&nbsp</span> button to update the payslip");
+						UiUtil.DisplayError("Please click on the <span style='font-style:italic;font-weight:bold'>&nbsp[RECOMPUTE]&nbsp</span> button to update the payslip");
 					} else {
 						UiUtil.DisplayInfo("Payslip is up to date, no recomputation is needed");
 					}
@@ -926,7 +926,7 @@
 			};
 			var checkRecompute = function() {
 				if (needRecompute()) {
-					UiUtil.DisplayInfo("Please click on the <span style='font-style:italic;font-weight:bold'>&nbsp[RECOMPUTE]&nbsp</span> button to update the payslip");
+					UiUtil.DisplayError("Please click on the <span style='font-style:italic;font-weight:bold'>&nbsp[RECOMPUTE]&nbsp</span> button to update the payslip");
 					if (UiUtil.FlipDown('divPayslip')) {
 						$("#btnGenPayslip").text("Hide Payslip");
 					}
