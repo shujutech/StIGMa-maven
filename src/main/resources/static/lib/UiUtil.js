@@ -1785,6 +1785,98 @@ UiUtil.CreateMoney = function(displayLabel, jsonMoney, aFieldFqn) {
 
 	return(result);
 };
+UiUtil.SetOneElementValue = function(aParentId, aFieldFqn, aFieldValue) {
+	var elementId = UiUtil.GenElementId(undefined, aFieldFqn);
+	if (UiUtil.NotUndefineNotNullNotBlank(elementId)) {
+		var theElement = $(UiUtil.GetElementById(aParentId, elementId));
+		UiUtil.SetElementValue(theElement, aFieldValue);
+	} else {
+		console.log("Missing widget for FQN: " + aFieldFqn);
+	}
+};
+UiUtil.SetWidgetDate = function(aParentId, aFieldFqn, aFlattenOneValue) {
+	var aryDate = aFlattenOneValue.split("-");
+	var day = aryDate[0];
+	var mth = aryDate[1];
+	var yer = aryDate[2];
+
+	var idDay = UiUtil.GenElementId(undefined, aFieldFqn, "dd_");
+	var idMth = UiUtil.GenElementId(undefined, aFieldFqn, "dm_"); 
+	var idYear = UiUtil.GenElementId(undefined, aFieldFqn, "dy_"); 
+	var idHour = UiUtil.GenElementId(undefined, aFieldFqn, "dh_"); 
+	var idMin = UiUtil.GenElementId(undefined, aFieldFqn, "di_"); 
+	var idSec = UiUtil.GenElementId(undefined, aFieldFqn, "ds_"); 
+
+	var elemDay = $("#" + idDay);
+	var elemMth = $("#" + idMth);
+	var elemYear = $("#" + idYear);
+	var elemHour = $("#" + idHour);
+	var elemMin = $("#" + idMin);
+	var elemSec = $("#" + idSec);
+
+	if (UiUtil.NotUndefineNotNullNotBlank(elemDay[0])
+	&& UiUtil.NotUndefineNotNullNotBlank(elemMth[0])
+	&& UiUtil.NotUndefineNotNullNotBlank(elemYear[0])
+	&& UiUtil.NotUndefineNotNullNotBlank(elemHour[0])
+	&& UiUtil.NotUndefineNotNullNotBlank(elemMin[0])
+	&& UiUtil.NotUndefineNotNullNotBlank(elemSec[0])
+	) {
+		UiUtil.SetDatePicker(fieldVar.data, elemDay, elemMth, elemYear, elemHour, elemMin, elemSec);
+	} else {
+		UiUtil.SetOneElementValue(aParentId, aFieldFqn, aFlattenOneValue);
+	}
+};
+UiUtil.SetWidgetPhone = function(aParentId, aFieldFqn, aFlattenOneValue) {
+	var strArray = aFlattenOneValue.data.split("-");
+	var valCtry = strArray[0];
+	var valNdc = strArray[1];
+	var valSubNo = strArray[2];
+
+	var idCtry = UiUtil.GenElementId(undefined, aFieldFqn, "pc_"); // prefix with telephone country code
+	var idTel = UiUtil.GenElementId(undefined, aFieldFqn, "pn_"); // prefix with telephone number
+	var idPhone = UiUtil.GenElementId(undefined, aFieldFqn); // prefix with telephone country code
+	
+	var elemCtry = $("#" + idCtry);
+	var elemTel = $("#" + idTel)
+	var elemPhone = $("#" + idPhone)
+	
+	if (UiUtil.NotUndefineNotNullNotBlank(elemCtry[0])
+	&& UiUtil.NotUndefineNotNullNotBlank(elemTel[0])
+	&& UiUtil.NotUndefineNotNullNotBlank(elemPhone[0])
+	) {
+		elemCtry.val(valCtry);
+		elemTel.val(valNdc);
+		elemPhone.val(valSubNo);
+	} else {
+		UiUtil.SetOneElementValue(aParentId, aFieldFqn, aFlattenOneValue);
+	}
+};
+UiUtil.SetWidgetMoney = function(aParentId, aFieldFqn, aFlattenOneValue) {
+	var	mnyCurrency = UiUtil.GenElementId(undefined, aFieldFqn, "mr_");
+	var	mnyDollar = UiUtil.GenElementId(undefined, aFieldFqn, "md_");
+	var	mnyCent = UiUtil.GenElementId(undefined, aFieldFqn, "mc_");
+
+	var mnyValue = {};
+	mnyValue.currency = '';
+	mnyValue.dollar = '';
+	mnyValue.cent = '';
+
+	UiUtil.Json2Money(mnyValue, aFlattenOneValue);
+	var vCurrency = $("#" + mnyCurrency);
+	var vDollar = $("#" + mnyDollar);
+	var vCent = $("#" + mnyCent);
+
+	if (UiUtil.NotUndefineNotNullNotBlank(vCurrency[0])
+	&& UiUtil.NotUndefineNotNullNotBlank(vDollar[0])
+	&& UiUtil.NotUndefineNotNullNotBlank(vCent[0])
+	) {
+		vCurrency.val(mnyValue.currency);
+		vDollar.val(mnyValue.dollar);
+		vCent.val(mnyValue.cent);
+	} else {
+		UiUtil.SetOneElementValue(aParentId, aFieldFqn, aFlattenOneValue);
+	}
+};
 UiUtil.SetValueNoBr = function(aElementId, aWidget) { 
 	if (aWidget.value !== "<br>") { // ignore this damn <br> html element place in by HtmlEditor widget
 		$("#" + aElementId).val(aWidget.value);
@@ -2340,6 +2432,10 @@ UiUtil.IsWidget = function(aElement) {
 	}
 };
 UiUtil.SetElementValue = function(aElement, aValue) {
+	if (!UiUtil.NotUndefineNotNullNotBlank(aValue)) {
+		aValue = "";
+	}
+
 	if (UiUtil.IsWidget(aElement)) {
 		aElement.val(aValue);
 	} else {
@@ -2370,14 +2466,27 @@ UiUtil.AssignData = function(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn
 		return;
 	}
 
+	var fieldObject = UiUtil.GetVarByFieldName(aObj2Edit, aFieldFqn);
 	if (aPopulateDirection === "toWidget") {
-		if (UiUtil.NotUndefineNotNullNotBlank(aFieldValue)) {
-			UiUtil.SetElementValue(theElement, aFieldValue);
+		if (fieldObject.type === "mobilephone" || fieldObject.type === "telephone") {
+			UiUtil.SetWidgetPhone(aParentId, aFieldFqn, aFieldValue); // not tested
+		} else if (fieldObject.type === "datetime" || fieldObject.type === "date" ) {
+			UiUtil.SetWidgetDate(aParentId, aFieldFqn, aFieldValue); // not tested
+		} else if (fieldObject.type === "money") {
+			UiUtil.SetWidgetMoney(aParentId, aFieldFqn, aFieldValue);
+		} else if (fieldObject.type === "boolean") {
+			// do it when needed
+		} else if (fieldObject.type === "country") {
+			// do it when needed
+		} else if (fieldObject.type === "state") {
+			// do it when needed
+		} else if (fieldObject.type === "city") {
+			// do it when needed
 		} else {
-			UiUtil.SetElementValue(theElement, "");
+			UiUtil.SetElementValue(theElement, aFieldValue);
 		}
 	} else {
-		var fieldObject = UiUtil.GetVarByFieldName(aObj2Edit, aFieldFqn);
+		fieldObject = UiUtil.GetVarByFieldName(aObj2Edit, aFieldFqn);
 		fieldObject.data = aFieldValue;
 	}
 

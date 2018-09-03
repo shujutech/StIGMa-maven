@@ -724,14 +724,16 @@
 				totalUpSalaryTrx(edtbgEarning.inputObj, "Earnings");
 				ComputeNetPay();
 				ComputeEmployerCost();
-			}
+			};
 			var okEditSalaryTrx = function(paramId, newObject, aType, aEdtbg) {
 				return function() {
 					UiUtil.PopulateJsonFromDialog(newObject);
+					UiUtil.PopulateWidget(undefined, oneSlip);
 					setupSalaryTrxGrid(aEdtbg, aEdtbg.colDisplay, aEdtbg.inputObj, aEdtbg.currentContainerid, aEdtbg.table.id);
 					totalUpSalaryTrx(aEdtbg.inputObj, aType);
 					ComputeNetPay();
 					ComputeEmployerCost();
+					checkRecompute();
 				};
 			};
 			var editSalaryTrx = function(aType) {
@@ -754,6 +756,7 @@
 					totalUpSalaryTrx(aEdtbg.inputObj, aType);
 					ComputeNetPay();
 					ComputeEmployerCost();
+					checkRecompute();
 				};
 			};
 			var getNextSeq = function(aTrxEdtbg) {
@@ -820,7 +823,7 @@
 				}
 				var onOpenFunc = function() {
 					$(firstInput).focus();
-				}
+				};
 				UiUtil.DialogOkCancel(netTitle, dlgWidget, okNewRq, cancelRq, onOpenFunc);
 			};
 			var getEarningOrDeduction = function(aType, aAction) {
@@ -943,7 +946,6 @@
 				var strBasicSalary = strCurrency + " " + strDollar + "." + strCent;
 				$("#wt_Earningsbracketo0bracketcdotAmount").text(strBasicSalary);
 
-				var basicSalaryObj;
 				for(var cntr = 0; cntr < edtbgEarning.inputObj.dataset.length; cntr++) {
 					var eachEarning = edtbgEarning.inputObj.dataset[cntr];
 					if (UiUtil.GetValueByJsonPath(eachEarning, "Descr") === "Basic Salary") {
