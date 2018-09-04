@@ -2474,6 +2474,7 @@ UiUtil.AssignData = function(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn
 			UiUtil.SetWidgetDate(aParentId, aFieldFqn, aFieldValue); // not tested
 		} else if (fieldObject.type === "money") {
 			UiUtil.SetWidgetMoney(aParentId, aFieldFqn, aFieldValue);
+		/*
 		} else if (fieldObject.type === "boolean") {
 			// do it when needed
 		} else if (fieldObject.type === "country") {
@@ -2482,6 +2483,7 @@ UiUtil.AssignData = function(aPopulateDirection, aObj2Edit, aParentId, aFieldFqn
 			// do it when needed
 		} else if (fieldObject.type === "city") {
 			// do it when needed
+		*/
 		} else {
 			UiUtil.SetElementValue(theElement, aFieldValue);
 		}

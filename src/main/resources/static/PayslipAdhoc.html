@@ -267,7 +267,7 @@
 									<label>Is Spouse Working</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
 								</div>
 								<div class="st-input-area">
-									<input class="" type="checkbox" onchange="checkRecompute();">
+									<input id="wt_Is_Spouse_Working" class="" type="checkbox" onchange="checkRecompute();">
 								</div>
 							</div>
 							<div class="st-eachfield st-row">
@@ -275,7 +275,7 @@
 									<label>Marital Status</label><img src="img/imgErrorBlank.png" style="display: none;"><span class="st-error-msg" style="display: none"></span>
 								</div>
 								<div class="st-input-area">
-									<select class="custom-select" style="min-width:70px" onchange="checkRecompute();">
+									<select id="wt_Marital_Status" class="custom-select" style="min-width:70px" onchange="checkRecompute();">
 										<option value="Single">Single</option>
 										<option value="Married">Married</option>
 									</select>
@@ -288,7 +288,7 @@
 									<span class="st-error-msg" style="display: none"></span>
 								</div>
 								<div class="st-input-area">
-									<input class="form-control" type="text" value="0" size="2" data-mask="00" onfocus="this.select()" onkeyup="checkRecompute();">
+									<input id="wt_No_Of_Children" class="form-control" type="text" value="0" size="2" data-mask="00" onfocus="this.select()" onkeyup="checkRecompute();">
 								</div>
 							</div>
 						</fieldset>
@@ -565,14 +565,16 @@
 			var createSalarySlipScreen = function() {
 				UiUtil.DialogWaitStart();
 				var requestParam = {};
+				/*
 				UiUtil.BeAction(requestParam, "employee", "PayslipAdhoc", function(respond) {
 					oneEmployee = respond.dataset[0];
 					console.log(JSON.stringify(oneEmployee));
 				}
 				, undefined
 				);
+				*/
 
-				oneEmployee = {"objectId":-1,"clasz":"biz.shujutech.o2rm.Person","data":{"Is Spouse Working":{"data":"","type":"boolean"},"Marital Status":{"option":{"Widow":[],"Divorce":[],"Single":[],"Married":[]},"data":"","lookup":true},"Identification":{"uimaster":true,"clasz":"biz.shujutech.o2rm.Identity","dataset":[]},"No Of Children":{"data":"","type":"integer"},"Employment":{"uimaster":true,"clasz":"biz.shujutech.o2rm.Employment","dataset":[{"clasz":"biz.shujutech.o2rm.EmploymentMalaysia","objectId":-1,"data":{"Salary":{"clasz":"biz.shujutech.o2rm.Salary","objectId":-1,"data":{"Salary":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Salary Period":{"option":{"Hourly":[],"Biweekly":[],"Weekly":[],"Monthly":[]},"data":"Monthly","lookup":true}}}}}]}}};
+				oneEmployee = {"objectId":-1,"clasz":"biz.shujutech.o2rm.Person","data":{"Is Spouse Working":{"data":"false","type":"boolean"},"Marital Status":{"option":{"Widow":[],"Divorce":[],"Single":[],"Married":[]},"data":"Single","lookup":true},"Identification":{"uimaster":true,"clasz":"biz.shujutech.o2rm.Identity","dataset":[]},"No Of Children":{"data":"0","type":"integer"},"Employment":{"uimaster":true,"clasz":"biz.shujutech.o2rm.Employment","dataset":[{"clasz":"biz.shujutech.o2rm.EmploymentMalaysia","objectId":-1,"data":{"Salary":{"clasz":"biz.shujutech.o2rm.Salary","objectId":-1,"data":{"Salary":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Salary Period":{"option":{"Hourly":[],"Biweekly":[],"Weekly":[],"Monthly":[]},"data":"Monthly","lookup":true}}}}}]}}};
 				oneSlip = {"objectId":-1,"clasz":"biz.shujutech.o2rm.SalarySlipMalaysia","data":{"Batch Id":{"data":"","size":"32"},"Status":{"clasz":"biz.shujutech.o2rm.SalarySlipStatus","dataset":[]},"Company Alias":{"data":"","updateable":"false","size":"32"},"Company":{"data":"","updateable":"false","size":"32"},"Employee":{"data":"","updateable":"false","size":"32"},"Employee Alias":{"data":"","updateable":"false","size":"32"},"Designation":{"data":"","updateable":"false","size":"32"},"Salary Period":{"data":"","updateable":"false","size":"32"},"Employer Cost":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period From":{"data":"","type":"date"},"Net Pay":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period To":{"data":"","type":"date"},"Earnings":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[{"clasz":"biz.shujutech.o2rm.SalaryTransactionMalaysia","objectId":-1,"data":{"Sequence":{"data":"6","dontDisplay":true},"Descr":{"data":"Basic Salary","size":"50"},"Amount":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"System Generated":{"data":"true","type":"boolean","dontDisplay":true}}}]},"Deductions":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]},"Others":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]}}};
 				drawSalarySlipScreen();
 				UiUtil.DialogWaitStop();
@@ -924,11 +926,17 @@
 				);
 			};
 			var needRecompute = function() {
-				var result = true;
+				var result = false;
 				UiUtil.PopulateJson(undefined, oneSlip);
 				var oneSlipStr = JSON.stringify(oneSlip);
-				if (oneSlipStr === oneSlipOriginalStr) {
-					result = false;
+				if (oneSlipStr !== oneSlipOriginalStr) {
+					result = true;
+				} else { 
+					UiUtil.PopulateJson(undefined, oneEmployee);
+					var oneEmployeeStr = JSON.stringify(oneEmployee);
+					if (oneEmployeeStr !== oneEmployeeOriginalStr) {
+						result = true;
+					}
 				}
 
 				return(result);
@@ -972,6 +980,8 @@
 			var oneSlipOriginal;
 			var oneSlipOriginalStr;
 			var oneEmployee;
+			var oneEmployeeOriginal;
+			var oneEmployeeOriginalStr;
 
 			var dialogArea;
 			var employeeInfoArea;
@@ -999,6 +1009,8 @@
 				UiUtil.PopulateJson(undefined, oneSlip);
 				oneSlipOriginal = jQuery.extend(true, {}, oneSlip);
 				oneSlipOriginalStr = JSON.stringify(oneSlipOriginal);
+				oneEmployeeOriginal = jQuery.extend(true, {}, oneEmployee);
+				oneEmployeeOriginalStr = JSON.stringify(oneEmployeeOriginal);
 				var funcSlow = function() { $("#md_Earningsbracketo0bracketcdotAmount").select(); };
 				setTimeout(funcSlow, 500);
 			} ;
