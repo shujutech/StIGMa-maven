@@ -565,8 +565,14 @@
 			var createSalarySlipScreen = function() {
 				UiUtil.DialogWaitStart();
 				var requestParam = {};
+				UiUtil.BeAction(requestParam, "employee", "PayslipAdhoc", function(respond) {
+					oneEmployee = respond.dataset[0];
+					console.log(JSON.stringify(oneEmployee));
+				}
+				, undefined
+				);
 
-				oneEmployee = {};
+				oneEmployee = {"objectId":-1,"clasz":"biz.shujutech.o2rm.Person","data":{"Is Spouse Working":{"data":"","type":"boolean"},"Marital Status":{"option":{"Widow":[],"Divorce":[],"Single":[],"Married":[]},"data":"","lookup":true},"Identification":{"uimaster":true,"clasz":"biz.shujutech.o2rm.Identity","dataset":[]},"No Of Children":{"data":"","type":"integer"},"Employment":{"uimaster":true,"clasz":"biz.shujutech.o2rm.Employment","dataset":[{"clasz":"biz.shujutech.o2rm.EmploymentMalaysia","objectId":-1,"data":{"Salary":{"clasz":"biz.shujutech.o2rm.Salary","objectId":-1,"data":{"Salary":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Salary Period":{"option":{"Hourly":[],"Biweekly":[],"Weekly":[],"Monthly":[]},"data":"Monthly","lookup":true}}}}}]}}};
 				oneSlip = {"objectId":-1,"clasz":"biz.shujutech.o2rm.SalarySlipMalaysia","data":{"Batch Id":{"data":"","size":"32"},"Status":{"clasz":"biz.shujutech.o2rm.SalarySlipStatus","dataset":[]},"Company Alias":{"data":"","updateable":"false","size":"32"},"Company":{"data":"","updateable":"false","size":"32"},"Employee":{"data":"","updateable":"false","size":"32"},"Employee Alias":{"data":"","updateable":"false","size":"32"},"Designation":{"data":"","updateable":"false","size":"32"},"Salary Period":{"data":"","updateable":"false","size":"32"},"Employer Cost":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period From":{"data":"","type":"date"},"Net Pay":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"Period To":{"data":"","type":"date"},"Earnings":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[{"clasz":"biz.shujutech.o2rm.SalaryTransactionMalaysia","objectId":-1,"data":{"Sequence":{"data":"6","dontDisplay":true},"Descr":{"data":"Basic Salary","size":"50"},"Amount":{"clasz":"biz.shujutech.o2rm.Money","objectId":-1,"data":"MYR 0.00","currencies":{"SGD":"SGD","MYR":"MYR"},"type":"money"},"System Generated":{"data":"true","type":"boolean","dontDisplay":true}}}]},"Deductions":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]},"Others":{"clasz":"biz.shujutech.o2rm.SalaryTransaction","dataset":[]}}};
 				drawSalarySlipScreen();
 				UiUtil.DialogWaitStop();
